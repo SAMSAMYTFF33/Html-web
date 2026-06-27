@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً بك في موقعنا</title>
+    <style>
+        /* إعادة تعيين الأنماط الأساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* خلفية الصفحة كاملة مع تأثير متدرج مريح للعين */
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* بطاقة الترحيب بتأثير الزجاج الشفاف (Glassmorphism) */
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* الشعار أو الأيقونة الترحيبية */
+        .logo-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #38bdf8;
+            animation: bounce 2s infinite;
+        }
+
+        /* عنوان الصفحة الرئيسي */
+        .welcome-card h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(to left, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* النص الوصفي */
+        .welcome-card p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* زر الانتقال التفاعلي */
+        .cta-btn {
+            display: inline-block;
+            padding: 12px 35px;
+            background: linear-gradient(90deg, #38bdf8, #4f46e5);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        /* تأثيرات حركة الزر عند تمرير الماوس */
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .cta-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* حركات الأنيميشن لجعل الصفحة حيوية */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-card">
+        <div class="logo-icon">✨</div>
+        
+        <h1>أهلاً بك في منصتنا</h1>
+        
+        <p>نحن نسعى لتقديم أفضل تجربة رقمية لك. اكتشف ميزاتنا الجديدة واستمتع برحلتك معنا اليوم.</p>
+        
+        <a href="#explore" class="cta-btn">ابدأ الرحلة الآن</a>
+    </div>
+
+</body>
+</html>
