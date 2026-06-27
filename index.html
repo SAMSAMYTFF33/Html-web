@@ -1,221 +1,566 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آلة حاسبة احترافية</title>
-    <style>
-        /* إعادة تعيين الأنماط الأساسية */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* خلفية الصفحة */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-        }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      min-height: 100vh;
+      background: #0f0f0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-        /* حاوية الآلة الحاسبة */
-        .calculator {
-            background-color: #1e2530;
-            padding: 25px;
-            border-radius: 25px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            width: 340px;
-        }
+    /* خلفية متحركة */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 20% 50%, #1a1a2e 0%, #0f0f0f 60%),
+                  radial-gradient(ellipse at 80% 20%, #16213e 0%, transparent 50%);
+    }
+    .bg::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(66,133,244,0.08) 0%, transparent 70%);
+      top: -200px; left: -200px;
+      animation: float 8s ease-in-out infinite;
+    }
+    .bg::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(52,168,83,0.06) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-30px); }
+    }
 
-        /* شاشة العرض */
-        .display {
-            background-color: #0f141c;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: left; /* لجعل الأرقام تبدأ من اليسار كالمعتاد */
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            min-height: 80px;
-            word-wrap: break-word;
-            word-break: break-all;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            direction: ltr; /* اتجاه الكتابة الرياضية من اليسار لليمين */
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
-        }
+    /* بطاقة تسجيل الدخول */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      text-align: center;
+    }
 
-        /* شبكة الأزرار */
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
+    .logo {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #4285F4, #34A853);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 26px;
+    }
 
-        /* الأزرار بشكل عام */
-        button {
-            padding: 18px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #ffffff;
-            background-color: #2d3748;
-        }
+    .card h1 {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
 
-        /* تأثير عند تمرير الماوس وضغط الأزرار */
-        button:hover {
-            background-color: #4a5568;
-            transform: translateY(-2px);
-        }
+    .card p {
+      color: rgba(255,255,255,0.45);
+      font-size: 14px;
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
 
-        button:active {
-            transform: translateY(1px);
-        }
+    /* زر Google */
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 14px 24px;
+      background: #ffffff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f1f1f;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .google-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(66,133,244,0.3);
+    }
+    .google-btn:active { transform: translateY(0); }
+    .google-btn svg { flex-shrink: 0; }
 
-        /* أزرار العمليات الحسابية */
-        .operator {
-            background-color: #f59e0b;
-            color: #ffffff;
-        }
-        .operator:hover {
-            background-color: #d97706;
-        }
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 28px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: rgba(255,255,255,0.08);
+    }
+    .divider span { color: rgba(255,255,255,0.25); font-size: 12px; }
 
-        /* زر المسح الشامل وزر الحذف */
-        .clear {
-            background-color: #ef4444;
-        }
-        .clear:hover {
-            background-color: #dc2626;
-        }
+    .note {
+      color: rgba(255,255,255,0.2);
+      font-size: 12px;
+      line-height: 1.7;
+    }
 
-        /* زر اليساوي */
-        .equal {
-            background-color: #10b981;
-            grid-column: span 2; /* يأخذ مساحتين */
-        }
-        .equal:hover {
-            background-color: #059669;
-        }
-    </style>
+    /* صفحة المهام */
+    .tasks-page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: #0f0f0f;
+      overflow-y: auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: sticky; top: 0;
+      backdrop-filter: blur(20px);
+      z-index: 5;
+    }
+
+    .user-info {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .user-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(66,133,244,0.4);
+    }
+    .user-name { color: #fff; font-size: 15px; font-weight: 600; }
+    .user-email { color: rgba(255,255,255,0.4); font-size: 12px; }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: rgba(255,80,80,0.1);
+      border-color: rgba(255,80,80,0.3);
+      color: #ff6b6b;
+    }
+
+    .tasks-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .tasks-header {
+      margin-bottom: 28px;
+    }
+    .tasks-header h2 { color: #fff; font-size: 22px; font-weight: 700; }
+    .tasks-header p { color: rgba(255,255,255,0.35); font-size: 13px; margin-top: 4px; }
+
+    /* إضافة مهمة */
+    .add-task {
+      display: flex; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .add-task input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      direction: rtl;
+    }
+    .add-task input:focus { border-color: rgba(66,133,244,0.5); }
+    .add-task input::placeholder { color: rgba(255,255,255,0.25); }
+    .add-task button {
+      background: #4285F4;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      color: #fff;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .add-task button:hover { background: #3367d6; }
+
+    /* الفلاتر */
+    .filters {
+      display: flex; gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 6px 14px;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn.active {
+      background: rgba(66,133,244,0.15);
+      border-color: rgba(66,133,244,0.4);
+      color: #4285F4;
+    }
+
+    /* المهام */
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .task-item:hover { border-color: rgba(255,255,255,0.12); }
+    .task-item.done { opacity: 0.5; }
+
+    .task-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .task-check.checked {
+      background: #34A853;
+      border-color: #34A853;
+    }
+    .task-check.checked::after {
+      content: '✓';
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .task-text {
+      flex: 1;
+      color: #fff;
+      font-size: 15px;
+    }
+    .task-item.done .task-text {
+      text-decoration: line-through;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .task-delete {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.2);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .task-delete:hover { color: #ff6b6b; background: rgba(255,80,80,0.1); }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.2);
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* Stats */
+    .stats {
+      display: flex; gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-num { color: #fff; font-size: 22px; font-weight: 700; }
+    .stat-label { color: rgba(255,255,255,0.35); font-size: 11px; margin-top: 2px; }
+  </style>
 </head>
 <body>
 
-    <div class="calculator">
-        <div class="display" id="display">0</div>
+<div class="bg"></div>
 
-        <div class="buttons">
-            <button class="clear" onclick="clearDisplay()">C</button>
-            <button class="clear" onclick="deleteLast()">DEL</button>
-            <button class="operator" onclick="appendValue('%')">%</button>
-            <button class="operator" onclick="appendValue('/')">÷</button>
+<!-- صفحة تسجيل الدخول -->
+<div class="card" id="loginPage">
+  <div class="logo">✦</div>
+  <h1>مرحباً بك</h1>
+  <p>سجّل دخولك بحساب Google للوصول إلى مهامك</p>
 
-            <button onclick="appendValue('7')">7</button>
-            <button onclick="appendValue('8')">8</button>
-            <button onclick="appendValue('9')">9</button>
-            <button class="operator" onclick="appendValue('*')">×</button>
+  <button class="google-btn" onclick="signInWithGoogle()">
+    <svg width="20" height="20" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    تسجيل الدخول بـ Google
+  </button>
 
-            <button onclick="appendValue('4')">4</button>
-            <button onclick="appendValue('5')">5</button>
-            <button onclick="appendValue('6')">6</button>
-            <button class="operator" onclick="appendValue('-')">-</button>
+  <div class="divider"><span>أو</span></div>
 
-            <button onclick="appendValue('1')">1</button>
-            <button onclick="appendValue('2')">2</button>
-            <button onclick="appendValue('3')">3</button>
-            <button class="operator" onclick="appendValue('+')">+</button>
+  <!-- زر تجريبي بدون Google -->
+  <button class="google-btn" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;" onclick="demoLogin()">
+    🚀 دخول تجريبي (بدون Google)
+  </button>
 
-            <button onclick="appendValue('0')">0</button>
-            <button onclick="appendValue('.')">.</button>
-            <button class="equal" onclick="calculate()">=</button>
-        </div>
+  <br/>
+  <p class="note">بتسجيل دخولك، مهامك تُحفظ في جهازك فقط<br/>لا يتم مشاركة بياناتك مع أي طرف</p>
+</div>
+
+<!-- صفحة المهام -->
+<div class="tasks-page" id="tasksPage">
+  <div class="topbar">
+    <div class="user-info">
+      <img class="user-avatar" id="userAvatar" src="" alt=""/>
+      <div>
+        <div class="user-name" id="userName"></div>
+        <div class="user-email" id="userEmail"></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+  </div>
+
+  <div class="tasks-container">
+    <div class="tasks-header">
+      <h2>مهامي 📋</h2>
+      <p id="dateLabel"></p>
     </div>
 
-    <script>
-        const display = document.getElementById('display');
-        let shouldResetDisplay = false;
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-label">إجمالي</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="doneCount">0</div>
+        <div class="stat-label">مكتملة</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="pendingCount">0</div>
+        <div class="stat-label">قيد التنفيذ</div>
+      </div>
+    </div>
 
-        // إضافة الأرقام أو العمليات للشاشة
-        function appendValue(value) {
-            if (display.innerText === '0' && !isNaN(value) || shouldResetDisplay) {
-                resetDisplay();
-            }
-            
-            // منع تكرار النقطة العشرية في نفس الرقم
-            if (value === '.' && display.innerText.includes('.')) {
-                // فحص بسيط للتأكد من عدم وجود نقطة في الجزء الحالي من العملية
-                const parts = display.innerText.split(/[\+\-\*\/]/);
-                if (parts[parts.length - 1].includes('.')) return;
-            }
+    <div class="add-task">
+      <input type="text" id="taskInput" placeholder="أضف مهمة جديدة..." onkeydown="if(event.key==='Enter') addTask()"/>
+      <button onclick="addTask()">+ إضافة</button>
+    </div>
 
-            if (display.innerText === '0' && isNaN(value) && value !== '.') {
-                return; // منع بدء العملية برموز معينة
-            }
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
+      <button class="filter-btn" onclick="setFilter('pending', this)">قيد التنفيذ</button>
+      <button class="filter-btn" onclick="setFilter('done', this)">مكتملة</button>
+    </div>
 
-            display.innerText += value;
-        }
+    <div id="tasksList"></div>
+  </div>
+</div>
 
-        // مسح الشاشة بالكامل
-        function clearDisplay() {
-            display.innerText = '0';
-            shouldResetDisplay = false;
-        }
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+  let currentUser = null;
+  let tasks = [];
+  let currentFilter = 'all';
 
-        // تفريغ الشاشة مؤقتاً عند بدء إدخال جديد بعد عملية حسابية
-        function resetDisplay() {
-            display.innerText = '';
-            shouldResetDisplay = false;
-        }
+  // ── Google Sign-In ──────────────────────────────────────────
+  function signInWithGoogle() {
+    // تهيئة Google Identity
+    google.accounts.id.initialize({
+      // ⚠️ استبدل هذا بـ Client ID الخاص بك من Google Cloud Console
+      client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+      callback: handleGoogleResponse,
+      auto_select: false,
+    });
+    google.accounts.id.prompt();
+  }
 
-        // حذف آخر عنصر (زر DEL)
-        function deleteLast() {
-            if (display.innerText.length > 1) {
-                display.innerText = display.innerText.slice(0, -1);
-            } else {
-                display.innerText = '0';
-            }
-        }
+  function handleGoogleResponse(response) {
+    // فك تشفير JWT token
+    const payload = parseJwt(response.credential);
+    currentUser = {
+      name: payload.name,
+      email: payload.email,
+      avatar: payload.picture,
+    };
+    loadUserData();
+    showTasksPage();
+  }
 
-        // حساب الناتج النهائي
-        function calculate() {
-            try {
-                // التحقق من عدم وجود عملية حسابية فارغة أو منتهية برموز
-                let expression = display.innerText;
-                
-                if (!expression || isNaN(expression.slice(-1)) && expression.slice(-1) !== '%') {
-                    return; 
-                }
+  function parseJwt(token) {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+  }
 
-                // حساب النسبة المئوية برمجياً قبل التقييم
-                expression = expression.replace(/%/g, '/100');
+  // ── دخول تجريبي ─────────────────────────────────────────────
+  function demoLogin() {
+    currentUser = {
+      name: 'مستخدم تجريبي',
+      email: 'demo@example.com',
+      avatar: 'https://ui-avatars.com/api/?name=Demo&background=4285F4&color=fff&bold=true',
+    };
+    // مهام افتراضية للتجربة
+    if (!localStorage.getItem('tasks_demo@example.com')) {
+      tasks = [
+        { id: 1, text: 'مراجعة المشروع', done: false },
+        { id: 2, text: 'إرسال التقرير الأسبوعي', done: true },
+        { id: 3, text: 'اجتماع الفريق', done: false },
+      ];
+      saveTasks();
+    }
+    loadUserData();
+    showTasksPage();
+  }
 
-                // تنفيذ العملية الحسابية بأمان
-                let result = eval(expression);
+  // ── عرض صفحة المهام ─────────────────────────────────────────
+  function showTasksPage() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('tasksPage').style.display = 'block';
 
-                // التعامل مع معضلة القسمة على صفر
-                if (result === Infinity || result === -Infinity) {
-                    display.innerText = 'خطأ: قسمة على 0';
-                    shouldResetDisplay = true;
-                    return;
-                }
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userEmail').textContent = currentUser.email;
+    document.getElementById('userAvatar').src = currentUser.avatar;
 
-                // تقريب الأرقام العشرية الطويلة لعدم تشويه المظهر (مثلاً 0.1 + 0.2)
-                display.innerText = Number(result.toFixed(8)).toString();
-                shouldResetDisplay = true;
+    const now = new Date();
+    document.getElementById('dateLabel').textContent =
+      now.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-            } catch (error) {
-                display.innerText = 'خطأ';
-                shouldResetDisplay = true;
-            }
-        }
-    </script>
+    renderTasks();
+  }
+
+  // ── تسجيل الخروج ────────────────────────────────────────────
+  function logout() {
+    saveTasks();
+    currentUser = null;
+    tasks = [];
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('tasksPage').style.display = 'none';
+  }
+
+  // ── إدارة المهام ─────────────────────────────────────────────
+  function loadUserData() {
+    const saved = localStorage.getItem('tasks_' + currentUser.email);
+    tasks = saved ? JSON.parse(saved) : [];
+  }
+
+  function saveTasks() {
+    if (currentUser)
+      localStorage.setItem('tasks_' + currentUser.email, JSON.stringify(tasks));
+  }
+
+  function addTask() {
+    const input = document.getElementById('taskInput');
+    const text = input.value.trim();
+    if (!text) return;
+    tasks.unshift({ id: Date.now(), text, done: false });
+    saveTasks();
+    renderTasks();
+    input.value = '';
+  }
+
+  function toggleTask(id) {
+    const t = tasks.find(t => t.id === id);
+    if (t) { t.done = !t.done; saveTasks(); renderTasks(); }
+  }
+
+  function deleteTask(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    saveTasks();
+    renderTasks();
+  }
+
+  function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTasks();
+  }
+
+  function renderTasks() {
+    const list = document.getElementById('tasksList');
+    const filtered = tasks.filter(t =>
+      currentFilter === 'all' ? true :
+      currentFilter === 'done' ? t.done : !t.done
+    );
+
+    document.getElementById('totalCount').textContent = tasks.length;
+    document.getElementById('doneCount').textContent = tasks.filter(t => t.done).length;
+    document.getElementById('pendingCount').textContent = tasks.filter(t => !t.done).length;
+
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>لا توجد مهام هنا</p></div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(t => `
+      <div class="task-item ${t.done ? 'done' : ''}">
+        <div class="task-check ${t.done ? 'checked' : ''}" onclick="toggleTask(${t.id})"></div>
+        <span class="task-text">${t.text}</span>
+        <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
+      </div>
+    `).join('');
+  }
+</script>
+
 </body>
 </html>
