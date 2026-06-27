@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مرحباً بك في موقعنا</title>
+    <title>آلة حاسبة احترافية</title>
     <style>
         /* إعادة تعيين الأنماط الأساسية */
         * {
@@ -13,113 +13,209 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* خلفية الصفحة كاملة مع تأثير متدرج مريح للعين */
+        /* خلفية الصفحة */
         body {
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #f8fafc;
-            overflow: hidden;
-            padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
         }
 
-        /* بطاقة الترحيب بتأثير الزجاج الشفاف (Glassmorphism) */
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1s ease-in-out;
+        /* حاوية الآلة الحاسبة */
+        .calculator {
+            background-color: #1e2530;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            width: 340px;
         }
 
-        /* الشعار أو الأيقونة الترحيبية */
-        .logo-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            color: #38bdf8;
-            animation: bounce 2s infinite;
-        }
-
-        /* عنوان الصفحة الرئيسي */
-        .welcome-card h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            background: linear-gradient(to left, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* النص الوصفي */
-        .welcome-card p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        /* زر الانتقال التفاعلي */
-        .cta-btn {
-            display: inline-block;
-            padding: 12px 35px;
-            background: linear-gradient(90deg, #38bdf8, #4f46e5);
+        /* شاشة العرض */
+        .display {
+            background-color: #0f141c;
             color: #ffffff;
-            font-size: 1rem;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: left; /* لجعل الأرقام تبدأ من اليسار كالمعتاد */
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            min-height: 80px;
+            word-wrap: break-word;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            direction: ltr; /* اتجاه الكتابة الرياضية من اليسار لليمين */
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        /* شبكة الأزرار */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        /* الأزرار بشكل عام */
+        button {
+            padding: 18px;
+            font-size: 1.3rem;
             font-weight: 600;
-            text-decoration: none;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #ffffff;
+            background-color: #2d3748;
         }
 
-        /* تأثيرات حركة الزر عند تمرير الماوس */
-        .cta-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
-            letter-spacing: 0.5px;
+        /* تأثير عند تمرير الماوس وضغط الأزرار */
+        button:hover {
+            background-color: #4a5568;
+            transform: translateY(-2px);
         }
 
-        .cta-btn:active {
-            transform: translateY(-1px);
+        button:active {
+            transform: translateY(1px);
         }
 
-        /* حركات الأنيميشن لجعل الصفحة حيوية */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* أزرار العمليات الحسابية */
+        .operator {
+            background-color: #f59e0b;
+            color: #ffffff;
+        }
+        .operator:hover {
+            background-color: #d97706;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        /* زر المسح الشامل وزر الحذف */
+        .clear {
+            background-color: #ef4444;
+        }
+        .clear:hover {
+            background-color: #dc2626;
+        }
+
+        /* زر اليساوي */
+        .equal {
+            background-color: #10b981;
+            grid-column: span 2; /* يأخذ مساحتين */
+        }
+        .equal:hover {
+            background-color: #059669;
         }
     </style>
 </head>
 <body>
 
-    <div class="welcome-card">
-        <div class="logo-icon">✨</div>
-        
-        <h1>أهلاً بك في منصتنا</h1>
-        
-        <p>نحن نسعى لتقديم أفضل تجربة رقمية لك. اكتشف ميزاتنا الجديدة واستمتع برحلتك معنا اليوم.</p>
-        
-        <a href="#explore" class="cta-btn">ابدأ الرحلة الآن</a>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="clear" onclick="deleteLast()">DEL</button>
+            <button class="operator" onclick="appendValue('%')">%</button>
+            <button class="operator" onclick="appendValue('/')">÷</button>
+
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button class="operator" onclick="appendValue('*')">×</button>
+
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button class="operator" onclick="appendValue('-')">-</button>
+
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button class="operator" onclick="appendValue('+')">+</button>
+
+            <button onclick="appendValue('0')">0</button>
+            <button onclick="appendValue('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+        </div>
     </div>
 
+    <script>
+        const display = document.getElementById('display');
+        let shouldResetDisplay = false;
+
+        // إضافة الأرقام أو العمليات للشاشة
+        function appendValue(value) {
+            if (display.innerText === '0' && !isNaN(value) || shouldResetDisplay) {
+                resetDisplay();
+            }
+            
+            // منع تكرار النقطة العشرية في نفس الرقم
+            if (value === '.' && display.innerText.includes('.')) {
+                // فحص بسيط للتأكد من عدم وجود نقطة في الجزء الحالي من العملية
+                const parts = display.innerText.split(/[\+\-\*\/]/);
+                if (parts[parts.length - 1].includes('.')) return;
+            }
+
+            if (display.innerText === '0' && isNaN(value) && value !== '.') {
+                return; // منع بدء العملية برموز معينة
+            }
+
+            display.innerText += value;
+        }
+
+        // مسح الشاشة بالكامل
+        function clearDisplay() {
+            display.innerText = '0';
+            shouldResetDisplay = false;
+        }
+
+        // تفريغ الشاشة مؤقتاً عند بدء إدخال جديد بعد عملية حسابية
+        function resetDisplay() {
+            display.innerText = '';
+            shouldResetDisplay = false;
+        }
+
+        // حذف آخر عنصر (زر DEL)
+        function deleteLast() {
+            if (display.innerText.length > 1) {
+                display.innerText = display.innerText.slice(0, -1);
+            } else {
+                display.innerText = '0';
+            }
+        }
+
+        // حساب الناتج النهائي
+        function calculate() {
+            try {
+                // التحقق من عدم وجود عملية حسابية فارغة أو منتهية برموز
+                let expression = display.innerText;
+                
+                if (!expression || isNaN(expression.slice(-1)) && expression.slice(-1) !== '%') {
+                    return; 
+                }
+
+                // حساب النسبة المئوية برمجياً قبل التقييم
+                expression = expression.replace(/%/g, '/100');
+
+                // تنفيذ العملية الحسابية بأمان
+                let result = eval(expression);
+
+                // التعامل مع معضلة القسمة على صفر
+                if (result === Infinity || result === -Infinity) {
+                    display.innerText = 'خطأ: قسمة على 0';
+                    shouldResetDisplay = true;
+                    return;
+                }
+
+                // تقريب الأرقام العشرية الطويلة لعدم تشويه المظهر (مثلاً 0.1 + 0.2)
+                display.innerText = Number(result.toFixed(8)).toString();
+                shouldResetDisplay = true;
+
+            } catch (error) {
+                display.innerText = 'خطأ';
+                shouldResetDisplay = true;
+            }
+        }
+    </script>
 </body>
 </html>
