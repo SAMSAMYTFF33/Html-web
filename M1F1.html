@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>الفصل الأول</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00a859;
+      --primary-color: #4a69bd;
+      --secondary-color: #079992;
+      --accent-color: #f6b93b;
+      --bg-color: #f1f2f6;
+      --card-bg: rgba(255,255,255,0.65);
+      --text-dark: #2f3542;
+      --text-light: #747d8c;
+      --glass-border: rgba(255,255,255,0.4);
+      --glass-shadow: 0 8px 32px 0 rgba(31,38,135,0.1);
+      --neon-glow: 0 0 15px rgba(74,105,189,0.2);
+      /* header vars */
+      --bg: #f1f2f6;
+      --surface: rgba(255,255,255,0.8);
+      --border: rgba(0,0,0,0.1);
+      --accent: #00a859;
+      --accent2: #4a69bd;
+      --text: #2f3542;
+      --muted: #747d8c;
+      --danger: #cf222e;
+      --warn: #9a6700;
+    }
+    body.dark-mode {
+      --primary: #00ff88;
+      --primary-color: #82ccdd;
+      --secondary-color: #b8e994;
+      --accent-color: #fad390;
+      --bg-color: #0a0e17;
+      --card-bg: rgba(20,25,35,0.55);
+      --text-dark: #f1f2f6;
+      --text-light: #a4b0be;
+      --glass-border: rgba(255,255,255,0.05);
+      --glass-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
+      --neon-glow: 0 0 15px rgba(184,233,148,0.3), 0 0 30px rgba(130,204,221,0.1);
+      --bg: #0a0e17;
+      --surface: rgba(20,25,35,0.8);
+      --border: rgba(255,255,255,0.08);
+      --accent: #00ff88;
+      --accent2: #82ccdd;
+      --text: #f1f2f6;
+      --muted: #a4b0be;
+      --danger: #ff4757;
+      --warn: #fad390;
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      font-family:'Tajawal',sans-serif;
+      background:var(--bg-color);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(130,204,221,0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(184,233,148,0.05) 0%, transparent 40%);
+      background-attachment:fixed;
+      color:var(--text-dark);
+      line-height:1.8;
+      padding-bottom:60px;
+      transition:background 0.4s ease, color 0.4s ease;
+      overflow-x:hidden;
+      -webkit-user-select:none; user-select:none;
+    }
+
+    ::-webkit-scrollbar { width:8px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--secondary-color); border-radius:10px; }
+
+    /* ══ FIXED HEADER ══ */
+    .top-bar {
+      position:fixed; top:0; left:0; right:0; height:48px;
+      background:var(--surface);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 12px; z-index:200;
+    }
+    .top-bar-left, .top-bar-right { display:flex; align-items:center; gap:6px; }
+    .page-label { font-size:14px; font-weight:800; color:var(--text-dark); }
+
+    .tb-btn, .back-btn {
+      width:32px; height:32px; background:none;
+      border:1px solid var(--border); border-radius:6px;
+      color:var(--muted); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; transition:color 0.15s, border-color 0.15s, transform 0.2s;
+      text-decoration:none; font-family:'Tajawal',sans-serif;
+    }
+    .tb-btn:hover, .back-btn:hover { color:var(--text-dark); border-color:var(--muted); }
+    .tb-btn.rotate-active { transform:rotate(90deg); }
+    .tb-btn.active { color:var(--accent2); border-color:var(--accent2); }
+
+    .sync-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--border); transition:background 0.3s;
+    }
+    .sync-dot.syncing { background:var(--warn); animation:pulse 1s infinite; }
+    .sync-dot.synced  { background:var(--accent); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ══ SIDE MENU ══ */
+    .backdrop { display:none; position:fixed; inset:0; z-index:98; }
+    .backdrop.show { display:block; }
+
+    .side-menu {
+      position:fixed; top:48px; left:-280px; width:280px;
+      height:calc(100vh - 48px);
+      background:var(--card-bg);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border-right:1px solid var(--glass-border);
+      padding:12px 0; z-index:99; transition:left 0.25s ease;
+      display:flex; flex-direction:column; gap:0;
+    }
+    .side-menu.open { left:0; }
+
+    .user-badge {
+      padding:12px 16px; font-size:12px; color:var(--muted);
+      border-bottom:1px solid var(--glass-border); margin-bottom:6px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .user-badge i { color:var(--accent2); font-size:14px; }
+
+    .menu-item {
+      display:flex; align-items:center; gap:10px; padding:11px 16px;
+      font-size:14px; font-weight:600; color:var(--muted);
+      background:none; border:none; cursor:pointer; width:100%;
+      text-align:right; transition:color 0.15s, background 0.15s;
+      font-family:'Tajawal',sans-serif;
+    }
+    .menu-item:hover { color:var(--text-dark); background:rgba(255,255,255,0.06); }
+    .menu-item i { width:16px; text-align:center; font-size:13px; }
+    .menu-item.danger { color:var(--danger); }
+    .menu-item.danger:hover { background:rgba(218,54,51,0.08); }
+    .menu-sep { height:1px; background:var(--glass-border); margin:6px 0; }
+
+    /* ══ PAGE CONTENT ══ */
+    .page-body { padding-top:48px; }
+
+    header.content-header {
+      position:relative;
+      padding:50px 20px 40px;
+      text-align:center;
+      border-bottom:1px solid var(--glass-border);
+      overflow:hidden;
+    }
+    header.content-header::before {
+      content:'';
+      position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+      background:radial-gradient(circle, rgba(130,204,221,0.08) 0%, transparent 60%);
+      z-index:-1; animation:pulseBg 8s infinite alternate;
+    }
+    @keyframes pulseBg { 0%{transform:scale(1)} 100%{transform:scale(1.1)} }
+
+    h1 {
+      font-weight:800; font-size:2.2rem;
+      background:linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      text-shadow:none; margin-bottom:10px;
+    }
+
+    .container {
+      max-width:1100px; margin:auto; padding:30px 20px;
+    }
+
+    .section-block {
+      margin-bottom:50px;
+      animation:fadeInUp 0.5s ease forwards;
+    }
+    @keyframes fadeInUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    h2 {
+      font-size:1.6rem; font-weight:700;
+      color:var(--primary-color); margin-bottom:28px;
+      display:inline-block; position:relative;
+    }
+    h2::after {
+      content:""; position:absolute; right:0; bottom:-6px;
+      width:50%; height:3px;
+      background:var(--secondary-color);
+      box-shadow:0 0 10px var(--secondary-color);
+      border-radius:5px; transition:width 0.3s ease;
+    }
+    .section-block:hover h2::after { width:100%; }
+
+    .section-intro {
+      font-size:1.05rem; color:var(--text-dark); margin-bottom:24px;
+    }
+
+    .cards-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+      gap:20px;
+    }
+
+    .card {
+      background:var(--card-bg);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--glass-border);
+      box-shadow:var(--glass-shadow);
+      border-radius:18px; padding:26px;
+      transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+      position:relative; overflow:hidden;
+    }
+    .card::before {
+      content:''; position:absolute; top:0; right:0;
+      width:4px; height:100%;
+      background:linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+      opacity:0; transition:opacity 0.3s ease;
+    }
+    .card:hover { transform:translateY(-6px) scale(1.01); box-shadow:var(--glass-shadow), var(--neon-glow); }
+    .card:hover::before { opacity:1; }
+
+    h3 {
+      font-size:1.3rem; color:var(--secondary-color);
+      margin-bottom:12px;
+      display:flex; align-items:center; gap:10px;
+    }
+    h3::before { content:"✦"; color:var(--primary-color); font-size:1rem; text-shadow:0 0 8px var(--primary-color); }
+
+    p {
+      font-size:1rem; font-weight:700;
+      color:var(--text-dark); line-height:1.9; text-align:justify;
+    }
+
+    /* ══ EDIT MODE ══ */
+    body.edit-mode-active .card { cursor:pointer; }
+    body.edit-mode-active [contenteditable="true"] {
+      outline:2px dashed var(--secondary-color);
+      outline-offset:4px; background:rgba(7,153,146,0.08);
+      border-radius:6px; animation:pulseBorder 1.5s infinite;
+      padding:2px 5px; cursor:text;
+    }
+    @keyframes pulseBorder {
+      0%   { outline-color:var(--secondary-color); }
+      50%  { outline-color:transparent; }
+      100% { outline-color:var(--secondary-color); }
+    }
+
+    /* ══ POPUPS ══ */
+    .edit-popup, .confirm-popup {
+      position:fixed; display:flex; gap:8px;
+      border-radius:50px; padding:8px 14px;
+      z-index:2000; transform:translate(-50%,-100%);
+      pointer-events:none; opacity:0;
+      transition:0.2s cubic-bezier(0.175,0.885,0.32,1.275);
+      background:var(--card-bg);
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border:1px solid var(--glass-border);
+      box-shadow:var(--glass-shadow);
+    }
+    .edit-popup.show, .confirm-popup.show {
+      pointer-events:all; opacity:1; transform:translate(-50%,-120%);
+    }
+    .edit-popup button, .confirm-popup button {
+      width:40px; height:40px; border-radius:50%; border:none;
+      font-size:16px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:0.2s; box-shadow:0 4px 10px rgba(0,0,0,0.3);
+    }
+    .edit-popup button:hover, .confirm-popup button:hover { transform:scale(1.1); }
+    .delete-btn       { background:#ff4757; color:#fff; }
+    .edit-btn-popup   { background:var(--secondary-color); color:#fff; }
+    .cancel-btn-popup { background:#747d8c; color:#fff; }
+    .confirm-edit-btn { background:#2ed573; color:#fff; }
+    .cancel-edit-btn  { background:#ff4757; color:#fff; }
+
+    /* ══ MODALS ══ */
+    .modal-overlay {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.75);
+      backdrop-filter:blur(5px);
+      display:flex; align-items:center; justify-content:center;
+      z-index:3000; opacity:0; pointer-events:none; transition:0.3s;
+    }
+    .modal-overlay.show { opacity:1; pointer-events:all; }
+    .modal-content {
+      width:92%; max-width:480px;
+      border-radius:20px; padding:26px;
+      background:var(--card-bg);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--glass-border);
+      box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
+      max-height:88vh; overflow-y:auto;
+    }
+    .modal-content h3 { font-size:1.4rem; margin-bottom:18px; justify-content:center; }
+    .modal-content h3.info   { color:var(--primary-color); }
+    .modal-content h3.danger { color:var(--danger); }
+    .modal-content p.sub { font-size:13px; color:var(--muted); margin-bottom:16px; text-align:center; }
+
+    .input-group { margin-bottom:16px; }
+    .input-group label { display:block; margin-bottom:6px; color:var(--text-dark); font-weight:700; font-size:13px; }
+    .input-group input, .input-group textarea {
+      width:100%; padding:12px 14px;
+      border-radius:12px; border:1px solid var(--glass-border);
+      background:rgba(0,0,0,0.08); color:var(--text-dark);
+      font-family:'Tajawal',sans-serif; font-size:14px;
+      resize:vertical; transition:0.3s;
+    }
+    .input-group input:focus, .input-group textarea:focus {
+      outline:none; border-color:var(--secondary-color);
+      box-shadow:0 0 12px rgba(7,153,146,0.2);
+    }
+    .modal-note { font-size:12px; color:var(--muted); text-align:center; margin-top:12px; }
+
+    .modal-buttons { display:flex; gap:12px; margin-top:20px; }
+    .modal-buttons button {
+      flex:1; padding:13px; border-radius:12px; border:none;
+      font-size:14px; font-weight:700; font-family:'Tajawal',sans-serif;
+      cursor:pointer; transition:0.3s;
+    }
+    .modal-buttons button:hover { transform:translateY(-2px); }
+    .btn-add    { background:var(--secondary-color); color:#fff; }
+    .btn-cancel { background:transparent; color:var(--muted); border:1px solid var(--glass-border) !important; }
+    .btn-del    { background:#ff4757; color:#fff; }
+
+    /* ══ TOAST ══ */
+    .toast {
+      position:fixed; bottom:20px; left:50%;
+      transform:translateX(-50%) translateY(10px);
+      background:var(--card-bg);
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      border:1px solid var(--glass-border);
+      border-right:3px solid var(--accent);
+      color:var(--text-dark);
+      padding:10px 20px; border-radius:10px;
+      font-size:13px; font-weight:600;
+      z-index:4000; opacity:0; transition:opacity 0.2s, transform 0.2s;
+      pointer-events:none; white-space:nowrap;
+      box-shadow:var(--glass-shadow);
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast.err  { border-right-color:var(--danger) !important; }
+
+    @media (max-width:768px) {
+      h1 { font-size:1.7rem; }
+      h2 { font-size:1.3rem; }
+      .cards-grid { grid-template-columns:1fr; }
+      .side-menu { width:260px; left:-260px; }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+<!-- ══ TOP BAR ══ -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <button class="tb-btn" id="menuBtn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    <span class="page-label" id="pageLabel">الفصل الأول</span>
+  </div>
+  <div class="top-bar-right">
+    <div class="sync-dot" id="syncDot"></div>
+    <button class="tb-btn" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    <button class="tb-btn" id="editBtn" onclick="toggleEditMode()"><i class="fas fa-edit"></i></button>
+    <a href="M1.html" class="back-btn" title="رجوع للفصول"><i class="fas fa-arrow-right"></i></a>
+  </div>
+</div>
+
+<!-- ══ SIDE MENU ══ -->
+<div class="backdrop" id="backdrop" onclick="closeMenu()"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="user-badge"><i class="fas fa-file-alt"></i><span id="userLabel">...</span></div>
+  <button class="menu-item" onclick="toggleTheme()">
+    <i id="themeIcon" class="fas fa-moon"></i><span id="themeLabel">الوضع الفاتح</span>
+  </button>
+  <button class="menu-item" onclick="toggleEditMode(); closeMenu();">
+    <i class="fas fa-edit"></i><span id="editModeText">تفعيل التعديل</span>
+  </button>
+  <div class="menu-sep"></div>
+  <button class="menu-item" onclick="openAddModal(); closeMenu();">
+    <i class="fas fa-plus"></i> إضافة نص / بطاقة
+  </button>
+  <div class="menu-sep"></div>
+  <button class="menu-item danger" onclick="resetPage(); closeMenu();">
+    <i class="fas fa-undo"></i> إعادة ضبط الصفحة
+  </button>
+</div>
+
+<!-- ══ PAGE CONTENT ══ -->
+<div class="page-body">
+  <header class="content-header">
+    <h1 id="pageH1">الفصل الأول</h1>
+  </header>
+  <div class="container" id="mainContainer">
+    <!-- المحتوى يُحمَّل من Firebase -->
+  </div>
+</div>
+
+<!-- ══ ADD MODAL ══ -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal-content">
+    <h3 class="info"><i class="fas fa-plus-circle"></i> إضافة محتوى</h3>
+    <p class="sub">الحقول الفارغة لن تُضاف</p>
+    <div class="input-group"><label>عنوان الصفحة h1 — اختياري</label><input type="text" id="inputH1" placeholder="..."></div>
+    <div class="input-group"><label>النص التمهيدي — اختياري</label><textarea id="inputIntro" rows="3" placeholder="..."></textarea></div>
+    <div class="input-group"><label>العنوان الرئيسي h2 — اختياري</label><input type="text" id="inputH2" placeholder="..."></div>
+    <div class="input-group"><label>عنوان البطاقة h3 — اختياري</label><input type="text" id="inputCardTitle" placeholder="العنوان الفرعي..."></div>
+    <div class="input-group"><label>نص البطاقة — اختياري</label><textarea id="inputCardText" rows="3" placeholder="النص ..."></textarea></div>
+    <div class="modal-buttons">
+      <button class="btn-add" onclick="addNewContent()"><i class="fas fa-check"></i> إضافة</button>
+      <button class="btn-cancel" onclick="closeAddModal()"><i class="fas fa-times"></i> إلغاء</button>
+    </div>
+    <p class="modal-note">يمكنك تعبئة حقل واحد أو أكثر</p>
+  </div>
+</div>
+
+<!-- ══ DELETE MODAL ══ -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-content" style="max-width:360px; text-align:center;">
+    <h3 class="danger"><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
+    <p class="sub" style="margin-bottom:0;">هل أنت متأكد من حذف هذا العنصر؟</p>
+    <div class="modal-buttons">
+      <button class="btn-del" onclick="confirmDelete()"><i class="fas fa-trash"></i> حذف</button>
+      <button class="btn-cancel" onclick="document.getElementById('deleteModal').classList.remove('show')"><i class="fas fa-times"></i> إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT POPUPS ══ -->
+<div class="edit-popup" id="editPopup">
+  <button class="delete-btn"       onclick="requestDelete()"><i class="fas fa-trash"></i></button>
+  <button class="edit-btn-popup"   onclick="startEditText()"><i class="fas fa-pen"></i></button>
+  <button class="cancel-btn-popup" onclick="document.getElementById('editPopup').classList.remove('show')"><i class="fas fa-times"></i></button>
+</div>
+<div class="confirm-popup" id="confirmPopup">
+  <button class="confirm-edit-btn" onclick="confirmTextEdit()"><i class="fas fa-check"></i></button>
+  <button class="cancel-edit-btn"  onclick="cancelTextEdit()"><i class="fas fa-times"></i></button>
+</div>
+
+<div class="toast" id="toastEl"><span id="toastText"></span></div>
+
+<!-- ══ FIREBASE + LOGIC ══ -->
+<script type="module">
+import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyAhRvNdTyX_S29wfjBdxQ1QR98XmNB_6WQ",
+  authDomain:"wep-app-1771a.firebaseapp.com",
+  projectId:"wep-app-1771a",
+  storageBucket:"wep-app-1771a.firebasestorage.app",
+  messagingSenderId:"568445406110",
+  appId:"1:568445406110:web:b2225d5747779e70a2248f"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
+
+// ══ معرّف هذه الصفحة — غيّره لكل فصل ══
+const PAGE_ID     = 'M1F1';
+const BACK_PAGE   = 'M1.html';
+
+const $ = id => document.getElementById(id);
+const currentUser = sessionStorage.getItem('s2_user');
+if (!currentUser) { location.replace('S2.html'); }
+$('userLabel').textContent = currentUser || '';
+
+// ══ Toast ══
+let toastTimer = null;
+window.showToast = function(msg, err=false) {
+  const t = $('toastEl');
+  $('toastText').textContent = msg;
+  t.className = 'toast show' + (err ? ' err' : '');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+};
+
+// ══ Sync ══
+function setSyncDot(s) {
+  const d = $('syncDot');
+  d.className = 'sync-dot' + (s==='syncing' ? ' syncing' : s==='ok' ? ' synced' : '');
+}
+function userKey() { return currentUser.replace(/[.@]/g,'_'); }
+
+// ══ حفظ المحتوى ══
+let lastSaved = null;
+async function saveIfChanged() {
+  const html = $('mainContainer').innerHTML;
+  const h1   = $('pageH1').innerText;
+  const data = JSON.stringify({ html, h1 });
+  if (data === lastSaved) return;
+  lastSaved = data;
+  localStorage.setItem(`s2-${PAGE_ID}-${currentUser}`, data);
+  setSyncDot('syncing');
+  try {
+    await setDoc(doc(db,'userData', userKey()), {
+      [`content_${PAGE_ID}`]: data,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+    setSyncDot('ok');
+  } catch(e) { setSyncDot(''); }
+}
+
+// ══ تحميل من Cloud ══
+async function loadFromCloud() {
+  try {
+    const snap = await getDoc(doc(db,'userData', userKey()));
+    if (snap.exists()) {
+      const d = snap.data();
+      if (d[`content_${PAGE_ID}`]) return JSON.parse(d[`content_${PAGE_ID}`]);
+    }
+  } catch(e) {}
+  return null;
+}
+
+function applyContent(data) {
+  if (data.h1)   $('pageH1').innerText       = data.h1;
+  if (data.html) $('mainContainer').innerHTML = data.html;
+}
+
+// ══ Theme ══
+window.toggleTheme = function() {
+  const dark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem('s2-theme', dark ? 'dark' : 'light');
+  updateThemeUI(dark);
+};
+function updateThemeUI(dark) {
+  $('themeBtn').innerHTML     = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  $('themeIcon').className    = dark ? 'fas fa-sun' : 'fas fa-moon';
+  $('themeLabel').textContent = dark ? 'الوضع الفاتح' : 'الوضع المظلم';
+}
+function loadTheme() {
+  const dark = localStorage.getItem('s2-theme') !== 'light';
+  if (dark) document.body.classList.add('dark-mode');
+  else      document.body.classList.remove('dark-mode');
+  updateThemeUI(dark);
+}
+
+// ══ Sidebar ══
+window.toggleMenu = function() {
+  const open = $('sideMenu').classList.toggle('open');
+  $('menuBtn').classList.toggle('rotate-active', open);
+  $('backdrop').classList.toggle('show', open);
+};
+window.closeMenu = function() {
+  $('sideMenu').classList.remove('open');
+  $('menuBtn').classList.remove('rotate-active');
+  $('backdrop').classList.remove('show');
+};
+
+// ══ Edit Mode ══
+let editMode = false;
+window.toggleEditMode = function() {
+  editMode = !editMode;
+  document.body.classList.toggle('edit-mode-active', editMode);
+  $('editBtn').classList.toggle('active', editMode);
+  $('editModeText').textContent = editMode ? 'إنهاء التعديل' : 'تفعيل التعديل';
+  if (!editMode) {
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+    $('editPopup').classList.remove('show');
+    $('confirmPopup').classList.remove('show');
+  }
+  showToast(editMode ? '✏️ وضع التعديل نشط' : '✅ انتهى وضع التعديل');
+};
+
+// ══ Add Content ══
+window.openAddModal  = function() {
+  $('addModal').classList.add('show');
+  ['inputH1','inputH2','inputCardTitle'].forEach(id => $(id).value='');
+  ['inputIntro','inputCardText'].forEach(id => $(id).value='');
+};
+window.closeAddModal = function() { $('addModal').classList.remove('show'); };
+
+window.addNewContent = function() {
+  const h1Text    = $('inputH1').value.trim();
+  const introText = $('inputIntro').value.trim();
+  const h2Text    = $('inputH2').value.trim();
+  const cardTitle = $('inputCardTitle').value.trim();
+  const cardText  = $('inputCardText').value.trim();
+
+  if (!h1Text && !introText && !h2Text && !cardTitle && !cardText) {
+    showToast('أدخل محتوى أولاً', true); return;
+  }
+
+  if (h1Text) $('pageH1').innerText = h1Text;
+
+  if (h2Text || introText || cardTitle || cardText) {
+    const section = document.createElement('section');
+    section.className = 'section-block';
+
+    if (h2Text) {
+      const h2 = document.createElement('h2');
+      h2.textContent = h2Text;
+      section.appendChild(h2);
+    }
+    if (introText) {
+      const p = document.createElement('p');
+      p.className = 'section-intro';
+      p.textContent = introText;
+      section.appendChild(p);
+    }
+    if (cardTitle || cardText) {
+      const grid = document.createElement('div');
+      grid.className = 'cards-grid';
+      const card = document.createElement('div');
+      card.className = 'card';
+      if (cardTitle) {
+        const h3 = document.createElement('h3');
+        h3.textContent = cardTitle;
+        card.appendChild(h3);
+      }
+      if (cardText) {
+        const p = document.createElement('p');
+        p.textContent = cardText;
+        card.appendChild(p);
+      }
+      grid.appendChild(card);
+      section.appendChild(grid);
+    }
+    $('mainContainer').appendChild(section);
+  }
+
+  closeAddModal();
+  saveIfChanged();
+  showToast('✅ تمت الإضافة');
+};
+
+// ══ Long Press ══
+let pressTimer=null, currentEl=null, originalText='', elToDelete=null;
+
+function onTouchStart(e) {
+  if (!editMode) return;
+  if (e.target.closest('.edit-popup,.confirm-popup,.top-bar,.side-menu,.modal-overlay')) return;
+  if (e.target.hasAttribute('contenteditable')) return;
+  const el = e.target.closest('h1,h2,h3,p,.section-intro');
+  if (!el) return;
+  currentEl    = el;
+  originalText = el.innerText;
+  const touch  = e.touches ? e.touches[0] : e;
+  const popup  = $('editPopup');
+  const rect   = el.getBoundingClientRect();
+  let popY = rect.top - 10; if (popY < 60) popY = rect.bottom + 60;
+  popup.style.left = touch.clientX + 'px';
+  popup.style.top  = popY + 'px';
+  popup.classList.add('show');
+  $('confirmPopup').classList.remove('show');
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+function onTouchEnd()  { if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; } }
+function onTouchMove() { if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; } }
+
+document.addEventListener('touchstart', onTouchStart, {passive:true});
+document.addEventListener('touchend',   onTouchEnd);
+document.addEventListener('touchmove',  onTouchMove);
+document.addEventListener('mousedown',  onTouchStart);
+document.addEventListener('mouseup',    onTouchEnd);
+document.addEventListener('mouseleave', onTouchEnd);
+
+// منع الانتقال في وضع التعديل
+document.addEventListener('click', e => {
+  if (editMode) { const a = e.target.closest('a'); if (a && !a.classList.contains('back-btn')) e.preventDefault(); }
+});
+
+// ══ Delete ══
+window.requestDelete = function() {
+  if (!currentEl) return;
+  elToDelete = currentEl;
+  $('editPopup').classList.remove('show');
+  $('deleteModal').classList.add('show');
+};
+window.confirmDelete = function() {
+  if (!elToDelete) return;
+  const card    = elToDelete.closest('.card');
+  const section = elToDelete.closest('.section-block');
+
+  if (card) {
+    const grid = card.closest('.cards-grid');
+    card.remove();
+    if (grid && !grid.children.length) grid.remove();
+  } else {
+    elToDelete.remove();
+  }
+  if (section && !section.querySelectorAll('h2,h3,p,.section-intro').length) section.remove();
+
+  elToDelete = null; currentEl = null;
+  $('deleteModal').classList.remove('show');
+  saveIfChanged();
+  showToast('🗑️ تم الحذف');
+};
+
+// ══ Edit Text ══
+window.startEditText = function() {
+  if (!currentEl) return;
+  currentEl.setAttribute('contenteditable','true');
+  currentEl.focus();
+  const r = document.createRange(); r.selectNodeContents(currentEl); r.collapse(false);
+  window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+  $('editPopup').classList.remove('show');
+  const rect = currentEl.getBoundingClientRect();
+  const cp   = $('confirmPopup');
+  let popY = rect.top - 10; if (popY < 60) popY = rect.bottom + 60;
+  cp.style.left = (rect.left + rect.width/2) + 'px';
+  cp.style.top  = popY + 'px';
+  cp.classList.add('show');
+};
+window.confirmTextEdit = function() {
+  if (!currentEl) return;
+  currentEl.removeAttribute('contenteditable');
+  $('confirmPopup').classList.remove('show');
+  saveIfChanged();
+  showToast('✅ تم الحفظ');
+  currentEl = null;
+};
+window.cancelTextEdit = function() {
+  if (!currentEl) return;
+  currentEl.innerText = originalText;
+  currentEl.removeAttribute('contenteditable');
+  $('confirmPopup').classList.remove('show');
+  currentEl = null;
+};
+
+// ══ Reset ══
+window.resetPage = function() {
+  if (!confirm('سيتم حذف كل المحتوى المضاف. متأكد؟')) return;
+  localStorage.removeItem(`s2-${PAGE_ID}-${currentUser}`);
+  lastSaved = null;
+  location.reload();
+};
+
+// ══ تشغيل ══
+window.addEventListener('load', async () => {
+  loadTheme();
+  const cloud = await loadFromCloud();
+  if (cloud) {
+    applyContent(cloud);
+    lastSaved = JSON.stringify(cloud);
+    setSyncDot('ok');
+  } else {
+    const local = localStorage.getItem(`s2-${PAGE_ID}-${currentUser}`);
+    if (local) { try { applyContent(JSON.parse(local)); lastSaved = local; } catch(e){} }
+  }
+});
+</script>
+</body>
+</html>
