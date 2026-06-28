@@ -2,690 +2,119 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>S2 | Dev Edition</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار حفظ بيانات المستخدم سحابياً</title>
     <style>
-        :root {
-            --bg:      #0d1117;
-            --surface: #161b22;
-            --border:  #30363d;
-            --accent:  #238636;
-            --accent2: #1f6feb;
-            --text:    #e6edf3;
-            --muted:   #8b949e;
-            --danger:  #da3633;
-            --warn:    #d29922;
+        body { 
+            font-family: sans-serif; 
+            background: #1e1e1e; 
+            color: #ffffff; 
+            text-align: center; 
+            padding: 40px 20px; 
         }
-        body.light-mode {
-            --bg:      #ffffff;
-            --surface: #f6f8fa;
-            --border:  #d0d7de;
-            --accent:  #1a7f37;
-            --accent2: #0969da;
-            --text:    #1f2328;
-            --muted:   #656d76;
-            --danger:  #cf222e;
-            --warn:    #9a6700;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            font-size: 15px;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        /* ── Header ── */
-        .header {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 48px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 12px;
-            z-index: 100;
-        }
-        .header-left { display: flex; align-items: center; gap: 8px; }
-        .header-right { display: flex; align-items: center; gap: 6px; }
-
-        .app-title {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: 1px;
-        }
-        .app-title span { color: var(--accent); }
-
-        .menu-btn {
-            width: 32px; height: 32px;
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--muted);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-            transition: color 0.15s, border-color 0.15s, transform 0.2s;
-        }
-        .menu-btn:hover { color: var(--text); border-color: var(--muted); }
-        .menu-btn.rotate-active { transform: rotate(90deg); }
-
-        .icon-btn {
-            width: 32px; height: 32px;
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--muted);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px;
-            transition: color 0.15s, border-color 0.15s, background 0.15s;
-        }
-        .icon-btn:hover { color: var(--text); border-color: var(--muted); }
-        .icon-btn.active { color: var(--accent2); border-color: var(--accent2); }
-
-        /* ── Sidebar ── */
-        .backdrop {
-            display: none;
-            position: fixed; inset: 0;
-            z-index: 98;
-        }
-        .backdrop.show { display: block; }
-
-        .side-menu {
-            position: fixed;
-            top: 48px; left: -260px;
-            width: 260px;
-            height: calc(100vh - 48px);
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 8px 0;
-            z-index: 99;
-            transition: left 0.25s ease;
-        }
-        .side-menu.open { left: 0; }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--muted);
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            text-align: right;
-            transition: color 0.15s, background 0.15s;
-            font-family: 'Tajawal', sans-serif;
-        }
-        .menu-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-        .menu-item i { width: 16px; text-align: center; font-size: 13px; }
-        .menu-sep { height: 1px; background: var(--border); margin: 6px 0; }
-
-        /* ── Main ── */
-        .main { padding-top: 48px; }
-
-        .status-bar {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            font-size: 11px;
-            color: var(--muted);
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
-        }
-        .dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: inline-block;
-        }
-
-        /* ── List ── */
-        .list { display: flex; flex-direction: column; }
-
-        .list-item {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            text-decoration: none;
-            color: var(--text);
-            background: var(--bg);
-            transition: background 0.1s;
-            position: relative;
-            cursor: pointer;
-            min-height: 52px;
-        }
-        .list-item:active { background: var(--surface); }
-
-        .item-icon {
-            width: 48px; min-width: 48px;
-            height: 52px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            color: var(--accent2);
-            border-left: 1px solid var(--border);
-        }
-
-        .item-body {
-            flex: 1;
-            padding: 14px 14px 14px 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .item-text {
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        .item-arrow { color: var(--border); font-size: 12px; }
-
-        /* edit mode */
-        .edit-mode-active .list-item::before {
-            content: '';
-            position: absolute;
-            right: 0; top: 0; bottom: 0;
-            width: 3px;
-            background: var(--accent2);
-        }
-        .edit-mode-active [contenteditable="true"] {
-            outline: 1px dashed var(--accent2);
-            outline-offset: 2px;
-            cursor: text;
-            border-radius: 2px;
-        }
-
-        /* sortable */
-        .sortable-ghost { opacity: 0.3; background: var(--surface) !important; }
-        .sortable-drag  { opacity: 1 !important; background: var(--surface) !important; border-right: 2px solid var(--accent2) !important; }
-
-        /* ── Popups ── */
-        .edit-popup, .confirm-popup {
-            position: fixed;
-            display: flex;
-            gap: 6px;
-            border-radius: 8px;
-            padding: 6px 10px;
-            z-index: 2000;
-            transform: translate(-50%, -100%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-        }
-        .edit-popup.show, .confirm-popup.show {
-            pointer-events: all;
-            opacity: 1;
-            transform: translate(-50%, -115%);
-        }
-        .edit-popup button, .confirm-popup button {
-            width: 36px; height: 36px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            font-size: 13px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.15s;
-            background: var(--bg);
-        }
-        .edit-popup button:hover, .confirm-popup button:hover { border-color: var(--muted); }
-        .delete-btn { color: var(--danger) !important; }
-        .delete-btn:hover { background: rgba(218,54,51,0.12) !important; }
-        .edit-btn-popup { color: var(--accent2) !important; }
-        .cancel-btn-popup { color: var(--muted) !important; }
-        .confirm-edit-btn { color: var(--accent) !important; }
-        .cancel-edit-btn { color: var(--danger) !important; }
-
-        /* ── Modal ── */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 3000;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.2s;
-        }
-        .modal-overlay.show { opacity: 1; pointer-events: all; }
-        .modal-content {
-            width: 88%; max-width: 360px;
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #2d2d2d;
+            padding: 30px;
             border-radius: 10px;
-            padding: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            box-shadow: 0 16px 32px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        .modal-content h3 {
+        h2 { margin-bottom: 25px; color: #ff9900; }
+        input { 
+            display: block; 
+            margin: 15px auto; 
+            padding: 12px; 
+            width: 100%; 
+            box-sizing: border-box;
+            border-radius: 6px; 
+            border: 1px solid #444; 
+            background: #3a3a3a;
+            color: #fff;
+            font-size: 16px;
+        }
+        button { 
+            width: 100%;
+            padding: 12px; 
+            background: #ff9900; 
+            border: none; 
+            color: white; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: bold; 
+            margin-top: 10px;
+        }
+        button:hover { background: #e08800; }
+        #status { 
+            margin-top: 20px; 
             font-size: 15px;
-            color: var(--danger);
-            margin-bottom: 10px;
-            display: flex; align-items: center; gap: 8px;
+            font-weight: bold;
+            line-height: 1.6;
         }
-        .modal-content p { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-        .modal-buttons { display: flex; gap: 8px; }
-        .modal-buttons button {
-            flex: 1; padding: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            font-size: 13px; font-weight: 700;
-            font-family: 'Tajawal', sans-serif;
-            cursor: pointer; transition: 0.15s;
-            background: var(--bg);
-            color: var(--text);
-        }
-        .modal-buttons button:hover { border-color: var(--muted); }
-        .btn-danger { color: var(--danger) !important; border-color: var(--danger) !important; }
-        .btn-danger:hover { background: rgba(218,54,51,0.1) !important; }
-
-        /* ── Toast ── */
-        .toast {
-            position: fixed;
-            bottom: 20px; left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-right: 3px solid var(--accent);
-            color: var(--text);
-            padding: 9px 16px;
-            border-radius: 6px;
-            font-size: 13px; font-weight: 600;
-            z-index: 4000;
-            opacity: 0;
-            transition: opacity 0.2s, transform 0.2s;
-            pointer-events: none;
-            white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .toast.warn { border-right-color: var(--warn) !important; }
-        .toast.err  { border-right-color: var(--danger) !important; }
     </style>
 </head>
+<body>
 
-<body oncontextmenu="return false;">
+    <div class="container">
+        <h2>واجهة تجربة الحفظ السحابي</h2>
+        
+        <input type="email" id="email" value="mohammed@gmail.com" placeholder="البريد الإلكتروني">
+        <input type="text" id="password" value="mohammedyyyyyyy" placeholder="كلمة المرور">
+        
+        <button id="saveBtn">إرسال البيانات إلى Firebase</button>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="header-left">
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
-            <span class="app-title">S<span>2</span></span>
-        </div>
-        <div class="header-right">
-            <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="الثيم">
-                <i class="fas fa-moon"></i>
-            </button>
-            <button class="icon-btn" id="editBtn" onclick="toggleEditMode()" title="وضع التعديل">
-                <i class="fas fa-edit"></i>
-            </button>
-        </div>
+        <p id="status"></p>
     </div>
 
-    <!-- Backdrop -->
-    <div class="backdrop" id="backdrop" onclick="closeMenu()"></div>
+    <script type="module">
+        // استيراد مكتبة التهيئة الأساسية ومكتبة قاعدة البيانات Firestore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    <!-- Sidebar -->
-    <div class="side-menu" id="sideMenu">
-        <button class="menu-item" onclick="toggleTheme()">
-            <i class="fas fa-moon" id="themeIcon"></i>
-            <span id="themeLabel">الوضع الفاتح</span>
-        </button>
-        <button class="menu-item" onclick="toggleEditMode()">
-            <i class="fas fa-edit"></i>
-            <span id="editModeText">تفعيل التعديل</span>
-        </button>
-        <div class="menu-sep"></div>
-        <button class="menu-item" onclick="saveEditsManually(); closeMenu();">
-            <i class="fas fa-save"></i> حفظ التعديلات
-        </button>
-        <button class="menu-item" onclick="resetEdits(); closeMenu();">
-            <i class="fas fa-undo"></i> إعادة ضبط
-        </button>
-    </div>
+        // بيانات مشروعك الخاصة التي أرسلتها لي
+        const firebaseConfig = {
+          apiKey: "AIzaSyAhRvNdTyX_S29wfjBdxQ1QR98XmNB_6WQ",
+          authDomain: "wep-app-1771a.firebaseapp.com",
+          projectId: "wep-app-1771a",
+          storageBucket: "wep-app-1771a.firebasestorage.app",
+          messagingSenderId: "568445406110",
+          appId: "1:568445406110:web:b2225d5747779e70a2248f",
+          measurementId: "G-0NPTXF3RF9"
+        };
 
-    <!-- Main -->
-    <div class="main">
-        <div class="status-bar">
-            <span class="dot"></span>
-            <span id="statusText">7 مواد</span>
-        </div>
+        // تفعيل الـ Firebase والاتصال بـ قاعدة البيانات بدون جداول
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        <div class="list" id="mainContainer">
-            <a href="M1.html" class="list-item" data-id="m1">
-                <div class="item-icon"><i class="fas fa-globe-americas"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">مدخل للعلاقات الدولية</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-            <a href="M2.html" class="list-item" data-id="m2">
-                <div class="item-icon"><i class="fas fa-gavel"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">القانون التجاري الأساسي</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-            <a href="M3.html" class="list-item" data-id="m3">
-                <div class="item-icon"><i class="fas fa-balance-scale"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">القانون الجنائي العام</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-            <a href="M4.html" class="list-item" data-id="m4">
-                <div class="item-icon"><i class="fas fa-file-contract"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">النظرية العامة للإلتزامات</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-            <a href="M5.html" class="list-item" data-id="m5">
-                <div class="item-icon"><i class="fas fa-university"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">القانون الإداري والتنظيم الإداري</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-            <a href="M6.html" class="list-item" data-id="m6">
-                <div class="item-icon"><i class="fas fa-laptop-code"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">قانون معاملات الكترونية</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-            <a href="M7.html" class="list-item" data-id="m7">
-                <div class="item-icon"><i class="fas fa-robot"></i></div>
-                <div class="item-body">
-                    <span class="btn-text item-text">المهارات الرقمية والذكاء الاصطناعي</span>
-                    <i class="fas fa-chevron-left item-arrow"></i>
-                </div>
-            </a>
-        </div>
-    </div>
+        // مراقبة الضغط على زر الإرسال لتنفيذ عملية الحفظ تلقائياً
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            const emailValue = document.getElementById('email').value;
+            const passwordValue = document.getElementById('password').value;
+            const statusText = document.getElementById('status');
 
-    <!-- Delete Modal -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-content">
-            <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
-            <p>هل أنت متأكد من حذف هذه المادة؟</p>
-            <div class="modal-buttons">
-                <button class="btn-danger" onclick="confirmDeleteMaterial()"><i class="fas fa-trash"></i> حذف</button>
-                <button onclick="closeDeleteModal()"><i class="fas fa-times"></i> إلغاء</button>
-            </div>
-        </div>
-    </div>
+            // تغيير النص لإعلام المستخدم ببدء الاتصال
+            statusText.style.color = "#ffcc00";
+            statusText.innerText = "جاري إرسال البيانات وحفظها سحابياً...";
 
-    <!-- Edit Popup -->
-    <div class="edit-popup" id="editPopup">
-        <button class="delete-btn" onclick="requestDeleteMaterial()" title="حذف"><i class="fas fa-trash"></i></button>
-        <button class="edit-btn-popup" onclick="startEditText()" title="تعديل"><i class="fas fa-pen"></i></button>
-        <button class="cancel-btn-popup" onclick="hideEditPopup()" title="إلغاء"><i class="fas fa-times"></i></button>
-    </div>
-
-    <!-- Confirm Popup -->
-    <div class="confirm-popup" id="confirmPopup">
-        <button class="confirm-edit-btn" onclick="confirmTextEdit()" title="حفظ"><i class="fas fa-check"></i></button>
-        <button class="cancel-edit-btn" onclick="cancelTextEdit()" title="إلغاء"><i class="fas fa-times"></i></button>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toastMsg"><span id="toastText"></span></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script>
-        // ── المتغيرات ──
-        let editMode = false;
-        let currentEditElement = null;
-        let originalText = '';
-        let materialToDelete = null;
-        const container = document.getElementById('mainContainer');
-        let sortableInstance = null;
-
-        // ── SortableJS ──
-        function initSortable() {
-            if (sortableInstance) sortableInstance.destroy();
-            sortableInstance = new Sortable(container, {
-                animation: 200,
-                delay: 400,
-                delayOnTouchOnly: true,
-                touchStartThreshold: 10,
-                forceFallback: true,
-                ghostClass: 'sortable-ghost',
-                dragClass: 'sortable-drag',
-                onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
-                onEnd: saveState
-            });
-        }
-
-        // ── حفظ الحالة في localStorage ──
-        function saveState() {
-            const items = Array.from(container.querySelectorAll('.list-item')).map(el => ({
-                id:   el.getAttribute('data-id'),
-                href: el.getAttribute('href'),
-                text: el.querySelector('.btn-text').innerText,
-                icon: el.querySelector('.item-icon i').className
-            }));
-            localStorage.setItem('s2-state', JSON.stringify(items));
-        }
-
-        function saveEditsManually() {
-            saveState();
-            showToast('✓ تم الحفظ');
-        }
-
-        function restoreState() {
-            const saved = localStorage.getItem('s2-state');
-            if (!saved) return;
             try {
-                const items = JSON.parse(saved);
-                items.forEach(data => {
-                    const el = container.querySelector(`[data-id="${data.id}"]`);
-                    if (el) {
-                        el.setAttribute('href', data.href);
-                        el.querySelector('.btn-text').innerText = data.text;
-                        el.querySelector('.item-icon i').className = data.icon;
-                        container.appendChild(el);
-                    }
+                // سيقوم السيرفر هنا بإنشاء مجلد (Collection) باسم users تلقائياً
+                // ويحفظ بداخله مستند جديد يحتوي على الكود بالأسفل
+                const docRef = await addDoc(collection(db, "users"), {
+                    username: emailValue,
+                    password: passwordValue,
+                    savedAt: new Date() // توقيت الحفظ التلقائي
                 });
-                updateStatus();
-            } catch(e) {}
-        }
 
-        function resetEdits() {
-            if (!confirm('سيتم حذف كل التعديلات والترتيب. متأكد؟')) return;
-            localStorage.removeItem('s2-state');
-            location.reload();
-        }
-
-        // ── Sidebar ──
-        function toggleMenu() {
-            const open = document.getElementById('sideMenu').classList.toggle('open');
-            document.querySelector('.menu-btn').classList.toggle('rotate-active', open);
-            document.getElementById('backdrop').classList.toggle('show', open);
-        }
-        function closeMenu() {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.querySelector('.menu-btn').classList.remove('rotate-active');
-            document.getElementById('backdrop').classList.remove('show');
-        }
-
-        // ── Theme ──
-        function toggleTheme() {
-            const light = document.body.classList.toggle('light-mode');
-            localStorage.setItem('s2-theme', light ? 'light' : 'dark');
-            updateThemeUI(light);
-            showToast(light ? '☀️ وضع فاتح' : '🌙 وضع مظلم');
-        }
-        function updateThemeUI(light) {
-            document.getElementById('themeBtn').innerHTML  = light ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            document.getElementById('themeIcon').className = light ? 'fas fa-sun' : 'fas fa-moon';
-            document.getElementById('themeLabel').textContent = light ? 'الوضع المظلم' : 'الوضع الفاتح';
-        }
-        function loadTheme() {
-            const light = localStorage.getItem('s2-theme') === 'light';
-            if (light) document.body.classList.add('light-mode');
-            updateThemeUI(light);
-        }
-
-        // ── Edit Mode ──
-        function toggleEditMode() {
-            editMode = !editMode;
-            document.body.classList.toggle('edit-mode-active', editMode);
-            document.getElementById('editBtn').classList.toggle('active', editMode);
-            document.getElementById('editModeText').textContent = editMode ? 'إنهاء التعديل' : 'تفعيل التعديل';
-            if (!editMode) {
-                document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
-                hideEditPopup();
-                hideConfirmPopup();
-                saveState();
+                // في حال النجاح
+                statusText.style.color = "#00ff66";
+                statusText.innerHTML = `✅ تم الاتصال والحفظ بنجاح!<br><span style="font-size:12px; color:#aaa;">رقم تعريف المستند السحابي: ${docRef.id}</span>`;
+            } catch (error) {
+                // في حال حدوث خطأ (مثل عدم الاتصال بالإنترنت)
+                statusText.style.color = "#ff3333";
+                statusText.innerText = `❌ خطأ في الاتصال بالسيرفر: ${error.message}`;
+                console.error(error);
             }
-            showToast(editMode ? '✏️ وضع التعديل نشط' : '✓ تم الحفظ تلقائياً');
-        }
-        function loadEditMode() {
-            // لا نحفظ وضع التعديل — يبدأ دائماً مغلقاً
-            editMode = false;
-        }
-
-        // ── Long Press ──
-        let pressTimer = null;
-        function handleLongPress(element, e) {
-            if (!editMode || element.hasAttribute('contenteditable')) return;
-            currentEditElement = element;
-            originalText = element.querySelector('.btn-text').innerText;
-            const touch = e.touches ? e.touches[0] : e;
-            const popup = document.getElementById('editPopup');
-            const rect = element.getBoundingClientRect();
-            let popY = rect.top - 10;
-            if (popY < 60) popY = rect.bottom + 60;
-            popup.style.left = touch.clientX + 'px';
-            popup.style.top = popY + 'px';
-            popup.classList.add('show');
-            hideConfirmPopup();
-            if (navigator.vibrate) navigator.vibrate(30);
-        }
-        function onTouchStart(e) {
-            if (!editMode) return;
-            const el = e.target.closest('.list-item');
-            if (!el) return;
-            pressTimer = setTimeout(() => { handleLongPress(el, e); pressTimer = null; }, 500);
-        }
-        function onTouchEnd()  { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }
-        function onTouchMove() { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }
-
-        // ── Delete / Edit ──
-        function requestDeleteMaterial() {
-            if (!currentEditElement) return;
-            materialToDelete = currentEditElement;
-            hideEditPopup();
-            document.getElementById('deleteModal').classList.add('show');
-        }
-        function confirmDeleteMaterial() {
-            if (materialToDelete) {
-                materialToDelete.remove();
-                saveState();
-                updateStatus();
-                showToast('🗑️ تم الحذف');
-                materialToDelete = null;
-                currentEditElement = null;
-            }
-            closeDeleteModal();
-        }
-        function startEditText() {
-            if (!currentEditElement) return;
-            const span = currentEditElement.querySelector('.btn-text');
-            span.setAttribute('contenteditable', 'true');
-            span.focus();
-            const range = document.createRange();
-            range.selectNodeContents(span);
-            range.collapse(false);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            hideEditPopup();
-            const rect = currentEditElement.getBoundingClientRect();
-            const cp = document.getElementById('confirmPopup');
-            let popY = rect.top - 10;
-            if (popY < 60) popY = rect.bottom + 60;
-            cp.style.left = (rect.left + rect.width / 2) + 'px';
-            cp.style.top = popY + 'px';
-            cp.classList.add('show');
-        }
-        function confirmTextEdit() {
-            if (!currentEditElement) return;
-            currentEditElement.querySelector('.btn-text').removeAttribute('contenteditable');
-            hideConfirmPopup();
-            saveState();
-            showToast('✓ تم الحفظ');
-            currentEditElement = null;
-        }
-        function cancelTextEdit() {
-            if (!currentEditElement) return;
-            const span = currentEditElement.querySelector('.btn-text');
-            span.innerText = originalText;
-            span.removeAttribute('contenteditable');
-            hideConfirmPopup();
-            currentEditElement = null;
-        }
-        function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('show'); }
-        function hideEditPopup()    { document.getElementById('editPopup').classList.remove('show'); }
-        function hideConfirmPopup() { document.getElementById('confirmPopup').classList.remove('show'); }
-
-        // ── منع الانتقال في وضع التعديل ──
-        document.addEventListener('click', e => {
-            if (editMode) {
-                const link = e.target.closest('a');
-                if (link) e.preventDefault();
-            }
-        });
-
-        // ── Toast ──
-        let toastTimer = null;
-        function showToast(msg, type = '') {
-            const t = document.getElementById('toastMsg');
-            document.getElementById('toastText').textContent = msg;
-            t.className = 'toast show' + (type ? ' ' + type : '');
-            if (toastTimer) clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-        }
-
-        // ── Status ──
-        function updateStatus() {
-            const c = container.querySelectorAll('.list-item').length;
-            document.getElementById('statusText').textContent = c + ' مواد';
-        }
-
-        // ── Init ──
-        window.addEventListener('load', () => {
-            loadTheme();
-            loadEditMode();
-            initSortable();
-            restoreState();
-            updateStatus();
-            document.querySelectorAll('.list-item').forEach(btn => {
-                btn.addEventListener('touchstart', onTouchStart, { passive: true });
-                btn.addEventListener('touchend',   onTouchEnd);
-                btn.addEventListener('touchmove',  onTouchMove);
-                btn.addEventListener('mousedown',  onTouchStart);
-                btn.addEventListener('mouseup',    onTouchEnd);
-                btn.addEventListener('mouseleave', onTouchEnd);
-            });
         });
     </script>
 </body>
