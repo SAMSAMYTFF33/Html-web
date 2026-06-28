@@ -1,663 +1,627 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head>
+<html lang="ar" dir="rtl">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الفصول</title>
-    <!-- إضافة خط Tajawal و Font Awesome لنفس الجمالية -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>الفصول - مدخل للعلاقات الدولية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet"> -->
-    <!-- تم تعديل طريقة تحميل الخط لتعمل مع الملفات المحلية كما كانت -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'Tajawal';
-            src: url('file:///storage/emulated/0/Android/data/com.S2/files/Tajawal-Regular.ttf') format('truetype');
-            font-weight: 400;
-        }
-
-        @font-face {
-            font-family: 'Tajawal';
-            src: url('file:///storage/emulated/0/Android/data/com.S2/files/Tajawal-Bold.ttf') format('truetype');
-            font-weight: 700;
-        }
-
         :root {
-    /* ألوان الوضع الفاتح */
-    --primary: #00a859; /* درجة أخضر أغمق قليلاً لتكون واضحة على الخلفية الفاتحة */
-    --secondary: #008cb3;
-    --bg-dark: #f4f6f9; /* خلفية بيضاء/رمادية فاتحة */
-    --card-bg: rgba(0, 0, 0, 0.05); /* خلفية العناصر تصبح داكنة بشفافية */
-    --glass-border: rgba(0, 0, 0, 0.1); /* حواف داكنة بشفافية */
-    --text-dark: #1a1a1a; /* نص داكن جداً ليظهر على الخلفية الفاتحة */
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-    --neon-glow: 0 0 15px rgba(0, 168, 89, 0.2);
-}
-
-
-        /* تم تعديل الـ dark-mode ليتوافق مع الألوان الجديدة */
-        .dark-mode {
-            --primary: #00ff88;
-            --secondary: #00bdff;
-            --bg-dark: #050a0a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-dark: #fff;
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --neon-glow: 0 0 15px rgba(0, 255, 136, 0.3);
+            --bg:      #0d1117;
+            --surface: #161b22;
+            --border:  #30363d;
+            --accent:  #238636;
+            --accent2: #1f6feb;
+            --text:    #e6edf3;
+            --muted:   #8b949e;
+            --danger:  #da3633;
+            --warn:    #d29922;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
+        body.light-mode {
+            --bg:#fff; --surface:#f6f8fa; --border:#d0d7de;
+            --accent:#1a7f37; --accent2:#0969da; --text:#1f2328;
+            --muted:#656d76; --danger:#cf222e; --warn:#9a6700;
+        }
+        * { box-sizing:border-box; margin:0; padding:0; }
         body {
-            font-family: 'Tajawal', sans-serif;
-            margin: 0; padding: 60px 0; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
-            /* --- التعديل هنا: خلفية داكنة مع تدرجات مشعة --- */
-            background: var(--bg-dark);
-            color: var(--text-dark);
-            transition: background 0.4s ease, color 0.4s ease;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 255, 136, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 189, 255, 0.15) 0px, transparent 50%);
-            -webkit-user-select: none;
-            user-select: none;
+            font-family:'Tajawal',sans-serif;
+            background:var(--bg); color:var(--text);
+            min-height:100vh; font-size:15px;
+            -webkit-user-select:none; user-select:none;
         }
 
-        /* --- التعديل هنا: الحاوية أصبحت بعرض كامل (كما في الكود الأول) --- */
-        .container {
-            width: 100%;
-            max-width: none;
-            display: flex;
-            flex-direction: column;
-            gap: 1px; /* فجوة بسيطة جداً كخط فاصل */
-            z-index: 10;
-            padding-bottom: 50px;
+        /* ══ HEADER ══ */
+        .header {
+            position:fixed; top:0; left:0; right:0; height:48px;
+            background:var(--surface); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 12px; z-index:100;
         }
+        .header-left, .header-right { display:flex; align-items:center; gap:6px; }
+        .page-title { font-size:14px; font-weight:800; color:var(--text); }
+        .page-title span { color:var(--accent2); font-size:11px; font-weight:400; margin-right:6px; color:var(--muted); }
 
-        /* --- التعديل هنا: الأزرار أصبحت على شكل مستطيلات كاملة بدون حواف دائرية --- */
-        .neon-btn {
-            position: relative;
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-start; /* لمحاذاة النص لليسار (في RTL) */
-            gap: 15px;
-            padding: 20px 25px;
-            text-decoration: none; 
-            font-size: 16px; 
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            background: var(--card-bg);
-            border-top: 1px solid var(--glass-border);
-            border-bottom: 1px solid var(--glass-border);
-            border-left: none;
-            border-right: none;
-            border-radius: 0;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-sizing: border-box;
-            -webkit-touch-callout: none;
-            -webkit-user-drag: none;
-            text-align: right; /* لمحاذاة النص */
+        .menu-btn, .icon-btn {
+            width:32px; height:32px; background:none;
+            border:1px solid var(--border); border-radius:6px;
+            color:var(--muted); cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px; transition:color 0.15s, border-color 0.15s, transform 0.2s;
         }
+        .menu-btn:hover, .icon-btn:hover { color:var(--text); border-color:var(--muted); }
+        .menu-btn.rotate-active { transform:rotate(90deg); }
+        .icon-btn.active { color:var(--accent2); border-color:var(--accent2); }
 
-        .neon-btn i { 
-            font-size: 20px; 
-            color: var(--primary); 
-            transition: 0.3s; 
+        .back-btn {
+            width:32px; height:32px; background:none;
+            border:1px solid var(--border); border-radius:6px;
+            color:var(--muted); cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px; transition:color 0.15s, border-color 0.15s;
+            text-decoration:none;
         }
+        .back-btn:hover { color:var(--text); border-color:var(--muted); }
 
-        .neon-btn:active {
-            background: rgba(255, 255, 255, 0.1);
+        .sync-dot {
+            width:8px; height:8px; border-radius:50%;
+            background:var(--border); transition:background 0.3s;
         }
+        .sync-dot.syncing { background:var(--warn); animation:pulse 1s infinite; }
+        .sync-dot.synced  { background:var(--accent); }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-        .neon-btn:hover {
-            /* يمكن إضافة تأثيرات إضافية إذا أردت */
-        }
-
-        /* باقي الأنماط الخاصة بالقائمة والوظائف تم الاحتفاظ بها كما هي مع تعديلات طفيفة في الألوان */
-
-        .menu-btn {
-            position: fixed; top: 20px; left: 20px;
-            font-size: 24px; width: 50px; height: 50px;
-            border-radius: 15px; background: var(--card-bg);
-            backdrop-filter: blur(10px); color: var(--primary);
-            border: 1px solid var(--glass-border); cursor: pointer;
-            z-index: 1000; display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--glass-shadow); transition: 0.3s;
-        }
-
-        /* نحتفظ بالتوهج عند اللمس ولكن نزيل الدوران */
-.menu-btn:hover { box-shadow: var(--neon-glow); }
-
-/* نضيف كلاس جديد مسؤول عن الدوران فقط */
-.menu-btn.rotate-active { transform: rotate(90deg); }
+        /* ══ SIDE MENU ══ */
+        .backdrop { display:none; position:fixed; inset:0; z-index:98; }
+        .backdrop.show { display:block; }
 
         .side-menu {
-            position: fixed; top: 0; left: -320px;
-            width: 320px; height: 100vh; padding: 90px 25px 25px;
-            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border-radius: 0 30px 30px 0; z-index: 999;
-            display: flex; flex-direction: column; gap: 15px;
-            background: var(--card-bg); backdrop-filter: blur(16px);
-            border-right: 1px solid var(--glass-border);
+            position:fixed; top:48px; left:-260px; width:260px;
+            height:calc(100vh - 48px); background:var(--surface);
+            border-right:1px solid var(--border); padding:8px 0;
+            z-index:99; transition:left 0.25s ease;
         }
+        .side-menu.open { left:0; }
 
-        .side-menu.open { left: 0; }
-
-        .side-menu button {
-            font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 700;
-            padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border);
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: 0.3s; background: rgba(255, 255, 255, 0.05); color: var(--text-dark);
+        .user-badge {
+            padding:12px 16px; font-size:12px; color:var(--muted);
+            border-bottom:1px solid var(--border); margin-bottom:6px;
+            display:flex; align-items:center; gap:8px;
         }
+        .user-badge i { color:var(--accent2); font-size:14px; }
 
-        .side-menu button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .theme-btn { border-left: 4px solid var(--primary) !important; }
-        .edit-btn { border-left: 4px solid var(--secondary) !important; }
-        .add-btn { border-left: 4px solid var(--primary) !important; } /* تم التعديل هنا */
+        .menu-item {
+            display:flex; align-items:center; gap:10px; padding:10px 16px;
+            font-size:14px; font-weight:600; color:var(--muted);
+            background:none; border:none; cursor:pointer; width:100%;
+            text-align:right; transition:color 0.15s, background 0.15s;
+            font-family:'Tajawal',sans-serif;
+        }
+        .menu-item:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+        .menu-item i { width:16px; text-align:center; font-size:13px; }
+        .menu-item.danger { color:var(--danger); }
+        .menu-item.danger:hover { background:rgba(218,54,51,0.08); }
+        .menu-sep { height:1px; background:var(--border); margin:6px 0; }
 
-        .edit-mode-active .edit-btn { background: rgba(0, 255, 255, 0.2); box-shadow: var(--neon-glow); }
+        /* ══ MAIN ══ */
+        .main { padding-top:48px; }
+        .status-bar {
+            display:flex; align-items:center; gap:6px; padding:6px 12px;
+            font-size:11px; color:var(--muted);
+            border-bottom:1px solid var(--border); background:var(--surface);
+        }
+        .dot { width:6px; height:6px; border-radius:50%; background:var(--accent2); display:inline-block; }
+
+        /* ══ LIST ══ */
+        .list { display:flex; flex-direction:column; }
+        .list-item {
+            display:flex; align-items:center; border-bottom:1px solid var(--border);
+            text-decoration:none; color:var(--text); background:var(--bg);
+            transition:background 0.1s; position:relative; cursor:pointer; min-height:52px;
+        }
+        .list-item:active { background:var(--surface); }
+        .item-icon {
+            width:48px; min-width:48px; height:52px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:14px; color:var(--muted); border-left:1px solid var(--border);
+            font-weight:700;
+        }
+        .item-body {
+            flex:1; padding:14px 14px 14px 10px;
+            display:flex; align-items:center; justify-content:space-between;
+        }
+        .item-text { font-size:14px; font-weight:600; line-height:1.3; }
+        .item-arrow { color:var(--border); font-size:12px; }
+
+        /* ══ EDIT MODE ══ */
+        .edit-mode-active .list-item::before {
+            content:''; position:absolute; right:0; top:0; bottom:0; width:3px; background:var(--accent2);
+        }
         .edit-mode-active [contenteditable="true"] {
-            outline: 2px dashed var(--secondary);
-            outline-offset: 4px; animation: pulseBorder 1.5s infinite; cursor: text;
+            outline:1px dashed var(--accent2); outline-offset:2px; cursor:text; border-radius:2px;
         }
+        .sortable-ghost { opacity:0.3; background:var(--surface) !important; }
+        .sortable-drag  { opacity:1 !important; background:var(--surface) !important; border-right:2px solid var(--accent2) !important; }
 
-        @keyframes pulseBorder {
-            0% { outline-color: var(--secondary); }
-            50% { outline-color: transparent; }
-            100% { outline-color: var(--secondary); }
-        }
-
+        /* ══ POPUPS ══ */
         .edit-popup, .confirm-popup {
-            position: fixed; display: flex; gap: 10px;
-            border-radius: 50px; padding: 8px 15px; z-index: 2000;
-            transform: translate(-50%, -100%); pointer-events: none; opacity: 0;
-            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: var(--card-bg); backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+            position:fixed; display:flex; gap:6px; border-radius:8px; padding:6px 10px;
+            z-index:2000; transform:translate(-50%,-100%); pointer-events:none; opacity:0;
+            transition:opacity 0.15s; background:var(--surface); border:1px solid var(--border);
+            box-shadow:0 4px 16px rgba(0,0,0,0.4);
         }
-
-        .edit-popup.show, .confirm-popup.show { pointer-events: all; opacity: 1; transform: translate(-50%, -120%); }
-
+        .edit-popup.show, .confirm-popup.show { pointer-events:all; opacity:1; transform:translate(-50%,-115%); }
         .edit-popup button, .confirm-popup button {
-            width: 42px; height: 42px; border-radius: 50%; border: none;
-            font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width:36px; height:36px; border-radius:6px; border:1px solid var(--border);
+            font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+            transition:0.15s; background:var(--bg);
         }
+        .delete-btn       { color:var(--danger) !important; }
+        .delete-btn:hover { background:rgba(218,54,51,0.12) !important; }
+        .edit-btn-popup   { color:var(--accent2) !important; }
+        .cancel-btn-popup { color:var(--muted) !important; }
+        .confirm-edit-btn { color:var(--accent) !important; }
+        .cancel-edit-btn  { color:var(--danger) !important; }
 
-        .edit-popup button:hover, .confirm-popup button:hover { transform: scale(1.1); }
-        .delete-btn { background: #ff4757; color: white; }
-        .edit-btn-popup { background: var(--secondary); color: #000; }
-        .cancel-btn-popup { background: #747d8c; color: white; }
-        .confirm-edit-btn { background: #2ed573; color: white; }
-        .cancel-edit-btn { background: #ff4757; color: white; }
-
+        /* ══ MODALS ══ */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 3000; opacity: 0; pointer-events: none; transition: 0.3s;
+            position:fixed; inset:0; background:rgba(0,0,0,0.7);
+            display:flex; align-items:center; justify-content:center;
+            z-index:3000; opacity:0; pointer-events:none; transition:opacity 0.2s;
         }
-
-        .modal-overlay.show { opacity: 1; pointer-events: all; }
-
+        .modal-overlay.show { opacity:1; pointer-events:all; }
         .modal-content {
-            width: 90%; max-width: 450px; border-radius: 25px; padding: 30px;
-            background: var(--card-bg); border: 1px solid var(--glass-border);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); text-align: center;
+            width:88%; max-width:360px; border-radius:10px; padding:20px;
+            background:var(--surface); border:1px solid var(--border);
+            box-shadow:0 16px 32px rgba(0,0,0,0.5);
         }
-
-        .modal-content h3 { font-size: 1.6rem; color: var(--secondary); margin-bottom: 20px; }
-
-        .input-group input {
-            width: 100%; padding: 15px; border-radius: 15px;
-            border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.2);
-            color: var(--text-dark); font-family: 'Tajawal', sans-serif; font-size: 1.1rem;
-            text-align: center; transition: 0.3s;
-        }
-
-        .input-group input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); }
-
-        .modal-buttons { display: flex; gap: 15px; margin-top: 30px; }
+        .modal-content h3 { font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+        .modal-content h3.danger { color:var(--danger); }
+        .modal-content h3.info   { color:var(--accent2); }
+        .modal-content p  { font-size:13px; color:var(--muted); margin-bottom:16px; }
+        .modal-buttons    { display:flex; gap:8px; }
         .modal-buttons button {
-            flex: 1; padding: 15px; border-radius: 15px; border: none;
-            font-size: 1.1rem; font-weight: 700; font-family: 'Tajawal', sans-serif;
-            cursor: pointer; transition: 0.3s;
+            flex:1; padding:10px; border-radius:6px; border:1px solid var(--border);
+            font-size:13px; font-weight:700; font-family:'Tajawal',sans-serif;
+            cursor:pointer; transition:0.15s; background:var(--bg); color:var(--text);
         }
-        .modal-buttons button:hover { transform: translateY(-3px); }
+        .btn-danger  { color:var(--danger) !important; border-color:var(--danger) !important; }
+        .btn-danger:hover  { background:rgba(218,54,51,0.1) !important; }
+        .btn-primary { color:var(--accent2) !important; border-color:var(--accent2) !important; }
+        .btn-primary:hover { background:rgba(31,111,235,0.1) !important; }
 
-        .edit-toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
-            background: var(--bg-dark); backdrop-filter: blur(15px); color: var(--text-dark);
-            padding: 12px 28px; border-radius: 12px; font-size: 15px; font-weight: 600;
-            border: 1px solid var(--glass-border); border-right: 4px solid var(--primary);
-            box-shadow: var(--glass-shadow); z-index: 4000; opacity: 0; 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; display: flex; align-items: center; gap: 12px;
+        .fb-input {
+            width:100%; padding:11px 14px; margin-bottom:0;
+            border:1px solid var(--border); border-radius:6px;
+            font-size:15px; font-family:'Tajawal',sans-serif;
+            outline:none; color:var(--text); background:var(--bg);
+            transition:border-color 0.2s;
         }
-        .edit-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .edit-toast i { color: var(--primary); font-size: 18px; }
-        .edit-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .fb-input:focus { border-color:var(--accent2); }
+        .fb-input::placeholder { color:var(--muted); }
+
+        /* ══ TOAST ══ */
+        .toast {
+            position:fixed; bottom:20px; left:50%;
+            transform:translateX(-50%) translateY(10px);
+            background:var(--surface); border:1px solid var(--border);
+            border-right:3px solid var(--accent); color:var(--text);
+            padding:9px 16px; border-radius:6px; font-size:13px; font-weight:600;
+            z-index:4000; opacity:0; transition:opacity 0.2s, transform 0.2s;
+            pointer-events:none; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,0.3);
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        .toast.err  { border-right-color:var(--danger) !important; }
+
+        /* ══ EMPTY STATE ══ */
+        .empty-state {
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            padding:60px 20px; color:var(--muted); gap:12px; text-align:center;
+        }
+        .empty-state i { font-size:36px; color:var(--border); }
+        .empty-state p { font-size:13px; }
     </style>
 </head>
-<body class="dark-mode edit-mode-active">
+<body oncontextmenu="return false;">
 
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-    <div class="side-menu" id="menu">
-                <button class="edit-btn" onclick="toggleEditMode()"><span>✓</span> إنهاء التعديل</button>
-        <button class="add-btn" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> إضافة فصل جديد</button>
-    </div>
-
-    <div class="container" id="mainContainer">
-        <!-- تم تعديل الأزرار لتشمل الأيقونات من Font Awesome كتطبيق إضافي للجمالية (اختياري) -->
-        <a href="M1F1.html" class="neon-btn" id="btn_1">الفصل الأول</a>
-        
-        
-    </div>
-
-    <!-- باقي المحتوى (النوافذ المنبثقة) لم يتغير -->
-    <div class="modal-overlay" id="addModal">
-        <div class="modal-content">
-            <h3>إضافة فصل جديد</h3>
-            <div class="input-group">
-                <input type="text" id="inputChapterName" placeholder="أدخل اسم الفصل (مثال: الفصل الثالث)">
-            </div>
-            <div class="modal-buttons">
-                <button onclick="addNewChapter()" style="background: var(--secondary); color: #000;"><i class="fa-solid fa-check"></i> إضافة</button>
-                <button onclick="closeAddModal()" style="background: transparent; border: 1px solid var(--text-dark); color: var(--text-dark);"><i class="fa-solid fa-xmark"></i> إلغاء</button>
-            </div>
+<!-- ══ HEADER ══ -->
+<div class="header">
+    <div class="header-left">
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div class="page-title">
+            الفصول <span id="materialName">مدخل للعلاقات الدولية</span>
         </div>
     </div>
+    <div class="header-right">
+        <div class="sync-dot" id="syncDot"></div>
+        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <button class="icon-btn" id="editBtn" onclick="toggleEditMode()"><i class="fas fa-edit"></i></button>
+        <a href="S2.html" class="back-btn" title="رجوع"><i class="fas fa-arrow-right"></i></a>
+    </div>
+</div>
 
-    <div class="modal-overlay" id="deleteConfirmModal">
-        <div class="modal-content">
-            <h3 style="color: #ff4757;"><i class="fa-solid fa-triangle-exclamation"></i> تأكيد الحذف</h3>
-            <p style="margin-bottom: 20px; font-size: 1.1rem;">هل أنت متأكد من حذف هذا الفصل؟</p>
-            <div class="modal-buttons">
-                <button onclick="confirmDeleteElement()" style="background: #ff4757; color: white;"><i class="fa-solid fa-trash"></i> حذف</button>
-                <button onclick="closeDeleteModal()" style="background: var(--secondary); color: #000;"><i class="fa-solid fa-xmark"></i> إلغاء</button>
-            </div>
+<!-- ══ SIDE MENU ══ -->
+<div class="backdrop" id="backdrop" onclick="closeMenu()"></div>
+<div class="side-menu" id="sideMenu">
+    <div class="user-badge"><i class="fas fa-book-open"></i><span id="userLabel">...</span></div>
+    <button class="menu-item" onclick="toggleTheme()">
+        <i id="themeIcon" class="fas fa-moon"></i><span id="themeLabel">الوضع الفاتح</span>
+    </button>
+    <button class="menu-item" onclick="toggleEditMode(); closeMenu();">
+        <i class="fas fa-edit"></i><span id="editModeText">تفعيل التعديل</span>
+    </button>
+    <div class="menu-sep"></div>
+    <button class="menu-item" onclick="openAddModal(); closeMenu();">
+        <i class="fas fa-plus"></i> إضافة فصل جديد
+    </button>
+    <div class="menu-sep"></div>
+    <button class="menu-item danger" onclick="resetEdits(); closeMenu();">
+        <i class="fas fa-undo"></i> إعادة ضبط
+    </button>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+    <div class="status-bar">
+        <span class="dot"></span><span id="statusText">0 فصول</span>
+    </div>
+    <div class="list" id="mainContainer">
+        <!-- الفصول تُحمَّل من Firebase -->
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="fas fa-folder-open"></i>
+        <p>لا توجد فصول بعد<br>اضغط على ☰ ثم «إضافة فصل جديد»</p>
+    </div>
+</div>
+
+<!-- ══ ADD MODAL ══ -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-content">
+        <h3 class="info"><i class="fas fa-plus-circle"></i> إضافة فصل جديد</h3>
+        <p>أدخل اسم الفصل الجديد</p>
+        <input class="fb-input" type="text" id="inputChapterName" placeholder="مثال: الفصل الثاني">
+        <div class="modal-buttons" style="margin-top:16px;">
+            <button class="btn-primary" onclick="addNewChapter()"><i class="fas fa-check"></i> إضافة</button>
+            <button onclick="closeAddModal()"><i class="fas fa-times"></i> إلغاء</button>
         </div>
     </div>
+</div>
 
-    <div class="edit-popup" id="editPopup" style="left: 285px; top: 110px;">
-        <button class="delete-btn" onclick="deleteElement()"><i class="fa-solid fa-trash"></i></button>
-        <button class="edit-btn-popup" onclick="prepareEdit()"><i class="fa-solid fa-pen"></i></button>
-        <button class="cancel-btn-popup" onclick="cancelPopup()"><i class="fa-solid fa-xmark"></i></button>
+<!-- ══ DELETE MODAL ══ -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content">
+        <h3 class="danger"><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
+        <p>هل أنت متأكد من حذف هذا الفصل؟</p>
+        <div class="modal-buttons">
+            <button class="btn-danger" onclick="confirmDeleteChapter()"><i class="fas fa-trash"></i> حذف</button>
+            <button onclick="document.getElementById('deleteModal').classList.remove('show')"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
     </div>
+</div>
 
-    <div class="confirm-popup" id="confirmPopup" style="left: 175.254px; top: 40px;">
-        <button class="confirm-edit-btn" onclick="confirmEdit()"><i class="fa-solid fa-check"></i></button>
-        <button class="cancel-edit-btn" onclick="cancelEdit()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
+<!-- ══ EDIT POPUPS ══ -->
+<div class="edit-popup" id="editPopup">
+    <button class="delete-btn"       onclick="requestDelete()"><i class="fas fa-trash"></i></button>
+    <button class="edit-btn-popup"   onclick="startEditText()"><i class="fas fa-pen"></i></button>
+    <button class="cancel-btn-popup" onclick="document.getElementById('editPopup').classList.remove('show')"><i class="fas fa-times"></i></button>
+</div>
+<div class="confirm-popup" id="confirmPopup">
+    <button class="confirm-edit-btn" onclick="confirmTextEdit()"><i class="fas fa-check"></i></button>
+    <button class="cancel-edit-btn"  onclick="cancelTextEdit()"><i class="fas fa-times"></i></button>
+</div>
 
-    <div class="edit-toast" id="editToast">وضع التعديل نشط</div>
+<div class="toast" id="toastMsg"><span id="toastText"></span></div>
 
-    <script>
-        // --- لم يتم تعديل أي من وظائف الجافاسكريبت الأصلية ---
-        let editMode = false;
-        let currentEditElement = null;
-        let originalText = '';
-        let elementToDelete = null;
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // مسار ملف JSON الذي سيحفظ حالة الفصول
-        const LOG_FILE_PATH = '/storage/emulated/0/Android/data/com.S2/files/edits.json';
+const firebaseConfig = {
+    apiKey:"AIzaSyAhRvNdTyX_S29wfjBdxQ1QR98XmNB_6WQ",
+    authDomain:"wep-app-1771a.firebaseapp.com",
+    projectId:"wep-app-1771a",
+    storageBucket:"wep-app-1771a.firebasestorage.app",
+    messagingSenderId:"568445406110",
+    appId:"1:568445406110:web:b2225d5747779e70a2248f"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
 
-        // --- الحل: ذاكرة تخزين مؤقتة للحفاظ على البيانات ---
-        let inMemoryLog = null;
+// ══ معرّف الصفحة — غيّره لكل مادة (M1، M2...) ══
+const PAGE_ID = 'M1';
 
-        // --- دوال استرجاع وحفظ الفصول في JSON ---
-        function getChaptersLog() {
-            if (inMemoryLog) return inMemoryLog;
-            try {
-                if (typeof AndroidBridge !== 'undefined' && AndroidBridge.readFile) {
-                    let content = AndroidBridge.readFile(LOG_FILE_PATH);
-                    if (content) {
-                        content = content.trim();
-                        if (content !== '') {
-                            inMemoryLog = JSON.parse(content);
-                            if (!inMemoryLog.chapters) inMemoryLog.chapters = {};
-                            return inMemoryLog;
-                        }
-                    }
-                }
-            } catch (e) { 
-                console.error('Error reading or parsing log file', e); 
-            }
-            inMemoryLog = { chapters: {} };
-            return inMemoryLog;
-        }
+const $ = id => document.getElementById(id);
+const currentUser = sessionStorage.getItem('s2_user');
 
-        function saveLogState(data) {
-            inMemoryLog = data;
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.saveFile) {
-                try {
-                    AndroidBridge.saveFile(LOG_FILE_PATH, JSON.stringify(data, null, 2));
-                } catch (e) {
-                    console.error('Error saving log file', e);
-                }
-            }
-        }
+// ══ إعادة توجيه إذا لم يكن مسجلاً ══
+if (!currentUser) { location.replace('S2.html'); }
 
-        function updateChapterLog(id, name, href, status) {
-            let logData = getChaptersLog();
-            if (!logData || typeof logData !== 'object') logData = { chapters: {} };
-            if (!logData.chapters) logData.chapters = {};
-            
-            logData.chapters[id] = {
-                name: name,
-                href: href,
-                status: status,
-                timestamp: Date.now()
-            };
-            saveLogState(logData);
-        }
+$('userLabel').textContent = currentUser || '';
 
-        function restoreChaptersFromLog() {
-            let logData = getChaptersLog();
-            if (!logData || !logData.chapters) return;
-            
-            const container = document.getElementById('mainContainer');
-            
-            for (const [id, info] of Object.entries(logData.chapters)) {
-                let existingElement = document.getElementById(id);
-                
-                if (info.status === 'deleted') {
-                    if (existingElement) existingElement.remove();
-                } else if (info.status === 'active') {
-                    if (existingElement) {
-                        existingElement.textContent = info.name;
-                        existingElement.href = info.href;
-                    } else {
-                        const newBtn = document.createElement('a');
-                        newBtn.id = id;
-                        newBtn.className = 'neon-btn';
-                        newBtn.href = info.href;
-                        newBtn.textContent = info.name;
-                        newBtn.addEventListener('mousedown', handleTouchStart);
-                        newBtn.addEventListener('touchstart', handleTouchStart, {passive: true});
-                        container.appendChild(newBtn);
-                    }
-                }
+// ══ Toast ══
+let toastTimer = null;
+window.showToast = function(msg, err=false) {
+    const t = $('toastMsg');
+    $('toastText').textContent = msg;
+    t.className = 'toast show' + (err ? ' err' : '');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+};
+
+// ══ Sync dot ══
+function setSyncDot(s) {
+    const d = $('syncDot');
+    d.className = 'sync-dot' + (s==='syncing' ? ' syncing' : s==='ok' ? ' synced' : '');
+}
+
+// ══ Firebase key ══
+function userKey() { return currentUser.replace(/[.@]/g,'_'); }
+
+// ══ حفظ الحالة ══
+let lastSaved = null;
+async function saveIfChanged() {
+    const state = getState();
+    const json  = JSON.stringify(state);
+    if (json === lastSaved) return;
+    lastSaved = json;
+    localStorage.setItem(`s2-${PAGE_ID}-${currentUser}`, json);
+    setSyncDot('syncing');
+    try {
+        await setDoc(doc(db, 'userData', userKey()), {
+            [`chapters_${PAGE_ID}`]: json,
+            updatedAt: new Date().toISOString()
+        }, { merge: true });
+        setSyncDot('ok');
+    } catch(e) { setSyncDot(''); }
+}
+
+// ══ تحميل من Cloud ══
+async function loadFromCloud() {
+    try {
+        const snap = await getDoc(doc(db,'userData', userKey()));
+        if (snap.exists()) {
+            const data = snap.data();
+            if (data[`chapters_${PAGE_ID}`]) {
+                return JSON.parse(data[`chapters_${PAGE_ID}`]);
             }
         }
+    } catch(e) {}
+    return null;
+}
 
-        function loadThemePreference() {
-    const savedTheme = localStorage.getItem('s2-theme');
-    if (savedTheme === 'light') {
-        document.body.classList.remove('dark-mode');
-    } else {
-        document.body.classList.add('dark-mode');
+// ══ الحالة (مصفوفة فصول) ══
+const container = $('mainContainer');
+
+function getState() {
+    return Array.from(container.querySelectorAll('.list-item')).map(el => ({
+        id:   el.getAttribute('data-id'),
+        text: el.querySelector('.item-text').innerText,
+        href: el.getAttribute('href')
+    }));
+}
+
+function renderChapters(chapters) {
+    container.innerHTML = '';
+    chapters.forEach((ch, idx) => addItemToDOM(ch.id, ch.text, ch.href, idx + 1));
+    updateStatus();
+}
+
+function addItemToDOM(id, text, href, num) {
+    const el = document.createElement('a');
+    el.className   = 'list-item';
+    el.setAttribute('data-id', id);
+    el.href        = href || '#';
+    el.innerHTML   = `
+        <div class="item-icon">${num || container.querySelectorAll('.list-item').length + 1}</div>
+        <div class="item-body">
+            <span class="item-text">${text}</span>
+            <i class="fas fa-chevron-left item-arrow"></i>
+        </div>`;
+    el.addEventListener('touchstart', onTouchStart, {passive:true});
+    el.addEventListener('touchend',   onTouchEnd);
+    el.addEventListener('touchmove',  onTouchMove);
+    el.addEventListener('mousedown',  onTouchStart);
+    el.addEventListener('mouseup',    onTouchEnd);
+    el.addEventListener('mouseleave', onTouchEnd);
+    container.appendChild(el);
+    rebuildNumbers();
+}
+
+function rebuildNumbers() {
+    container.querySelectorAll('.list-item').forEach((el, i) => {
+        el.querySelector('.item-icon').textContent = i + 1;
+    });
+}
+
+function updateStatus() {
+    const n = container.querySelectorAll('.list-item').length;
+    $('statusText').textContent = n + ' فصول';
+    $('emptyState').style.display = n === 0 ? 'flex' : 'none';
+}
+
+// ══ إضافة فصل ══
+window.openAddModal  = function() { $('addModal').classList.add('show'); $('inputChapterName').value = ''; setTimeout(()=>$('inputChapterName').focus(),200); };
+window.closeAddModal = function() { $('addModal').classList.remove('show'); };
+
+window.addNewChapter = function() {
+    const name = $('inputChapterName').value.trim();
+    if (!name) { showToast('أدخل اسم الفصل أولاً', true); return; }
+    const id   = 'ch_' + Date.now();
+    const href = '#'; // غيّره لرابط الصفحة الفعلية إذا أردت
+    addItemToDOM(id, name, href);
+    closeAddModal();
+    saveIfChanged();
+    showToast('✅ تم إضافة الفصل');
+};
+
+// ══ SortableJS ══
+let sortableInst = null;
+function initSortable() {
+    if (sortableInst) sortableInst.destroy();
+    sortableInst = new Sortable(container, {
+        animation:200, delay:400, delayOnTouchOnly:true,
+        touchStartThreshold:10, forceFallback:true,
+        ghostClass:'sortable-ghost', dragClass:'sortable-drag',
+        onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
+        onEnd: () => { rebuildNumbers(); saveIfChanged(); }
+    });
+}
+
+// ══ Sidebar ══
+window.toggleMenu = function() {
+    const open = $('sideMenu').classList.toggle('open');
+    document.querySelector('.menu-btn').classList.toggle('rotate-active', open);
+    $('backdrop').classList.toggle('show', open);
+};
+window.closeMenu = function() {
+    $('sideMenu').classList.remove('open');
+    document.querySelector('.menu-btn').classList.remove('rotate-active');
+    $('backdrop').classList.remove('show');
+};
+
+// ══ Theme ══
+window.toggleTheme = function() {
+    const light = document.body.classList.toggle('light-mode');
+    localStorage.setItem('s2-theme', light ? 'light' : 'dark');
+    updateThemeUI(light);
+};
+function updateThemeUI(light) {
+    $('themeBtn').innerHTML     = light ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    $('themeIcon').className    = light ? 'fas fa-sun' : 'fas fa-moon';
+    $('themeLabel').textContent = light ? 'الوضع المظلم' : 'الوضع الفاتح';
+}
+function loadTheme() {
+    const light = localStorage.getItem('s2-theme') === 'light';
+    if (light) document.body.classList.add('light-mode');
+    updateThemeUI(light);
+}
+
+// ══ Edit Mode ══
+let editMode = false;
+window.toggleEditMode = function() {
+    editMode = !editMode;
+    document.body.classList.toggle('edit-mode-active', editMode);
+    $('editBtn').classList.toggle('active', editMode);
+    $('editModeText').textContent = editMode ? 'إنهاء التعديل' : 'تفعيل التعديل';
+    if (!editMode) {
+        document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+        $('editPopup').classList.remove('show');
+        $('confirmPopup').classList.remove('show');
     }
+};
+
+// ══ Long Press ══
+let pressTimer=null, currentEl=null, originalText='', elToDelete=null;
+function onTouchStart(e) {
+    if (!editMode) return;
+    const el = e.target.closest('.list-item'); if (!el) return;
+    pressTimer = setTimeout(() => { showEditPopup(el, e); pressTimer=null; }, 500);
+}
+function onTouchEnd()  { if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; } }
+function onTouchMove() { if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; } }
+
+function showEditPopup(el, e) {
+    currentEl    = el;
+    originalText = el.querySelector('.item-text').innerText;
+    const touch  = e.touches ? e.touches[0] : e;
+    const rect   = el.getBoundingClientRect();
+    const popup  = $('editPopup');
+    let popY = rect.top - 10; if (popY < 60) popY = rect.bottom + 60;
+    popup.style.left = touch.clientX + 'px';
+    popup.style.top  = popY + 'px';
+    popup.classList.add('show');
+    $('confirmPopup').classList.remove('show');
+    if (navigator.vibrate) navigator.vibrate(30);
 }
 
+window.requestDelete = function() {
+    if (!currentEl) return;
+    elToDelete = currentEl;
+    $('editPopup').classList.remove('show');
+    $('deleteModal').classList.add('show');
+};
+window.confirmDeleteChapter = function() {
+    if (elToDelete) {
+        elToDelete.remove();
+        rebuildNumbers();
+        saveIfChanged();
+        updateStatus();
+        showToast('🗑️ تم الحذف');
+        elToDelete = null; currentEl = null;
+    }
+    $('deleteModal').classList.remove('show');
+};
 
-        
+window.startEditText = function() {
+    if (!currentEl) return;
+    const span = currentEl.querySelector('.item-text');
+    span.setAttribute('contenteditable','true'); span.focus();
+    const r = document.createRange(); r.selectNodeContents(span); r.collapse(false);
+    window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+    $('editPopup').classList.remove('show');
+    const rect = currentEl.getBoundingClientRect();
+    const cp   = $('confirmPopup');
+    let popY = rect.top - 10; if (popY < 60) popY = rect.bottom + 60;
+    cp.style.left = (rect.left + rect.width/2) + 'px';
+    cp.style.top  = popY + 'px';
+    cp.classList.add('show');
+};
+window.confirmTextEdit = function() {
+    if (!currentEl) return;
+    currentEl.querySelector('.item-text').removeAttribute('contenteditable');
+    $('confirmPopup').classList.remove('show');
+    saveIfChanged();
+    currentEl = null;
+};
+window.cancelTextEdit = function() {
+    if (!currentEl) return;
+    currentEl.querySelector('.item-text').innerText = originalText;
+    currentEl.querySelector('.item-text').removeAttribute('contenteditable');
+    $('confirmPopup').classList.remove('show');
+    currentEl = null;
+};
 
-        function loadEditModePreference() {
-            const savedEditMode = localStorage.getItem('M1_EditMode');
-            if (savedEditMode === 'enabled') enableEditMode();
-            else disableEditMode();
+// ══ Reset ══
+window.resetEdits = function() {
+    if (!confirm('سيتم حذف كل الفصول المضافة. متأكد؟')) return;
+    localStorage.removeItem(`s2-${PAGE_ID}-${currentUser}`);
+    lastSaved = null;
+    location.reload();
+};
+
+// ══ منع الانتقال في وضع التعديل ══
+document.addEventListener('click', e => {
+    if (editMode) { const l = e.target.closest('a.list-item'); if (l) e.preventDefault(); }
+});
+
+// ══ تشغيل ══
+window.addEventListener('load', async () => {
+    loadTheme();
+    initSortable();
+
+    // بيانات افتراضية (الفصل الأول دائماً موجود)
+    const defaultChapters = [
+        { id:'ch_default_1', text:'الفصل الأول', href:'M1F1.html' }
+    ];
+
+    const cloud = await loadFromCloud();
+    if (cloud && cloud.length > 0) {
+        renderChapters(cloud);
+        lastSaved = JSON.stringify(cloud);
+        setSyncDot('ok');
+    } else {
+        const local = localStorage.getItem(`s2-${PAGE_ID}-${currentUser}`);
+        if (local) {
+            try { renderChapters(JSON.parse(local)); lastSaved = local; }
+            catch(e) { renderChapters(defaultChapters); }
+        } else {
+            renderChapters(defaultChapters);
         }
-
-        function toggleMenu() { 
-    // فتح وإغلاق القائمة الجانبية
-    document.getElementById("menu").classList.toggle("open"); 
-    // تدوير الزر وإرجاعه لطبيعته
-    document.querySelector(".menu-btn").classList.toggle("rotate-active");
-}
-
-        function toggleEditMode() {
-            editMode = !editMode;
-            if (editMode) enableEditMode();
-            else disableEditMode();
-        }
-
-        function enableEditMode() {
-            editMode = true;
-            document.body.classList.add('edit-mode-active');
-            document.querySelector('.edit-btn').innerHTML = '<span>✓</span> إنهاء التعديل';
-            localStorage.setItem('M1_EditMode', 'enabled');
-            showToast('وضع التعديل نشط');
-        }
-
-        function disableEditMode() {
-            editMode = false;
-            document.body.classList.remove('edit-mode-active');
-            document.querySelector('.edit-btn').innerHTML = '<span>✎</span> تفعيل التعديل';
-            localStorage.setItem('M1_EditMode', 'disabled');
-            document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
-            hideEditPopup();
-            hideConfirmPopup();
-        }
-
-        document.addEventListener('click', function(e) {
-            if (editMode) {
-                let link = e.target.closest('a');
-                if (link) e.preventDefault();
-            }
-        });
-
-        function handleTouchStart(e) {
-            if (!editMode || e.target.hasAttribute('contenteditable')) return;
-
-            const element = e.target.closest('.neon-btn');
-            if (!element) return;
-
-            currentEditElement = element;
-            originalText = currentEditElement.innerText;
-
-            const touch = e.touches ? e.touches[0] : e;
-const popup = document.getElementById('editPopup');
-const rect = currentEditElement.getBoundingClientRect();
-
-let popY = rect.top - 10; // محاولة وضع الأزرار فوق الفصل بقليل
-// إذا كان الفصل قريباً جداً من أعلى الشاشة، نعكس المكان ليصبح تحت الفصل
-if (popY < 60) {
-    popY = rect.bottom + 60; 
-}
-
-popup.style.left = touch.clientX + 'px';
-popup.style.top = popY + 'px';
-popup.classList.add('show');
-
-
-            hideConfirmPopup();
-        }
-
-        function openAddModal() {
-            document.getElementById('addModal').classList.add('show');
-            document.getElementById('menu').classList.remove('open');
-            document.getElementById('inputChapterName').value = '';
-        }
-
-        function closeAddModal() { document.getElementById('addModal').classList.remove('show'); }
-
-        function createNewFileFromTemplate(fileName, chapterTitle) {
-            let templateContent = "";
-            const templatePath = '/storage/emulated/0/Android/data/com.S2/files/555.json';
-
-            try {
-                if (typeof AndroidBridge !== 'undefined' && AndroidBridge.readFile) {
-                    const jsonContent = AndroidBridge.readFile(templatePath);
-                    if (jsonContent) {
-                        const parsed = JSON.parse(jsonContent);
-                        templateContent = parsed.template || ""; 
-                    }
-                }
-            } catch(e) {}
-
-            if (!templateContent) {
-                templateContent = `<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<title>${chapterTitle}</title>\n<style>body{font-family: 'Tajawal', sans-serif; background: #000; color:#fff; text-align: center; padding: 50px;}</style>\n</head>\n<body>\n<h1>${chapterTitle}</h1>\n</body>\n</html>`;
-            } else {
-                templateContent = templateContent.replace(/{{TITLE}}/g, chapterTitle);
-            }
-
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.saveFile) {
-                const fullPath = '/storage/emulated/0/Android/data/com.S2/files/' + fileName;
-                AndroidBridge.saveFile(fullPath, templateContent);
-            }
-        }
-
-        function addNewChapter() {
-            const chapterName = document.getElementById('inputChapterName').value.trim();
-            if (!chapterName) {
-                showToast('يرجى كتابة اسم الفصل أولاً');
-                return;
-            }
-
-            const existingLinks = Array.from(document.querySelectorAll('.neon-btn')).map(el => el.getAttribute('href') || '');
-            let maxId = 0;
-            
-            existingLinks.forEach(href => {
-                const match = href.match(/M1D(\d+)\.html/i) || href.match(/M1\.1D(\d+)\.html/i);
-                if (match && match[1]) {
-                    const num = parseInt(match[1]);
-                    if (num > maxId) maxId = num;
-                }
-            });
-
-            const nextId = maxId + 1;
-            const newFileName = `M1D${nextId}.html`;
-
-            createNewFileFromTemplate(newFileName, chapterName);
-
-            const container = document.getElementById('mainContainer');
-            const newBtn = document.createElement('a');
-            
-            const uniqueBtnId = 'btn_custom_' + Date.now();
-            newBtn.id = uniqueBtnId; 
-            
-            newBtn.href = newFileName;
-            newBtn.className = 'neon-btn';
-            newBtn.textContent = chapterName;
-            newBtn.addEventListener('mousedown', handleTouchStart);
-            newBtn.addEventListener('touchstart', handleTouchStart, {passive: true});
-
-            container.appendChild(newBtn);
-            
-            updateChapterLog(uniqueBtnId, chapterName, newFileName, 'active');
-            
-            closeAddModal();
-            saveChanges();
-            showToast(`  تم إنشاء ${chapterName}`);
-        }
-
-        function prepareEdit() {
-            if (currentEditElement) {
-                currentEditElement.setAttribute('contenteditable', 'true');
-                currentEditElement.focus();
-                hideEditPopup();
-                
-                const rect = currentEditElement.getBoundingClientRect();
-const confirmPopup = document.getElementById('confirmPopup');
-
-let popY = rect.top - 10;
-// نفس المنطق، حماية الأزرار من الخروج من الشاشة
-if (popY < 60) {
-    popY = rect.bottom + 60;
-}
-
-confirmPopup.style.left = (rect.left + rect.width / 2) + 'px';
-confirmPopup.style.top = popY + 'px';
-confirmPopup.classList.add('show');
-
-            }
-        }
-
-        function confirmEdit() {
-            if (currentEditElement) {
-                const newText = currentEditElement.innerText.trim();
-                if (newText !== '' && newText !== originalText) {
-                    
-                    updateChapterLog(currentEditElement.id, newText, currentEditElement.getAttribute('href'), 'active');
-                    
-                    saveChanges();
-                    showToast('  تم تحديث الاسم');
-                } else {
-                    currentEditElement.innerText = originalText;
-                }
-                currentEditElement.removeAttribute('contenteditable');
-                hideConfirmPopup();
-                currentEditElement = null;
-            }
-        }
-
-        function cancelEdit() {
-            if (currentEditElement) {
-                currentEditElement.innerText = originalText;
-                currentEditElement.removeAttribute('contenteditable');
-                hideConfirmPopup();
-                currentEditElement = null;
-            }
-        }
-
-        function deleteElement() {
-            if (currentEditElement) {
-                if (currentEditElement.id === 'btn_1') {
-                    showToast('⚠️ عذراً، لا يمكن حذف الفصل الأساسي الأول!');
-                    hideEditPopup();
-                    return;
-                }
-                
-                elementToDelete = currentEditElement;
-                hideEditPopup();
-                document.getElementById('deleteConfirmModal').classList.add('show');
-            }
-        }
-
-        function confirmDeleteElement() {
-            if (elementToDelete) {
-                
-                updateChapterLog(elementToDelete.id, elementToDelete.textContent, elementToDelete.getAttribute('href'), 'deleted');
-                
-                elementToDelete.remove();
-                closeDeleteModal();
-                saveChanges();
-                showToast(' تم الحذف');
-                elementToDelete = null;
-                currentEditElement = null;
-            }
-        }
-
-        function closeDeleteModal() { document.getElementById('deleteConfirmModal').classList.remove('show'); }
-        function cancelPopup() { hideEditPopup(); currentEditElement = null; }
-        function hideEditPopup() { document.getElementById('editPopup').classList.remove('show'); }
-        function hideConfirmPopup() { document.getElementById('confirmPopup').classList.remove('show'); }
-
-        function showToast(msg) {
-            const toast = document.getElementById('editToast');
-            toast.innerHTML = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        function saveChanges() {
-            document.getElementById('editPopup').classList.remove('show');
-            document.getElementById('confirmPopup').classList.remove('show');
-            document.getElementById('addModal').classList.remove('show');
-            document.getElementById('deleteConfirmModal').classList.remove('show');
-            document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
-
-            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.saveFile) {
-                AndroidBridge.saveFile('/storage/emulated/0/Android/data/com.S2/files/M1.html', htmlContent);
-            }
-        }
-
-        window.addEventListener('load', () => {
-            restoreChaptersFromLog();
-            loadThemePreference();
-            loadEditModePreference();
-
-            document.querySelectorAll('.neon-btn').forEach(btn => {
-                btn.addEventListener('mousedown', handleTouchStart);
-                btn.addEventListener('touchstart', handleTouchStart, {passive: true});
-            });
-        });
-    </script>
-
-
-</body></html>
+    }
+    updateStatus();
+});
+</script>
+</body>
+</html>
