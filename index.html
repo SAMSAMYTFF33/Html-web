@@ -31,7 +31,7 @@
             -webkit-user-select:none; user-select:none;
         }
 
-        /* ══ AUTH SCREEN (Facebook style) ══ */
+        /* ══ AUTH SCREEN ══ */
         #authScreen {
             min-height:100vh;
             background:#1877f2;
@@ -89,19 +89,6 @@
         .fb-btn:disabled { opacity:0.7; cursor:not-allowed; }
         .fb-btn.blue { background:#1877f2; color:#fff; }
         .fb-btn.blue:hover:not(:disabled) { filter:brightness(1.08); }
-        .fb-btn.green { background:#42b72a; color:#fff; }
-        .fb-btn.green:hover:not(:disabled) { filter:brightness(1.08); }
-
-        .fb-divider {
-            border:none; border-top:1px solid #dddfe2; margin:16px 0;
-        }
-        .fb-link {
-            display:block; text-align:center;
-            color:#1877f2; font-size:14px; cursor:pointer;
-            padding:4px 0;
-        }
-        .fb-link:hover { text-decoration:underline; }
-        .fb-forgot { margin-bottom:16px; }
 
         .spinner {
             display:inline-block; width:14px; height:14px;
@@ -268,7 +255,7 @@
 </head>
 <body oncontextmenu="return false;">
 
-<!-- ══ شاشة الدخول (Facebook Style) ══ -->
+<!-- ══ شاشة الدخول ══ -->
 <div id="authScreen">
     <div class="fb-logo">samsam</div>
     <div class="fb-tagline">منصة S2 التعليمية — تواصل مع مواد دراستك في أي وقت</div>
@@ -276,22 +263,11 @@
     <div class="fb-card">
         <div id="authAlert" class="fb-alert"></div>
 
-        <!-- نموذج الدخول -->
+        <!-- نموذج الدخول فقط -->
         <form id="loginForm">
             <input class="fb-input" type="email" id="loginEmail" placeholder="البريد الإلكتروني" required autocomplete="email">
             <input class="fb-input" type="password" id="loginPassword" placeholder="كلمة السر" required autocomplete="current-password">
             <button type="submit" class="fb-btn blue" id="loginBtn">تسجيل الدخول</button>
-            <hr class="fb-divider">
-            <button type="button" class="fb-btn green" id="showRegister">إنشاء حساب جديد</button>
-        </form>
-
-        <!-- نموذج التسجيل -->
-        <form id="registerForm" style="display:none;">
-            <input class="fb-input" type="email" id="regEmail" placeholder="البريد الإلكتروني" required autocomplete="email">
-            <input class="fb-input" type="password" id="regPassword" placeholder="كلمة السر (6 أحرف على الأقل)" required minlength="6" autocomplete="new-password">
-            <button type="submit" class="fb-btn green" id="registerBtn">إنشاء الحساب</button>
-            <hr class="fb-divider">
-            <span class="fb-link" id="showLogin">لديك حساب بالفعل؟ تسجيل الدخول</span>
         </form>
     </div>
 </div>
@@ -372,7 +348,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, doc, setDoc, getDoc }
+import { getFirestore, collection, getDocs, query, where, doc, setDoc, getDoc }
     from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -389,7 +365,7 @@ const db  = getFirestore(app);
 const $ = id => document.getElementById(id);
 let currentUser = sessionStorage.getItem('s2_user');
 
-// ══ Toast (بدون رسائل حفظ تلقائي) ══
+// ══ Toast ══
 let toastTimer = null;
 window.showToast = function(msg, type='') {
     const t = $('toastMsg');
@@ -410,38 +386,7 @@ function setLoading(btn, on, label) {
     btn.innerHTML = on ? label + ' <span class="spinner"></span>' : label;
 }
 
-// ══ تبديل النماذج ══
-$('showRegister').onclick = () => {
-    $('loginForm').style.display = 'none';
-    $('registerForm').style.display = 'block';
-    $('authAlert').className = 'fb-alert';
-};
-$('showLogin').onclick = () => {
-    $('registerForm').style.display = 'none';
-    $('loginForm').style.display = 'block';
-    $('authAlert').className = 'fb-alert';
-};
-
-// ══ تسجيل حساب ══
-$('registerForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const email = $('regEmail').value.trim().toLowerCase();
-    const pass  = $('regPassword').value;
-    const btn   = $('registerBtn');
-    setLoading(btn, true, 'إنشاء الحساب');
-    showAuthAlert('جاري التحقق...', 'info');
-    try {
-        const snap = await getDocs(query(collection(db,"users"), where("username","==",email)));
-        if (!snap.empty) { showAuthAlert('❌ هذا البريد مسجل مسبقاً', 'danger'); setLoading(btn,false,'إنشاء الحساب'); return; }
-        await addDoc(collection(db,"users"), { username:email, password:pass, createdAt:new Date() });
-        showAuthAlert('✅ تم إنشاء الحساب! جاري التحويل...', 'success');
-        $('registerForm').reset();
-        setTimeout(() => $('showLogin').click(), 1800);
-    } catch(err) { showAuthAlert('❌ '+err.message, 'danger'); }
-    setLoading(btn, false, 'إنشاء الحساب');
-});
-
-// ══ تسجيل الدخول ══
+// ══ تسجيل الدخول فقط ══
 $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     const email = $('loginEmail').value.trim().toLowerCase();
@@ -491,7 +436,7 @@ async function launchApp() {
 
 window.addEventListener('load', () => { if (currentUser) launchApp(); });
 
-// ══ Sync — يحفظ فقط عند تغيير فعلي ══
+// ══ Sync ══
 let lastSavedState = null;
 
 function setSyncDot(s) {
@@ -501,7 +446,7 @@ function setSyncDot(s) {
 
 async function saveIfChanged() {
     const current = JSON.stringify(getState());
-    if (current === lastSavedState) return; // لا يوجد تغيير → لا تحفظ
+    if (current === lastSavedState) return;
     lastSavedState = current;
     localStorage.setItem('s2-state-'+currentUser, current);
     setSyncDot('syncing');
@@ -576,7 +521,7 @@ function initSortable() {
         touchStartThreshold:10, forceFallback:true,
         ghostClass:'sortable-ghost', dragClass:'sortable-drag',
         onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
-        onEnd: saveIfChanged   // ← يحفظ فقط بعد السحب الفعلي
+        onEnd: saveIfChanged
     });
 }
 
@@ -658,7 +603,7 @@ window.requestDeleteMaterial = function() {
 window.confirmDeleteMaterial = function() {
     if (materialToDelete) {
         materialToDelete.remove();
-        saveIfChanged();   // ← يحفظ فقط لأن التغيير حصل
+        saveIfChanged();
         updateStatus();
         showToast('🗑️ تم الحذف');
         materialToDelete=null; currentEditElement=null;
@@ -683,7 +628,7 @@ window.confirmTextEdit = function() {
     if (!currentEditElement) return;
     currentEditElement.querySelector('.btn-text').removeAttribute('contenteditable');
     $('confirmPopup').classList.remove('show');
-    saveIfChanged();   // ← يحفظ فقط إذا النص تغير فعلاً
+    saveIfChanged();
     currentEditElement=null;
 };
 window.cancelTextEdit = function() {
