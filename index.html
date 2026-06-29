@@ -8,15 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:      #0d1117;
-            --surface: #161b22;
-            --border:  #30363d;
-            --accent:  #238636;
-            --accent2: #1f6feb;
-            --text:    #e6edf3;
-            --muted:   #8b949e;
-            --danger:  #da3633;
-            --warn:    #d29922;
+            --bg:#0d1117; --surface:#161b22; --border:#30363d;
+            --accent:#238636; --accent2:#1f6feb; --text:#e6edf3;
+            --muted:#8b949e; --danger:#da3633; --warn:#d29922;
         }
         body.light-mode {
             --bg:#fff; --surface:#f6f8fa; --border:#d0d7de;
@@ -31,37 +25,94 @@
             -webkit-user-select:none; user-select:none;
         }
 
-        /* ══ AUTH SCREEN ══ */
-        #authScreen {
-            min-height:100vh;
-            background:#1877f2;
+        /* ══ SPLASH ══ */
+        #splashScreen {
+            position:fixed; inset:0; z-index:9999;
+            background:#0d1117;
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
-            padding:20px;
         }
-        .fb-logo {
-            font-size:3rem; font-weight:900;
-            color:#fff; letter-spacing:-1px;
-            margin-bottom:8px;
-            text-shadow:0 2px 8px rgba(0,0,0,0.15);
+        #splashScreen::before {
+            content:'';
+            position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(31,111,235,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(31,111,235,0.06) 1px, transparent 1px);
+            background-size:36px 36px;
         }
-        .fb-tagline {
-            color:rgba(255,255,255,0.85);
-            font-size:14px; margin-bottom:24px;
-            text-align:center; max-width:280px;
+        .sp-glow {
+            position:absolute;
+            width:280px; height:280px;
+            background:radial-gradient(circle, rgba(31,111,235,0.15) 0%, transparent 70%);
+            border-radius:50%;
+            animation:glowP 2.5s ease-in-out infinite;
         }
-        .fb-card {
-            width:100%; max-width:396px;
-            background:#fff; border-radius:8px;
-            padding:16px;
-            box-shadow:0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+        @keyframes glowP { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.2);opacity:1} }
+
+        .sp-body {
+            position:relative; z-index:2;
+            display:flex; flex-direction:column; align-items:center; gap:14px;
+            animation:spIn .65s cubic-bezier(.34,1.56,.64,1) forwards;
+            opacity:0; transform:scale(.75) translateY(18px);
         }
-        .fb-alert {
-            font-size:13px; font-weight:600;
-            padding:10px 14px; border-radius:6px;
-            margin-bottom:12px; display:none;
-            border:1px solid transparent;
+        @keyframes spIn { to{opacity:1;transform:scale(1) translateY(0)} }
+
+        .sp-box {
+            width:82px; height:82px; border-radius:20px;
+            background:linear-gradient(135deg,#1f6feb18,#23863618);
+            border:1.5px solid #1f6feb33;
+            display:flex; align-items:center; justify-content:center;
+            box-shadow:0 0 36px rgba(31,111,235,0.18);
+            position:relative;
         }
+        .sp-box::after {
+            content:''; position:absolute; inset:-7px; border-radius:27px;
+            border:1px solid rgba(31,111,235,0.18);
+            animation:ringP 2s ease infinite;
+        }
+        @keyframes ringP { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(1.07)} }
+
+        .sp-s2 { font-size:2.5rem; font-weight:900; color:#e6edf3; letter-spacing:-1px; line-height:1; }
+        .sp-s2 span { color:#1f6feb; }
+        .sp-title { font-size:1rem; font-weight:800; color:#e6edf3; letter-spacing:2px; }
+        .sp-sub   { font-size:.75rem; color:#8b949e; letter-spacing:1px; margin-top:-8px; }
+
+        .sp-bar-wrap {
+            position:absolute; bottom:52px; left:50%; transform:translateX(-50%);
+            width:160px; z-index:2;
+            display:flex; flex-direction:column; align-items:center; gap:7px;
+            animation:fadeUpSp .4s .55s ease forwards; opacity:0;
+        }
+        @keyframes fadeUpSp { to{opacity:1} }
+        .sp-bar-bg  { width:100%; height:2px; background:#30363d; border-radius:2px; overflow:hidden; }
+        .sp-bar-fill {
+            height:100%; width:0%;
+            background:linear-gradient(90deg,#1f6feb,#238636);
+            border-radius:2px; transition:width .35s ease;
+            box-shadow:0 0 8px rgba(31,111,235,.5);
+        }
+        .sp-label { font-size:11px; color:#8b949e; letter-spacing:.8px; }
+
+        #splashScreen.sp-out {
+            animation:spOut .45s ease forwards;
+            pointer-events:none;
+        }
+        @keyframes spOut { to{opacity:0;transform:scale(1.03)} }
+
+        /* ══ AUTH ══ */
+        #authScreen {
+            min-height:100vh; background:#1877f2;
+            display:none; flex-direction:column;
+            align-items:center; justify-content:center; padding:20px;
+        }
+        #authScreen.show { display:flex; animation:authIn .35s ease; }
+        @keyframes authIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+        .fb-logo    { font-size:3rem; font-weight:900; color:#fff; letter-spacing:-1px; margin-bottom:8px; text-shadow:0 2px 8px rgba(0,0,0,.15); }
+        .fb-tagline { color:rgba(255,255,255,.85); font-size:14px; margin-bottom:24px; text-align:center; max-width:280px; }
+        .fb-card    { width:100%; max-width:396px; background:#fff; border-radius:8px; padding:16px; box-shadow:0 2px 4px rgba(0,0,0,.1),0 8px 16px rgba(0,0,0,.1); }
+
+        .fb-alert { font-size:13px; font-weight:600; padding:10px 14px; border-radius:6px; margin-bottom:12px; display:none; border:1px solid transparent; }
         .fb-alert.info    { display:block; background:#e7f3ff; color:#1877f2; border-color:#b3d4fc; }
         .fb-alert.success { display:block; background:#e6f4ea; color:#1a7f37; border-color:#a8d5b0; }
         .fb-alert.danger  { display:block; background:#ffebe9; color:#cf222e; border-color:#ffc1bd; }
@@ -70,37 +121,45 @@
             width:100%; padding:14px 16px; margin-bottom:12px;
             border:1px solid #dddfe2; border-radius:6px;
             font-size:17px; font-family:'Tajawal',sans-serif;
-            outline:none; color:#1c1e21;
-            transition:border-color 0.2s, box-shadow 0.2s;
-            display:block;
+            outline:none; color:#1c1e21; transition:border-color .2s,box-shadow .2s; display:block;
         }
         .fb-input:focus { border-color:#1877f2; box-shadow:0 0 0 2px #e7f3ff; }
         .fb-input::placeholder { color:#90949c; }
 
-        .fb-btn {
-            width:100%; padding:14px;
-            font-size:17px; font-weight:700;
-            font-family:'Tajawal',sans-serif;
-            border:none; border-radius:6px;
-            cursor:pointer; transition:filter 0.2s, transform 0.1s;
-            display:block;
+        /* تذكرني */
+        .remember-row {
+            display:flex; align-items:center; gap:8px;
+            margin-bottom:14px; cursor:pointer; padding:2px 0;
         }
-        .fb-btn:active { transform:scale(0.98); }
-        .fb-btn:disabled { opacity:0.7; cursor:not-allowed; }
-        .fb-btn.blue { background:#1877f2; color:#fff; }
+        .rem-box {
+            width:17px; height:17px; border-radius:4px;
+            border:2px solid #dddfe2; background:#fff;
+            display:flex; align-items:center; justify-content:center;
+            transition:.15s; flex-shrink:0; font-size:10px; color:#fff;
+        }
+        .rem-box.on { background:#1877f2; border-color:#1877f2; }
+        .remember-label { font-size:13px; color:#606770; font-family:'Tajawal',sans-serif; }
+
+        .fb-btn {
+            width:100%; padding:14px; font-size:17px; font-weight:700;
+            font-family:'Tajawal',sans-serif; border:none; border-radius:6px;
+            cursor:pointer; transition:filter .2s,transform .1s; display:block;
+        }
+        .fb-btn:active  { transform:scale(.98); }
+        .fb-btn:disabled { opacity:.7; cursor:not-allowed; }
+        .fb-btn.blue    { background:#1877f2; color:#fff; }
         .fb-btn.blue:hover:not(:disabled) { filter:brightness(1.08); }
 
         .spinner {
             display:inline-block; width:14px; height:14px;
-            border:2px solid rgba(255,255,255,0.4); border-top-color:#fff;
-            border-radius:50%; animation:spin 0.7s linear infinite;
+            border:2px solid rgba(255,255,255,.4); border-top-color:#fff;
+            border-radius:50%; animation:spin .7s linear infinite;
             margin-left:6px; vertical-align:middle;
         }
-        @keyframes spin { to { transform:rotate(360deg); } }
+        @keyframes spin { to{transform:rotate(360deg)} }
 
-        /* ══ APP SCREEN ══ */
+        /* ══ APP ══ */
         #appScreen { display:none; }
-
         .header {
             position:fixed; top:0; left:0; right:0; height:48px;
             background:var(--surface); border-bottom:1px solid var(--border);
@@ -110,59 +169,46 @@
         .header-left,.header-right { display:flex; align-items:center; gap:6px; }
         .app-title { font-size:15px; font-weight:800; color:var(--text); letter-spacing:1px; }
         .app-title span { color:var(--accent); }
-
         .menu-btn,.icon-btn {
             width:32px; height:32px; background:none;
-            border:1px solid var(--border); border-radius:6px;
-            color:var(--muted); cursor:pointer;
+            border:1px solid var(--border); border-radius:6px; color:var(--muted); cursor:pointer;
             display:flex; align-items:center; justify-content:center;
-            font-size:13px; transition:color 0.15s, border-color 0.15s, transform 0.2s;
+            font-size:13px; transition:color .15s,border-color .15s,transform .2s;
         }
         .menu-btn { font-size:14px; }
         .menu-btn:hover,.icon-btn:hover { color:var(--text); border-color:var(--muted); }
         .menu-btn.rotate-active { transform:rotate(90deg); }
         .icon-btn.active { color:var(--accent2); border-color:var(--accent2); }
-
-        .sync-dot {
-            width:8px; height:8px; border-radius:50%;
-            background:var(--border); transition:background 0.3s;
-        }
+        .sync-dot { width:8px; height:8px; border-radius:50%; background:var(--border); transition:background .3s; }
         .sync-dot.syncing { background:var(--warn); animation:pulse 1s infinite; }
         .sync-dot.synced  { background:var(--accent); }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
         .backdrop { display:none; position:fixed; inset:0; z-index:98; }
         .backdrop.show { display:block; }
-
         .side-menu {
             position:fixed; top:48px; left:-260px; width:260px;
             height:calc(100vh - 48px); background:var(--surface);
             border-right:1px solid var(--border); padding:8px 0;
-            z-index:99; transition:left 0.25s ease;
+            z-index:99; transition:left .25s ease;
         }
         .side-menu.open { left:0; }
-
         .user-badge {
             padding:12px 16px; font-size:12px; color:var(--muted);
             border-bottom:1px solid var(--border); margin-bottom:6px;
             display:flex; align-items:center; gap:8px;
         }
         .user-badge i { color:var(--accent); font-size:14px; }
-        .user-badge span { font-size:11px; }
-
         .menu-item {
             display:flex; align-items:center; gap:10px; padding:10px 16px;
             font-size:14px; font-weight:600; color:var(--muted);
             background:none; border:none; cursor:pointer; width:100%;
-            text-align:right; transition:color 0.15s, background 0.15s;
-            font-family:'Tajawal',sans-serif;
+            text-align:right; transition:color .15s,background .15s; font-family:'Tajawal',sans-serif;
         }
-        .menu-item:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+        .menu-item:hover { color:var(--text); background:rgba(255,255,255,.04); }
         .menu-item i { width:16px; text-align:center; font-size:13px; }
         .menu-item.logout { color:var(--danger); }
-        .menu-item.logout:hover { background:rgba(218,54,51,0.08); }
+        .menu-item.logout:hover { background:rgba(218,54,51,.08); }
         .menu-sep { height:1px; background:var(--border); margin:6px 0; }
-
         .main { padding-top:48px; }
         .status-bar {
             display:flex; align-items:center; gap:6px; padding:6px 12px;
@@ -170,12 +216,11 @@
             border-bottom:1px solid var(--border); background:var(--surface);
         }
         .dot { width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; }
-
         .list { display:flex; flex-direction:column; }
         .list-item {
             display:flex; align-items:center; border-bottom:1px solid var(--border);
             text-decoration:none; color:var(--text); background:var(--bg);
-            transition:background 0.1s; position:relative; cursor:pointer; min-height:52px;
+            transition:background .1s; position:relative; cursor:pointer; min-height:52px;
         }
         .list-item:active { background:var(--surface); }
         .item-icon {
@@ -183,71 +228,52 @@
             display:flex; align-items:center; justify-content:center;
             font-size:16px; color:var(--accent2); border-left:1px solid var(--border);
         }
-        .item-body {
-            flex:1; padding:14px 14px 14px 10px;
-            display:flex; align-items:center; justify-content:space-between;
-        }
-        .item-text { font-size:14px; font-weight:600; line-height:1.3; }
+        .item-body { flex:1; padding:14px 14px 14px 10px; display:flex; align-items:center; justify-content:space-between; }
+        .item-text  { font-size:14px; font-weight:600; line-height:1.3; }
         .item-arrow { color:var(--border); font-size:12px; }
-
-        .edit-mode-active .list-item::before {
-            content:''; position:absolute; right:0; top:0; bottom:0; width:3px; background:var(--accent2);
-        }
-        .edit-mode-active [contenteditable="true"] {
-            outline:1px dashed var(--accent2); outline-offset:2px; cursor:text; border-radius:2px;
-        }
-        .sortable-ghost { opacity:0.3; background:var(--surface) !important; }
+        .edit-mode-active .list-item::before { content:''; position:absolute; right:0; top:0; bottom:0; width:3px; background:var(--accent2); }
+        .edit-mode-active [contenteditable="true"] { outline:1px dashed var(--accent2); outline-offset:2px; cursor:text; border-radius:2px; }
+        .sortable-ghost { opacity:.3; background:var(--surface) !important; }
         .sortable-drag  { opacity:1 !important; background:var(--surface) !important; border-right:2px solid var(--accent2) !important; }
-
         .edit-popup,.confirm-popup {
             position:fixed; display:flex; gap:6px; border-radius:8px; padding:6px 10px;
             z-index:2000; transform:translate(-50%,-100%); pointer-events:none; opacity:0;
-            transition:opacity 0.15s; background:var(--surface); border:1px solid var(--border);
-            box-shadow:0 4px 16px rgba(0,0,0,0.4);
+            transition:opacity .15s; background:var(--surface); border:1px solid var(--border);
+            box-shadow:0 4px 16px rgba(0,0,0,.4);
         }
         .edit-popup.show,.confirm-popup.show { pointer-events:all; opacity:1; transform:translate(-50%,-115%); }
         .edit-popup button,.confirm-popup button {
             width:36px; height:36px; border-radius:6px; border:1px solid var(--border);
             font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center;
-            transition:0.15s; background:var(--bg);
+            transition:.15s; background:var(--bg);
         }
         .delete-btn       { color:var(--danger) !important; }
-        .delete-btn:hover { background:rgba(218,54,51,0.12) !important; }
+        .delete-btn:hover { background:rgba(218,54,51,.12) !important; }
         .edit-btn-popup   { color:var(--accent2) !important; }
         .cancel-btn-popup { color:var(--muted) !important; }
         .confirm-edit-btn { color:var(--accent) !important; }
         .cancel-edit-btn  { color:var(--danger) !important; }
-
         .modal-overlay {
-            position:fixed; inset:0; background:rgba(0,0,0,0.7);
+            position:fixed; inset:0; background:rgba(0,0,0,.7);
             display:flex; align-items:center; justify-content:center;
-            z-index:3000; opacity:0; pointer-events:none; transition:opacity 0.2s;
+            z-index:3000; opacity:0; pointer-events:none; transition:opacity .2s;
         }
         .modal-overlay.show { opacity:1; pointer-events:all; }
-        .modal-content {
-            width:88%; max-width:360px; border-radius:10px; padding:20px;
-            background:var(--surface); border:1px solid var(--border);
-            box-shadow:0 16px 32px rgba(0,0,0,0.5);
-        }
+        .modal-content { width:88%; max-width:360px; border-radius:10px; padding:20px; background:var(--surface); border:1px solid var(--border); box-shadow:0 16px 32px rgba(0,0,0,.5); }
         .modal-content h3 { font-size:15px; color:var(--danger); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
         .modal-content p  { font-size:13px; color:var(--muted); margin-bottom:16px; }
         .modal-buttons    { display:flex; gap:8px; }
-        .modal-buttons button {
-            flex:1; padding:10px; border-radius:6px; border:1px solid var(--border);
-            font-size:13px; font-weight:700; font-family:'Tajawal',sans-serif;
-            cursor:pointer; transition:0.15s; background:var(--bg); color:var(--text);
-        }
+        .modal-buttons button { flex:1; padding:10px; border-radius:6px; border:1px solid var(--border); font-size:13px; font-weight:700; font-family:'Tajawal',sans-serif; cursor:pointer; transition:.15s; background:var(--bg); color:var(--text); }
         .btn-danger { color:var(--danger) !important; border-color:var(--danger) !important; }
-        .btn-danger:hover { background:rgba(218,54,51,0.1) !important; }
-
+        .btn-danger:hover { background:rgba(218,54,51,.1) !important; }
         .toast {
             position:fixed; bottom:20px; left:50%;
             transform:translateX(-50%) translateY(10px);
             background:var(--surface); border:1px solid var(--border);
             border-right:3px solid var(--accent); color:var(--text);
             padding:9px 16px; border-radius:6px; font-size:13px; font-weight:600;
-            z-index:4000; opacity:0; transition:opacity 0.2s, transform 0.2s;
-            pointer-events:none; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,0.3);
+            z-index:4000; opacity:0; transition:opacity .2s,transform .2s;
+            pointer-events:none; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,.3);
         }
         .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
         .toast.err  { border-right-color:var(--danger) !important; }
@@ -255,18 +281,35 @@
 </head>
 <body oncontextmenu="return false;">
 
+<!-- ══ Splash ══ -->
+<div id="splashScreen">
+    <div class="sp-glow"></div>
+    <div class="sp-body">
+        <div class="sp-box">
+            <div class="sp-s2">S<span>2</span></div>
+        </div>
+        <div class="sp-title">منصة S2</div>
+        <div class="sp-sub">التعليمية</div>
+    </div>
+    <div class="sp-bar-wrap">
+        <div class="sp-bar-bg"><div class="sp-bar-fill" id="spBar"></div></div>
+        <div class="sp-label" id="spLabel">جاري التهيئة...</div>
+    </div>
+</div>
+
 <!-- ══ شاشة الدخول ══ -->
 <div id="authScreen">
     <div class="fb-logo">samsam</div>
     <div class="fb-tagline">منصة S2 التعليمية — تواصل مع مواد دراستك في أي وقت</div>
-
     <div class="fb-card">
         <div id="authAlert" class="fb-alert"></div>
-
-        <!-- نموذج الدخول فقط -->
         <form id="loginForm">
             <input class="fb-input" type="email" id="loginEmail" placeholder="البريد الإلكتروني" required autocomplete="email">
             <input class="fb-input" type="password" id="loginPassword" placeholder="كلمة السر" required autocomplete="current-password">
+            <div class="remember-row" id="rememberRow">
+                <div class="rem-box" id="remBox"></div>
+                <span class="remember-label">تذكرني — لا تطلب مني تسجيل الدخول مجدداً</span>
+            </div>
             <button type="submit" class="fb-btn blue" id="loginBtn">تسجيل الدخول</button>
         </form>
     </div>
@@ -285,9 +328,7 @@
             <button class="icon-btn" id="editBtn" onclick="toggleEditMode()"><i class="fas fa-edit"></i></button>
         </div>
     </div>
-
     <div class="backdrop" id="backdrop" onclick="closeMenu()"></div>
-
     <div class="side-menu" id="sideMenu">
         <div class="user-badge"><i class="fas fa-user-circle"></i><span id="userLabel">...</span></div>
         <button class="menu-item" onclick="toggleTheme()">
@@ -305,7 +346,6 @@
             <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
         </button>
     </div>
-
     <div class="main">
         <div class="status-bar">
             <span class="dot"></span><span id="statusText">7 مواد</span>
@@ -320,7 +360,6 @@
             <a href="M7.html" class="list-item" data-id="m7"><div class="item-icon"><i class="fas fa-robot"></i></div><div class="item-body"><span class="btn-text item-text">المهارات الرقمية والذكاء الاصطناعي</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
         </div>
     </div>
-
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-content">
             <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
@@ -331,7 +370,6 @@
             </div>
         </div>
     </div>
-
     <div class="edit-popup" id="editPopup">
         <button class="delete-btn"       onclick="requestDeleteMaterial()"><i class="fas fa-trash"></i></button>
         <button class="edit-btn-popup"   onclick="startEditText()"><i class="fas fa-pen"></i></button>
@@ -361,9 +399,57 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
+const $   = id => document.getElementById(id);
 
-const $ = id => document.getElementById(id);
-let currentUser = sessionStorage.getItem('s2_user');
+// ══ مفتاح الجلسة الدائمة ══
+const SESSION_KEY = 's2_user_persist';
+
+// قراءة المستخدم: أولاً sessionStorage، ثم localStorage (تذكرني)
+function getSavedUser() {
+    return sessionStorage.getItem('s2_user') || localStorage.getItem(SESSION_KEY) || null;
+}
+function saveUser(email, remember) {
+    sessionStorage.setItem('s2_user', email);           // دائماً للتبويب الحالي
+    if (remember) localStorage.setItem(SESSION_KEY, email); // دائم عند إغلاق المتصفح
+}
+function clearUser() {
+    sessionStorage.removeItem('s2_user');
+    localStorage.removeItem(SESSION_KEY);
+}
+
+let currentUser = getSavedUser();
+
+// ══ تذكرني UI ══
+let rememberMe = !!localStorage.getItem(SESSION_KEY);
+function syncRemBox() { $('remBox').classList.toggle('on', rememberMe); }
+$('rememberRow').addEventListener('click', () => { rememberMe = !rememberMe; syncRemBox(); });
+syncRemBox();
+
+// ══ Splash ══
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function hideSplash(fast) {
+    if (fast) {
+        $('spBar').style.width  = '100%';
+        $('spLabel').textContent = 'أهلاً بعودتك!';
+        await sleep(500);
+    } else {
+        const steps = [
+            {w:'25%', t:'جاري التهيئة...'},
+            {w:'60%', t:'تحميل الموارد...'},
+            {w:'90%', t:'جاهز!'},
+        ];
+        for (const s of steps) {
+            $('spBar').style.width   = s.w;
+            $('spLabel').textContent = s.t;
+            await sleep(370);
+        }
+        $('spBar').style.width = '100%';
+        await sleep(280);
+    }
+    $('splashScreen').classList.add('sp-out');
+    await sleep(460);
+    $('splashScreen').style.display = 'none';
+}
 
 // ══ Toast ══
 let toastTimer = null;
@@ -386,7 +472,7 @@ function setLoading(btn, on, label) {
     btn.innerHTML = on ? label + ' <span class="spinner"></span>' : label;
 }
 
-// ══ تسجيل الدخول فقط ══
+// ══ تسجيل الدخول ══
 $('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     const email = $('loginEmail').value.trim().toLowerCase();
@@ -396,11 +482,14 @@ $('loginForm').addEventListener('submit', async e => {
     showAuthAlert('جاري الفحص...', 'info');
     try {
         const snap = await getDocs(query(collection(db,"users"), where("username","==",email)));
-        if (snap.empty) { showAuthAlert('❌ لم نجد حساباً بهذا البريد', 'danger'); setLoading(btn,false,'تسجيل الدخول'); return; }
+        if (snap.empty) {
+            showAuthAlert('❌ لم نجد حساباً بهذا البريد', 'danger');
+            setLoading(btn, false, 'تسجيل الدخول'); return;
+        }
         let ok = false;
         snap.forEach(d => { if (d.data().password === pass) ok = true; });
         if (ok) {
-            sessionStorage.setItem('s2_user', email);
+            saveUser(email, rememberMe);   // ← الإصلاح الأساسي
             currentUser = email;
             showAuthAlert('🎉 مرحباً! جاري التحميل...', 'success');
             setTimeout(launchApp, 900);
@@ -408,19 +497,22 @@ $('loginForm').addEventListener('submit', async e => {
             showAuthAlert('❌ كلمة السر غير صحيحة', 'danger');
             setLoading(btn, false, 'تسجيل الدخول');
         }
-    } catch(err) { showAuthAlert('❌ '+err.message, 'danger'); setLoading(btn,false,'تسجيل الدخول'); }
+    } catch(err) {
+        showAuthAlert('❌ ' + err.message, 'danger');
+        setLoading(btn, false, 'تسجيل الدخول');
+    }
 });
 
 // ══ تشغيل التطبيق ══
 async function launchApp() {
-    $('authScreen').style.display = 'none';
-    $('appScreen').style.display  = 'block';
-    $('userLabel').textContent = currentUser;
+    $('authScreen').classList.remove('show');
+    $('appScreen').style.display = 'block';
+    $('userLabel').textContent   = currentUser;
     loadTheme();
     initSortable();
     const cloudOk = await loadFromCloud();
     if (!cloudOk) {
-        const local = localStorage.getItem('s2-state-'+currentUser);
+        const local = localStorage.getItem('s2-state-' + currentUser);
         if (local) { try { restoreState(JSON.parse(local)); } catch(e) {} }
     }
     updateStatus();
@@ -434,21 +526,31 @@ async function launchApp() {
     });
 }
 
-window.addEventListener('load', () => { if (currentUser) launchApp(); });
+// ══ Boot ══
+window.addEventListener('load', async () => {
+    if (currentUser) {
+        await hideSplash(true);   // Splash سريع مع "أهلاً بعودتك"
+        await launchApp();
+    } else {
+        await hideSplash(false);  // Splash كامل
+        // إذا كان البريد محفوظاً، أملأه مسبقاً
+        const saved = localStorage.getItem(SESSION_KEY);
+        if (saved) $('loginEmail').value = saved;
+        $('authScreen').classList.add('show');
+    }
+});
 
 // ══ Sync ══
 let lastSavedState = null;
-
 function setSyncDot(s) {
     const d = $('syncDot');
     d.className = 'sync-dot' + (s==='syncing' ? ' syncing' : s==='ok' ? ' synced' : '');
 }
-
 async function saveIfChanged() {
     const current = JSON.stringify(getState());
     if (current === lastSavedState) return;
     lastSavedState = current;
-    localStorage.setItem('s2-state-'+currentUser, current);
+    localStorage.setItem('s2-state-' + currentUser, current);
     setSyncDot('syncing');
     try {
         const key = currentUser.replace(/[.@]/g,'_');
@@ -460,7 +562,6 @@ async function saveIfChanged() {
         setSyncDot('ok');
     } catch(e) { setSyncDot(''); }
 }
-
 async function loadFromCloud() {
     if (!currentUser) return false;
     try {
@@ -472,8 +573,7 @@ async function loadFromCloud() {
             if (data.state) {
                 restoreState(JSON.parse(data.state));
                 lastSavedState = data.state;
-                setSyncDot('ok');
-                return true;
+                setSyncDot('ok'); return true;
             }
         }
     } catch(e) {}
@@ -507,9 +607,8 @@ window.updateStatus = function() {
 };
 window.resetEdits = function() {
     if (!confirm('سيتم حذف كل التعديلات. متأكد؟')) return;
-    localStorage.removeItem('s2-state-'+currentUser);
-    lastSavedState = null;
-    location.reload();
+    localStorage.removeItem('s2-state-' + currentUser);
+    lastSavedState = null; location.reload();
 };
 
 // ══ SortableJS ══
@@ -541,12 +640,11 @@ window.closeMenu = function() {
 window.toggleTheme = function() {
     const light = document.body.classList.toggle('light-mode');
     localStorage.setItem('s2-theme', light ? 'light' : 'dark');
-    updateThemeUI(light);
-    saveIfChanged();
+    updateThemeUI(light); saveIfChanged();
 };
 function updateThemeUI(light) {
-    $('themeBtn').innerHTML    = light ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    $('themeIcon').className   = light ? 'fas fa-sun' : 'fas fa-moon';
+    $('themeBtn').innerHTML     = light ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    $('themeIcon').className    = light ? 'fas fa-sun' : 'fas fa-moon';
     $('themeLabel').textContent = light ? 'الوضع المظلم' : 'الوضع الفاتح';
 }
 function loadTheme() {
@@ -603,8 +701,7 @@ window.requestDeleteMaterial = function() {
 window.confirmDeleteMaterial = function() {
     if (materialToDelete) {
         materialToDelete.remove();
-        saveIfChanged();
-        updateStatus();
+        saveIfChanged(); updateStatus();
         showToast('🗑️ تم الحذف');
         materialToDelete=null; currentEditElement=null;
     }
@@ -628,8 +725,7 @@ window.confirmTextEdit = function() {
     if (!currentEditElement) return;
     currentEditElement.querySelector('.btn-text').removeAttribute('contenteditable');
     $('confirmPopup').classList.remove('show');
-    saveIfChanged();
-    currentEditElement=null;
+    saveIfChanged(); currentEditElement=null;
 };
 window.cancelTextEdit = function() {
     if (!currentEditElement) return;
@@ -641,12 +737,13 @@ window.cancelTextEdit = function() {
 
 // ══ Logout ══
 window.logout = function() {
-    sessionStorage.removeItem('s2_user');
+    clearUser();                              // ← يمسح sessionStorage و localStorage
     currentUser=null; lastSavedState=null;
-    $('appScreen').style.display  = 'none';
-    $('authScreen').style.display = 'flex';
+    $('appScreen').style.display = 'none';
+    $('authScreen').classList.add('show');
     $('loginForm').reset();
     $('authAlert').className = 'fb-alert';
+    rememberMe = false; syncRemBox();
 };
 
 // ══ منع الانتقال في وضع التعديل ══
