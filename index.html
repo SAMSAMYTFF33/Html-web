@@ -6,7 +6,6 @@
     <title>S2 — تسجيل الدخول</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         :root {
             --bg:        #080c10;
@@ -155,12 +154,6 @@
         }
         .pass-toggle:hover { color: var(--text2); }
 
-        .captcha-wrap {
-            display: flex; justify-content: center;
-            margin-bottom: 16px;
-            transform: scale(0.92); transform-origin: center;
-        }
-
         .auth-alert {
             font-size: 13px; font-weight: 500;
             padding: 10px 14px; border-radius: 8px;
@@ -206,8 +199,6 @@
         .remember-row span { font-size: 12.5px; color: var(--text2); }
 
         .auth-footer { font-size: 11px; color: var(--text3); text-align: center; }
-
-        body:not(.light) .g-recaptcha iframe { filter: invert(1) hue-rotate(180deg); }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -256,14 +247,6 @@
             <div class="remember-row" id="remRow">
                 <div class="rem-box" id="remBox"></div>
                 <span>تذكرني في هذا الجهاز</span>
-            </div>
-
-            <!-- reCAPTCHA v2 -->
-            <div class="captcha-wrap">
-                <div class="g-recaptcha"
-                    data-sitekey="6LfhATwtAAAAAOUFuZea6TwNDMxRO2opqBPKT918"
-                    data-theme="dark">
-                </div>
             </div>
 
             <div id="authAlert2" class="auth-alert"></div>
@@ -358,15 +341,11 @@ window.doLogin = async function() {
     const email = $('loginEmail').value.trim().toLowerCase();
     const pass  = $('loginPassword').value;
     const btn   = $('loginBtn');
-    const cap   = grecaptcha.getResponse();
 
     clearAlert(); clearAlert('authAlert2');
 
     if (!email || !pass) {
         alert2('يرجى إدخال البريد الإلكتروني وكلمة المرور.', 'danger'); return;
-    }
-    if (!cap) {
-        alert2('يرجى إثبات أنك لست روبوتاً أولاً.', 'danger', 'authAlert2'); return;
     }
 
     btn.disabled = true;
@@ -378,7 +357,7 @@ window.doLogin = async function() {
         if (snap.empty) {
             alert2('لم يُعثر على حساب بهذا البريد الإلكتروني.', 'danger');
             btn.disabled = false; btn.textContent = 'تسجيل الدخول';
-            grecaptcha.reset(); return;
+            return;
         }
         let ok = false;
         snap.forEach(d => { if (d.data().password === pass) ok = true; });
@@ -390,12 +369,10 @@ window.doLogin = async function() {
         } else {
             alert2('كلمة المرور غير صحيحة.', 'danger');
             btn.disabled = false; btn.textContent = 'تسجيل الدخول';
-            grecaptcha.reset();
         }
     } catch(e) {
         alert2('خطأ في الاتصال: ' + e.message, 'danger');
         btn.disabled = false; btn.textContent = 'تسجيل الدخول';
-        grecaptcha.reset();
     }
 };
 
