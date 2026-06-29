@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>S2 — المنصة التعليمية</title>
+    <title>S2 — المواد الدراسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
@@ -52,6 +52,9 @@
             user-select: none;
             transition: background .3s, color .3s;
         }
+
+        /* ══ APP ══ */
+        #app { display: block; }
 
         /* Header */
         .hdr {
@@ -262,6 +265,7 @@
 </head>
 <body oncontextmenu="return false;">
 
+<!-- ══ App ══ -->
 <div id="app">
     <div class="hdr">
         <div class="hdr-left">
@@ -399,38 +403,16 @@ const app = initializeApp(FB);
 const db  = getFirestore(app);
 const $   = id => document.getElementById(id);
 
-/* ══ Session guard ══ */
+/* ══ Session ══ */
 const SK = 's2_sess';
-const getUser   = () => sessionStorage.getItem(SK) || localStorage.getItem(SK) || null;
-const clearUser = () => { sessionStorage.removeItem(SK); localStorage.removeItem(SK); };
+const getUser  = ()  => sessionStorage.getItem(SK) || localStorage.getItem(SK) || null;
+const clearUser= ()  => { sessionStorage.removeItem(SK); localStorage.removeItem(SK); };
 
 let currentUser = getUser();
+
+// If no session, redirect to login
 if (!currentUser) {
-    // لا توجد جلسة → رجوع لصفحة تسجيل الدخول
     window.location.href = 'index.html';
-}
-
-/* ══ App ══ */
-async function launchApp() {
-    $('userLabel').textContent = currentUser;
-    loadTheme();
-    initSort();
-
-    $('statusDate').textContent = new Date().toLocaleDateString('ar-DZ', {weekday:'long', day:'numeric', month:'long'});
-
-    const local = localStorage.getItem('s2st-' + currentUser);
-    if (local) {
-        try { restoreState(JSON.parse(local)); lastState = local; pip('ok'); }
-        catch(e) {}
-    } else {
-        await cloudLoad();
-    }
-    updateStatus();
-    attachEvents();
-}
-
-if (currentUser) {
-    launchApp();
 }
 
 /* ══ Sync ══ */
@@ -618,7 +600,7 @@ window.cancelEdit = () => {
 
 /* ══ Logout ══ */
 window.logout = function() {
-    clearUser();
+    clearUser(); currentUser = null; lastState = null;
     window.location.href = 'index.html';
 };
 
@@ -635,6 +617,24 @@ window.showToast = function(msg, err=false) {
 /* ══ Nav guard ══ */
 document.addEventListener('click', e => {
     if (editMode) { const a = e.target.closest('a'); if (a) e.preventDefault(); }
+});
+
+/* ══ Init ══ */
+window.addEventListener('load', () => {
+    $('userLabel').textContent = currentUser;
+    loadTheme();
+    initSort();
+    $('statusDate').textContent = new Date().toLocaleDateString('ar-DZ', {weekday:'long', day:'numeric', month:'long'});
+    
+    const local = localStorage.getItem('s2st-' + currentUser);
+    if (local) {
+        try { restoreState(JSON.parse(local)); lastState = local; pip('ok'); }
+        catch(e) {}
+    } else {
+        cloudLoad();
+    }
+    updateStatus();
+    attachEvents();
 });
 </script>
 </body>
