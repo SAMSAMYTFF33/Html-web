@@ -730,14 +730,24 @@ window.resetPage = function() {
 // ══ تشغيل ══
 window.addEventListener('load', async () => {
   loadTheme();
-  const cloud = await loadFromCloud();
-  if (cloud) {
-    applyContent(cloud);
-    lastSaved = JSON.stringify(cloud);
-    setSyncDot('ok');
+
+  // ✅ Local أولاً — بدون أي اتصال بـ Firebase
+  const local = localStorage.getItem(`s2-${PAGE_ID}-${currentUser}`);
+  if (local) {
+    try {
+      applyContent(JSON.parse(local));
+      lastSaved = local;
+      setSyncDot('ok');
+    } catch(e) {}
   } else {
-    const local = localStorage.getItem(`s2-${PAGE_ID}-${currentUser}`);
-    if (local) { try { applyContent(JSON.parse(local)); lastSaved = local; } catch(e){} }
+    // أول مرة فقط: اجلب من Firebase واحفظ محلياً
+    const cloud = await loadFromCloud();
+    if (cloud) {
+      applyContent(cloud);
+      lastSaved = JSON.stringify(cloud);
+      localStorage.setItem(`s2-${PAGE_ID}-${currentUser}`, lastSaved);
+      setSyncDot('ok');
+    }
   }
 });
 </script>
