@@ -53,10 +53,8 @@
             transition: background .3s, color .3s;
         }
 
-        /* ══ APP ══ */
         #app { display: block; }
 
-        /* Header */
         .hdr {
             position: fixed; top: 0; left: 0; right: 0; height: 50px;
             background: var(--surface);
@@ -65,10 +63,7 @@
             padding: 0 14px; z-index: 200;
         }
         .hdr-left, .hdr-right { display: flex; align-items: center; gap: 8px; }
-        .hdr-logo {
-            font-size: 16px; font-weight: 900; color: var(--text);
-            letter-spacing: .5px;
-        }
+        .hdr-logo { font-size: 16px; font-weight: 900; color: var(--text); letter-spacing: .5px; }
         .hdr-logo span { color: var(--accent); }
         .hdr-badge {
             font-size: 9px; font-weight: 700; color: var(--text3);
@@ -86,7 +81,6 @@
         }
         .hbtn:hover { color: var(--text); border-color: var(--border2); }
         .hbtn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
-        .hbtn.menu-open { transform: rotate(90deg); transition: transform .25s; }
 
         .sync-pip {
             width: 7px; height: 7px; border-radius: 50%;
@@ -96,7 +90,6 @@
         .sync-pip.ok      { background: var(--green); }
         @keyframes pip { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-        /* Side menu */
         .backdrop { display:none; position:fixed; inset:0; z-index:150; }
         .backdrop.show { display:block; }
         .side {
@@ -107,10 +100,7 @@
             display: flex; flex-direction: column;
         }
         .side.open { left: 0; }
-        .side-user {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-        }
+        .side-user { padding: 16px; border-bottom: 1px solid var(--border); }
         .side-user-label {
             font-size: 11px; font-weight: 700; color: var(--text3);
             letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;
@@ -120,7 +110,6 @@
             display: flex; align-items: center; gap: 8px;
         }
         .side-user-email i { color: var(--accent); }
-
         .side-section { padding: 8px 0; border-bottom: 1px solid var(--border); }
         .side-item {
             display: flex; align-items: center; gap: 10px;
@@ -136,12 +125,8 @@
         .side-item.danger { color: var(--danger); }
         .side-item.danger:hover { background: rgba(224,90,82,.06); }
         .side-item.danger i { color: var(--danger); }
-        .side-footer {
-            margin-top: auto; padding: 14px 16px;
-            font-size: 11px; color: var(--text3); letter-spacing: .5px;
-        }
+        .side-footer { margin-top: auto; padding: 14px 16px; font-size: 11px; color: var(--text3); }
 
-        /* Main */
         .main { padding-top: 50px; }
 
         .status-bar {
@@ -153,7 +138,17 @@
         .status-left { display: flex; align-items: center; gap: 7px; }
         .status-pip { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
 
-        /* List */
+        /* ══ Edit mode hint banner ══ */
+        .edit-hint {
+            display: none;
+            align-items: center; justify-content: center; gap: 8px;
+            padding: 8px 14px;
+            background: var(--accent-dim);
+            border-bottom: 1px solid var(--accent);
+            font-size: 12px; font-weight: 600; color: var(--accent);
+        }
+        body.edit-active .edit-hint { display: flex; }
+
         .list { display: flex; flex-direction: column; }
         .list-item {
             display: flex; align-items: center;
@@ -163,6 +158,16 @@
             position: relative; cursor: pointer; min-height: 56px;
         }
         .list-item:active { background: var(--surface); }
+
+        /* Drag handle — shown only in edit mode */
+        .drag-handle {
+            display: none;
+            width: 40px; min-width: 40px; height: 56px;
+            align-items: center; justify-content: center;
+            color: var(--text3); font-size: 14px; cursor: grab;
+            touch-action: none;
+        }
+        body.edit-active .drag-handle { display: flex; }
 
         .item-icon-wrap {
             width: 52px; min-width: 52px; height: 56px;
@@ -185,40 +190,55 @@
         .item-text { font-size: 14px; font-weight: 600; line-height: 1.3; }
         .item-arrow { color: var(--text3); font-size: 11px; }
 
-        /* Edit mode */
-        .edit-active .list-item::after {
-            content: ''; position: absolute; right: 0; top: 0; bottom: 0;
-            width: 2px; background: var(--accent);
+        /* In edit mode: tap item to edit its name */
+        body.edit-active .list-item { cursor: default; }
+        body.edit-active .item-arrow { display: none; }
+
+        /* Inline edit buttons */
+        .item-edit-btns {
+            display: none;
+            gap: 6px; align-items: center;
         }
-        .edit-active [contenteditable="true"] {
+        .item-edit-btns button {
+            width: 30px; height: 30px; border-radius: 7px;
+            border: 1px solid var(--border); font-size: 11px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            background: var(--surface2); transition: .15s;
+        }
+        .item-edit-btns .ib-del   { color: var(--danger); }
+        .item-edit-btns .ib-del:hover   { background: rgba(224,90,82,.12); }
+        .item-edit-btns .ib-edit  { color: var(--accent); }
+        .item-edit-btns .ib-edit:hover  { background: var(--accent-dim); }
+
+        body.edit-active .item-edit-btns { display: flex; }
+
+        /* Inline text editing */
+        .btn-text[contenteditable="true"] {
             outline: 1px dashed var(--accent);
-            outline-offset: 2px; cursor: text; border-radius: 3px;
+            outline-offset: 3px; cursor: text; border-radius: 3px;
+            -webkit-user-select: text; user-select: text;
         }
+
+        /* Confirm/cancel bar when editing text */
+        .item-confirm-bar {
+            display: none; position: absolute; bottom: -36px; right: 0; left: 0;
+            background: var(--surface); border: 1px solid var(--border);
+            border-top: none; border-radius: 0 0 8px 8px;
+            padding: 4px 8px; gap: 6px; z-index: 100;
+            align-items: center; justify-content: flex-end;
+        }
+        .item-confirm-bar.show { display: flex; }
+        .item-confirm-bar button {
+            padding: 4px 12px; border-radius: 6px;
+            border: 1px solid var(--border); font-size: 12px; font-weight: 700;
+            font-family: 'Tajawal', sans-serif; cursor: pointer;
+            background: var(--surface2);
+        }
+        .item-confirm-bar .cb-ok     { color: var(--green); border-color: rgba(46,168,79,.3); }
+        .item-confirm-bar .cb-cancel { color: var(--danger); }
+
         .sortable-ghost { opacity: .25; background: var(--surface) !important; }
         .sortable-drag  { opacity: 1 !important; background: var(--surface) !important; }
-
-        /* Popups */
-        .pop {
-            position: fixed; display: flex; gap: 5px;
-            padding: 6px 8px; border-radius: 9px; z-index: 2000;
-            transform: translate(-50%, -115%); pointer-events: none; opacity: 0;
-            transition: opacity .15s;
-            background: var(--surface); border: 1px solid var(--border2);
-            box-shadow: 0 6px 24px rgba(0,0,0,.4);
-        }
-        .pop.show { pointer-events: all; opacity: 1; }
-        .pop-btn {
-            width: 34px; height: 34px; border-radius: 7px;
-            border: 1px solid var(--border); font-size: 12px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            background: var(--surface2); color: var(--text2); transition: .15s;
-        }
-        .pop-btn:hover { background: var(--bg); }
-        .pop-btn.del { color: var(--danger); }
-        .pop-btn.del:hover { background: rgba(224,90,82,.1); }
-        .pop-btn.edit { color: var(--accent); }
-        .pop-btn.ok   { color: var(--green); }
-        .pop-btn.cancel-e { color: var(--danger); }
 
         /* Modal */
         .modal-bg {
@@ -265,7 +285,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-<!-- ══ App ══ -->
 <div id="app">
     <div class="hdr">
         <div class="hdr-left">
@@ -326,34 +345,124 @@
             <span id="statusDate"></span>
         </div>
 
+        <!-- hint bar -->
+        <div class="edit-hint">
+            <i class="fas fa-circle-info"></i>
+            <span>اضغط على اسم المادة لتعديله · اسحب من <i class="fas fa-grip-lines"></i> لإعادة الترتيب</span>
+        </div>
+
         <div class="list" id="listWrap">
             <a href="M1.html" class="list-item" data-id="m1">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-globe-americas"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">مدخل للعلاقات الدولية</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">مدخل للعلاقات الدولية</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"  title="حذف"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit" title="تعديل الاسم"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
             <a href="M2.html" class="list-item" data-id="m2">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-gavel"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">القانون التجاري الأساسي</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">القانون التجاري الأساسي</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
             <a href="M3.html" class="list-item" data-id="m3">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-balance-scale"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">القانون الجنائي العام</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">القانون الجنائي العام</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
             <a href="M4.html" class="list-item" data-id="m4">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-file-contract"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">النظرية العامة للالتزامات</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">النظرية العامة للالتزامات</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
             <a href="M5.html" class="list-item" data-id="m5">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-university"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">القانون الإداري والتنظيم الإداري</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">القانون الإداري والتنظيم الإداري</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
             <a href="M6.html" class="list-item" data-id="m6">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-laptop-code"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">قانون المعاملات الإلكترونية</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">قانون المعاملات الإلكترونية</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
             <a href="M7.html" class="list-item" data-id="m7">
+                <div class="drag-handle"><i class="fas fa-grip-lines"></i></div>
                 <div class="item-icon-wrap"><div class="item-icon-bg"><i class="fas fa-robot"></i></div></div>
-                <div class="item-body"><span class="btn-text item-text">المهارات الرقمية والذكاء الاصطناعي</span><i class="fas fa-chevron-left item-arrow"></i></div>
+                <div class="item-body">
+                    <span class="btn-text item-text">المهارات الرقمية والذكاء الاصطناعي</span>
+                    <div class="item-edit-btns">
+                        <button class="ib-del"><i class="fas fa-trash"></i></button>
+                        <button class="ib-edit"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <i class="fas fa-chevron-left item-arrow"></i>
+                </div>
+                <div class="item-confirm-bar">
+                    <button class="cb-cancel"><i class="fas fa-xmark"></i> إلغاء</button>
+                    <button class="cb-ok"><i class="fas fa-check"></i> حفظ</button>
+                </div>
             </a>
         </div>
     </div>
@@ -368,18 +477,6 @@
                 <button onclick="document.getElementById('delModal').classList.remove('show')">إلغاء</button>
             </div>
         </div>
-    </div>
-
-    <!-- Edit popup -->
-    <div class="pop" id="editPop">
-        <button class="pop-btn del"  onclick="reqDel()"><i class="fas fa-trash"></i></button>
-        <button class="pop-btn edit" onclick="startEdit()"><i class="fas fa-pen"></i></button>
-        <button class="pop-btn"      onclick="document.getElementById('editPop').classList.remove('show')"><i class="fas fa-xmark"></i></button>
-    </div>
-    <!-- Confirm edit popup -->
-    <div class="pop" id="confirmPop">
-        <button class="pop-btn ok"      onclick="confirmEdit()"><i class="fas fa-check"></i></button>
-        <button class="pop-btn cancel-e" onclick="cancelEdit()"><i class="fas fa-xmark"></i></button>
     </div>
 </div>
 
@@ -405,15 +502,11 @@ const $   = id => document.getElementById(id);
 
 /* ══ Session ══ */
 const SK = 's2_sess';
-const getUser  = ()  => sessionStorage.getItem(SK) || localStorage.getItem(SK) || null;
-const clearUser= ()  => { sessionStorage.removeItem(SK); localStorage.removeItem(SK); };
+const getUser   = () => sessionStorage.getItem(SK) || localStorage.getItem(SK) || null;
+const clearUser = () => { sessionStorage.removeItem(SK); localStorage.removeItem(SK); };
 
 let currentUser = getUser();
-
-// If no session, redirect to login
-if (!currentUser) {
-    window.location.href = 'index.html';
-}
+if (!currentUser) window.location.href = 'index.html';
 
 /* ══ Sync ══ */
 let lastState = null;
@@ -474,15 +567,20 @@ function updateStatus() {
     $('statusTxt').textContent = list.querySelectorAll('.list-item').length + ' مواد دراسية';
 }
 
-/* ══ Sort ══ */
+/* ══ Sort — only drag-handle triggers drag ══ */
 let sortInst = null;
 function initSort() {
     if (sortInst) sortInst.destroy();
     sortInst = new Sortable(list, {
-        animation:200, delay:400, delayOnTouchOnly:true,
-        touchStartThreshold:8, forceFallback:true,
-        ghostClass:'sortable-ghost', dragClass:'sortable-drag',
-        onStart: () => { if (navigator.vibrate) navigator.vibrate(25); },
+        handle: '.drag-handle',      // ← ONLY the handle triggers drag
+        animation: 200,
+        delay: 150,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 5,
+        forceFallback: true,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        onStart: () => { if (navigator.vibrate) navigator.vibrate(20); },
         onEnd: saveIfChanged
     });
 }
@@ -490,12 +588,10 @@ function initSort() {
 /* ══ Sidebar ══ */
 window.toggleMenu = function() {
     const open = $('side').classList.toggle('open');
-    $('menuBtn').classList.toggle('hbtn menu-open', open);
     $('backdrop').classList.toggle('show', open);
 };
 window.closeMenu = function() {
     $('side').classList.remove('open');
-    $('menuBtn').classList.remove('menu-open');
     $('backdrop').classList.remove('show');
 };
 
@@ -523,80 +619,87 @@ window.toggleEdit = function() {
     document.body.classList.toggle('edit-active', editMode);
     $('editBtn').classList.toggle('active', editMode);
     $('editLabel').textContent = editMode ? 'إنهاء التعديل' : 'تفعيل التعديل';
-    if (!editMode) {
-        document.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
-        $('editPop').classList.remove('show');
-        $('confirmPop').classList.remove('show');
-    }
+    if (!editMode) cancelAllEdits();
 };
 
-/* ══ Long-press ══ */
-let pt=null, curEl=null, origText='', delEl=null;
-function onPress(el, e) {
-    if (!editMode) return;
-    curEl = el; origText = el.querySelector('.btn-text').innerText;
-    const touch = e.touches ? e.touches[0] : e;
-    const pop = $('editPop');
-    const rect = el.getBoundingClientRect();
-    let y = rect.top - 10; if (y < 60) y = rect.bottom + 60;
-    pop.style.left = touch.clientX + 'px';
-    pop.style.top  = y + 'px';
-    pop.classList.add('show');
-    $('confirmPop').classList.remove('show');
-    if (navigator.vibrate) navigator.vibrate(25);
-}
-function attachEvents() {
-    list.querySelectorAll('.list-item').forEach(el => {
-        el.addEventListener('touchstart', e => { pt = setTimeout(() => { onPress(el,e); pt=null; }, 500); }, {passive:true});
-        el.addEventListener('touchend',  () => { if (pt) { clearTimeout(pt); pt=null; } });
-        el.addEventListener('touchmove', () => { if (pt) { clearTimeout(pt); pt=null; } });
-        el.addEventListener('mousedown', e => { pt = setTimeout(() => { onPress(el,e); pt=null; }, 500); });
-        el.addEventListener('mouseup',   () => { if (pt) { clearTimeout(pt); pt=null; } });
-        el.addEventListener('mouseleave',() => { if (pt) { clearTimeout(pt); pt=null; } });
+function cancelAllEdits() {
+    list.querySelectorAll('.btn-text[contenteditable]').forEach(sp => {
+        sp.removeAttribute('contenteditable');
     });
+    list.querySelectorAll('.item-confirm-bar.show').forEach(b => b.classList.remove('show'));
 }
 
-window.reqDel = () => {
-    if (!curEl) return;
-    delEl = curEl;
-    $('editPop').classList.remove('show');
-    $('delModal').classList.add('show');
-};
+/* ══ Delete ══ */
+let delEl = null;
 window.confirmDel = () => {
     if (delEl) {
-        delEl.remove(); saveIfChanged(); updateStatus();
+        delEl.remove();
+        saveIfChanged(); updateStatus();
         showToast('تم الحذف');
-        delEl = null; curEl = null;
+        delEl = null;
     }
     $('delModal').classList.remove('show');
 };
-window.startEdit = () => {
-    if (!curEl) return;
-    const sp = curEl.querySelector('.btn-text');
-    sp.setAttribute('contenteditable','true'); sp.focus();
-    const r = document.createRange(); r.selectNodeContents(sp); r.collapse(false);
-    window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
-    $('editPop').classList.remove('show');
-    const rect = curEl.getBoundingClientRect();
-    const cp = $('confirmPop');
-    let y = rect.top - 10; if (y < 60) y = rect.bottom + 60;
-    cp.style.left = (rect.left + rect.width/2) + 'px';
-    cp.style.top  = y + 'px';
-    cp.classList.add('show');
-};
-window.confirmEdit = () => {
-    if (!curEl) return;
-    curEl.querySelector('.btn-text').removeAttribute('contenteditable');
-    $('confirmPop').classList.remove('show');
-    saveIfChanged(); curEl = null;
-};
-window.cancelEdit = () => {
-    if (!curEl) return;
-    curEl.querySelector('.btn-text').innerText = origText;
-    curEl.querySelector('.btn-text').removeAttribute('contenteditable');
-    $('confirmPop').classList.remove('show');
-    curEl = null;
-};
+
+/* ══ Wire each row ══ */
+function wireItem(el) {
+    const sp     = el.querySelector('.btn-text');
+    const delBtn = el.querySelector('.ib-del');
+    const editBtn= el.querySelector('.ib-edit');
+    const bar    = el.querySelector('.item-confirm-bar');
+    const okBtn  = bar.querySelector('.cb-ok');
+    const cxBtn  = bar.querySelector('.cb-cancel');
+    let origText = '';
+
+    // Navigate only when NOT in edit mode
+    el.addEventListener('click', e => {
+        if (editMode) e.preventDefault();
+    });
+
+    // Delete button
+    delBtn.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        delEl = el;
+        $('delModal').classList.add('show');
+    });
+
+    // Edit name button
+    editBtn.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        origText = sp.innerText;
+        sp.setAttribute('contenteditable', 'true');
+        sp.focus();
+        // place cursor at end
+        const r = document.createRange();
+        r.selectNodeContents(sp); r.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges(); sel.addRange(r);
+        bar.classList.add('show');
+    });
+
+    // Save
+    okBtn.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        sp.removeAttribute('contenteditable');
+        bar.classList.remove('show');
+        saveIfChanged();
+        showToast('تم الحفظ ✓');
+    });
+
+    // Cancel
+    cxBtn.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        sp.innerText = origText;
+        sp.removeAttribute('contenteditable');
+        bar.classList.remove('show');
+    });
+
+    // Enter = save, Escape = cancel
+    sp.addEventListener('keydown', e => {
+        if (e.key === 'Enter')  { e.preventDefault(); okBtn.click(); }
+        if (e.key === 'Escape') { e.preventDefault(); cxBtn.click(); }
+    });
+}
 
 /* ══ Logout ══ */
 window.logout = function() {
@@ -614,18 +717,14 @@ window.showToast = function(msg, err=false) {
     tt = setTimeout(() => t.classList.remove('show'), 2400);
 };
 
-/* ══ Nav guard ══ */
-document.addEventListener('click', e => {
-    if (editMode) { const a = e.target.closest('a'); if (a) e.preventDefault(); }
-});
-
 /* ══ Init ══ */
 window.addEventListener('load', () => {
     $('userLabel').textContent = currentUser;
     loadTheme();
     initSort();
-    $('statusDate').textContent = new Date().toLocaleDateString('ar-DZ', {weekday:'long', day:'numeric', month:'long'});
-    
+    $('statusDate').textContent = new Date().toLocaleDateString('ar-DZ',
+        {weekday:'long', day:'numeric', month:'long'});
+
     const local = localStorage.getItem('s2st-' + currentUser);
     if (local) {
         try { restoreState(JSON.parse(local)); lastState = local; pip('ok'); }
@@ -634,7 +733,9 @@ window.addEventListener('load', () => {
         cloudLoad();
     }
     updateStatus();
-    attachEvents();
+
+    // Wire all rows
+    list.querySelectorAll('.list-item').forEach(wireItem);
 });
 </script>
 </body>
