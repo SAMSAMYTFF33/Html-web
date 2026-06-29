@@ -407,7 +407,7 @@ const clearUser = () => { sessionStorage.removeItem(SK); localStorage.removeItem
 let currentUser = getUser();
 if (!currentUser) {
     // لا توجد جلسة → رجوع لصفحة تسجيل الدخول
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }
 
 /* ══ App ══ */
@@ -619,7 +619,7 @@ window.cancelEdit = () => {
 /* ══ Logout ══ */
 window.logout = function() {
     clearUser();
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 };
 
 /* ══ Toast ══ */
