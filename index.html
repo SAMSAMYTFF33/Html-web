@@ -510,10 +510,13 @@ async function launchApp() {
     $('userLabel').textContent   = currentUser;
     loadTheme();
     initSortable();
-    const cloudOk = await loadFromCloud();
-    if (!cloudOk) {
-        const local = localStorage.getItem('s2-state-' + currentUser);
-        if (local) { try { restoreState(JSON.parse(local)); } catch(e) {} }
+    // ✅ Local أولاً — Firebase فقط في أول مرة
+    const localState = localStorage.getItem('s2-state-' + currentUser);
+    if (localState) {
+        try { restoreState(JSON.parse(localState)); lastSavedState = localState; setSyncDot('ok'); }
+        catch(e) {}
+    } else {
+        await loadFromCloud();
     }
     updateStatus();
     document.querySelectorAll('.list-item').forEach(btn => {
