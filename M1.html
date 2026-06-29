@@ -606,16 +606,22 @@ window.addEventListener('load', async () => {
         { id:'ch_default_1', text:'الفصل الأول', href:'M1F1.html' }
     ];
 
-    const cloud = await loadFromCloud();
-    if (cloud && cloud.length > 0) {
-        renderChapters(cloud);
-        lastSaved = JSON.stringify(cloud);
-        setSyncDot('ok');
+    // ✅ Local أولاً — بدون أي اتصال بـ Firebase
+    const local = localStorage.getItem(`s2-${PAGE_ID}-${currentUser}`);
+    if (local) {
+        try {
+            renderChapters(JSON.parse(local));
+            lastSaved = local;
+            setSyncDot('ok');
+        } catch(e) { renderChapters(defaultChapters); }
     } else {
-        const local = localStorage.getItem(`s2-${PAGE_ID}-${currentUser}`);
-        if (local) {
-            try { renderChapters(JSON.parse(local)); lastSaved = local; }
-            catch(e) { renderChapters(defaultChapters); }
+        // أول مرة فقط: اجلب من Firebase واحفظ محلياً
+        const cloud = await loadFromCloud();
+        if (cloud && cloud.length > 0) {
+            renderChapters(cloud);
+            lastSaved = JSON.stringify(cloud);
+            localStorage.setItem(`s2-${PAGE_ID}-${currentUser}`, lastSaved);
+            setSyncDot('ok');
         } else {
             renderChapters(defaultChapters);
         }
