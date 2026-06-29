@@ -6,6 +6,7 @@
     <title>S2 — تسجيل الدخول</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         :root {
             --bg:        #080c10;
@@ -23,6 +24,22 @@
             --danger:    #e05a52;
             --warn:      #c9922a;
         }
+        body.light {
+            --bg:        #f0f4f8;
+            --surface:   #ffffff;
+            --surface2:  #f5f8fb;
+            --border:    #dce4ed;
+            --border2:   #c8d5e2;
+            --accent:    #2563eb;
+            --accent-dim:#dbeafe;
+            --green:     #16a34a;
+            --green-dim: #dcfce7;
+            --text:      #0f1923;
+            --text2:     #4b6070;
+            --text3:     #94a3b8;
+            --danger:    #dc2626;
+            --warn:      #d97706;
+        }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,6 +51,7 @@
             font-size: 15px;
             -webkit-user-select: none;
             user-select: none;
+            transition: background .3s, color .3s;
         }
 
         /* ══ SPLASH ══ */
@@ -146,6 +164,7 @@
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(79,142,247,.1);
         }
+        body.light .auth-input { background: #f8fafc; }
 
         .pass-toggle {
             position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
@@ -153,6 +172,13 @@
             font-size: 13px; padding: 2px; transition: color .2s;
         }
         .pass-toggle:hover { color: var(--text2); }
+
+        /* reCAPTCHA wrapper */
+        .captcha-wrap {
+            display: flex; justify-content: center;
+            margin-bottom: 16px;
+            transform: scale(0.92); transform-origin: center;
+        }
 
         .auth-alert {
             font-size: 13px; font-weight: 500;
@@ -199,6 +225,9 @@
         .remember-row span { font-size: 12.5px; color: var(--text2); }
 
         .auth-footer { font-size: 11px; color: var(--text3); text-align: center; }
+
+        /* reCAPTCHA dark fix */
+        body:not(.light) .g-recaptcha iframe { filter: invert(1) hue-rotate(180deg); }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -247,6 +276,14 @@
             <div class="remember-row" id="remRow">
                 <div class="rem-box" id="remBox"></div>
                 <span>تذكرني في هذا الجهاز</span>
+            </div>
+
+            <!-- reCAPTCHA v2 -->
+            <div class="captcha-wrap">
+                <div class="g-recaptcha"
+                    data-sitekey="6LfhATwtAAAAAOUFuZea6TwNDMxRO2opqBPKT918"
+                    data-theme="dark">
+                </div>
             </div>
 
             <div id="authAlert2" class="auth-alert"></div>
@@ -341,11 +378,15 @@ window.doLogin = async function() {
     const email = $('loginEmail').value.trim().toLowerCase();
     const pass  = $('loginPassword').value;
     const btn   = $('loginBtn');
+    const cap   = grecaptcha.getResponse();
 
     clearAlert(); clearAlert('authAlert2');
 
     if (!email || !pass) {
         alert2('يرجى إدخال البريد الإلكتروني وكلمة المرور.', 'danger'); return;
+    }
+    if (!cap) {
+        alert2('يرجى إثبات أنك لست روبوتاً أولاً.', 'danger', 'authAlert2'); return;
     }
 
     btn.disabled = true;
@@ -357,37 +398,39 @@ window.doLogin = async function() {
         if (snap.empty) {
             alert2('لم يُعثر على حساب بهذا البريد الإلكتروني.', 'danger');
             btn.disabled = false; btn.textContent = 'تسجيل الدخول';
-            return;
+            grecaptcha.reset(); return;
         }
         let ok = false;
         snap.forEach(d => { if (d.data().password === pass) ok = true; });
         if (ok) {
             saveUser(email, rem);
-            alert2('تم التحقق بنجاح — جاري التحميل...', 'success');
+            currentUser = email;
+            alert2('تم التحقق بنجاح — جاري التحويل...', 'success');
             await sleep(850);
             window.location.href = 'home.html';
         } else {
             alert2('كلمة المرور غير صحيحة.', 'danger');
             btn.disabled = false; btn.textContent = 'تسجيل الدخول';
+            grecaptcha.reset();
         }
     } catch(e) {
         alert2('خطأ في الاتصال: ' + e.message, 'danger');
         btn.disabled = false; btn.textContent = 'تسجيل الدخول';
+        grecaptcha.reset();
     }
 };
 
 /* ══ Boot ══ */
 window.addEventListener('load', async () => {
     if (currentUser) {
-        // مسجل دخول مسبقاً → توجيه مباشر إلى الصفحة الرئيسية
         await hideSplash(true);
         window.location.href = 'home.html';
-        return;
+    } else {
+        await hideSplash(false);
+        const saved = localStorage.getItem(SK);
+        if (saved) $('loginEmail').value = saved;
+        $('auth').classList.add('show');
     }
-    await hideSplash(false);
-    const saved = localStorage.getItem(SK);
-    if (saved) $('loginEmail').value = saved;
-    $('auth').classList.add('show');
 });
 </script>
 </body>
