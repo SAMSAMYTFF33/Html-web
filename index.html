@@ -3,456 +3,757 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>S2 — تسجيل الدخول</title>
+    <title>S2 | Ultimate Precision Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --bg:        #080c10;
-            --surface:   #0d1117;
-            --surface2:  #111820;
-            --border:    #1e2733;
-            --border2:   #263040;
-            --accent:    #4f8ef7;
-            --accent-dim:#1a2d4d;
-            --green:     #2ea84f;
-            --green-dim: #0d2b18;
-            --text:      #dce6f0;
-            --text2:     #8899aa;
-            --text3:     #506070;
-            --danger:    #e05a52;
+        @font-face {
+            font-family: 'Tajawal';
+            src: url('file:///storage/emulated/0/Android/data/com.S2/files/Tajawal-Regular.ttf') format('truetype');
+            font-weight: 400;
         }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        @font-face {
+            font-family: 'Tajawal';
+            src: url('file:///storage/emulated/0/Android/data/com.S2/files/Tajawal-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+
+        :root {
+            --primary: #00ff88;
+            --secondary: #00bdff;
+            --bg-dark: #050a0a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --neon-glow: 0 0 15px rgba(0, 255, 136, 0.3);
+            --text-dark: #fff;
+        }
+
+        /* الوضع الفاتح */
+        body.light-mode {
+            --primary: #00a859;
+            --secondary: #008cb3;
+            --bg-dark: #f4f6f9;
+            --card-bg: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --neon-glow: 0 0 15px rgba(0, 168, 89, 0.2);
+            --text-dark: #1a1a1a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            margin: 0;
+            padding: 60px 0 80px;
             min-height: 100vh;
-            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 255, 136, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 189, 255, 0.15) 0px, transparent 50%);
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* ══ SPLASH ══ */
-        #splash {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #080c10;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 32px;
+        /* زر القائمة (3 شرطات) في الجانب الأيسر */
+        .menu-btn {
+            position: fixed; top: 20px; left: 20px;
+            font-size: 24px; width: 50px; height: 50px;
+            border-radius: 15px; background: var(--card-bg);
+            backdrop-filter: blur(10px); color: var(--primary);
+            border: 1px solid var(--glass-border); cursor: pointer;
+            z-index: 1000; display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--glass-shadow); transition: 0.3s;
         }
-        .sp-logo {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            animation: spRise .7s cubic-bezier(.34,1.56,.64,1) forwards;
-            opacity: 0; transform: translateY(20px) scale(.9);
-        }
-        @keyframes spRise { to { opacity:1; transform:translateY(0) scale(1); } }
-        .sp-mark {
-            width: 72px; height: 72px; border-radius: 18px;
-            background: linear-gradient(145deg, #111a28, #0d1420);
-            border: 1px solid #1e2d42;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 900; color: #dce6f0; letter-spacing: -2px;
-            box-shadow: 0 0 40px rgba(79,142,247,.12), inset 0 1px 0 rgba(255,255,255,.05);
-        }
-        .sp-mark span { color: #4f8ef7; }
-        .sp-name { font-size: .75rem; font-weight: 700; color: #506070; letter-spacing: 3px; text-transform: uppercase; }
-        .sp-track { width: 140px; animation: fadeIn .4s .5s ease forwards; opacity: 0; }
-        @keyframes fadeIn { to { opacity:1; } }
-        .sp-rail { height: 2px; background: #1e2733; border-radius: 2px; overflow: hidden; }
-        .sp-fill {
-            height: 100%; width: 0;
-            background: linear-gradient(90deg, #4f8ef7, #2ea84f);
-            border-radius: 2px; transition: width .4s ease;
-            box-shadow: 0 0 10px rgba(79,142,247,.4);
-        }
-        .sp-hint { font-size: 11px; color: #506070; letter-spacing: 1px; text-align: center; margin-top: 8px; }
-        #splash.out { animation: spOut .4s ease forwards; pointer-events: none; }
-        @keyframes spOut { to { opacity:0; } }
 
-        /* ══ AUTH ══ */
-        #auth {
-            display: none; min-height: 100vh;
-            align-items: center; justify-content: center;
-            padding: 24px;
+        /* نحتفظ بالتوهج عند اللمس ولكن نزيل الدوران */
+        .menu-btn:hover { box-shadow: var(--neon-glow); }
+
+        /* نضيف كلاس جديد مسؤول عن الدوران فقط */
+        .menu-btn.rotate-active { transform: rotate(90deg); }
+
+        /* القائمة الجانبية المنزلقة (الإعدادات) */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 320px;
+            height: 100vh;
+            padding: 90px 25px 25px;
+            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 0 30px 30px 0;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid var(--glass-border);
         }
-        #auth.show { display: flex; animation: authIn .35s ease; }
-        @keyframes authIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        .auth-wrap {
-            width: 100%; max-width: 400px;
-            display: flex; flex-direction: column; align-items: center; gap: 28px;
+        .side-menu.open {
+            left: 0;
         }
-        .auth-brand { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .auth-mark {
-            width: 60px; height: 60px; border-radius: 15px;
-            background: var(--surface2); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; font-weight: 900; color: var(--text); letter-spacing: -2px;
-            box-shadow: 0 4px 20px rgba(0,0,0,.3);
+        .side-menu button {
+            font-family: 'Tajawal', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dark);
         }
-        .auth-mark span { color: var(--accent); }
-        .auth-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
-        .auth-sub   { font-size: 12px; color: var(--text3); letter-spacing: 1px; }
-        .auth-card {
+        .side-menu button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .theme-btn {
+            border-left: 4px solid var(--primary) !important;
+        }
+        .edit-mode-btn {
+            border-left: 4px solid var(--secondary) !important;
+        }
+        .update-menu-btn {
+            border-left: 4px solid var(--secondary) !important;
+        }
+
+        /* زر update الأصلي في الجانب الأيمن العلوي */
+        .update-top-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .update-top-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+
+        /* الشعار المتحرك */
+        .logo-box {
+            position: relative;
+            margin: 20px 0 40px;
+            animation: float 4s ease-in-out infinite;
+            text-align: center;
+        }
+        .logo {
+            font-size: 50px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.3));
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* الحاوية الرئيسية - عرض كامل */
+        .container {
             width: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px; padding: 24px;
-            box-shadow: 0 8px 32px rgba(0,0,0,.25);
+            max-width: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            z-index: 10;
+            padding-bottom: 50px;
         }
-        .field-label {
-            font-size: 11px; font-weight: 700; color: var(--text3);
-            letter-spacing: 1.5px; text-transform: uppercase;
-            margin-bottom: 6px; display: block;
-        }
-        .field-wrap { position: relative; margin-bottom: 16px; }
-        .field-wrap i.fi {
-            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-            color: var(--text3); font-size: 13px; pointer-events: none;
-        }
-        .auth-input {
-            width: 100%; padding: 11px 40px 11px 14px;
-            background: var(--surface2); border: 1px solid var(--border);
-            border-radius: 8px; font-size: 14px;
-            font-family: 'Tajawal', sans-serif; color: var(--text); outline: none;
-            transition: border-color .2s, box-shadow .2s;
-            -webkit-user-select: text; user-select: text;
-        }
-        .auth-input::placeholder { color: var(--text3); font-size: 13px; }
-        .auth-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(79,142,247,.1);
-        }
-        .pass-toggle {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: var(--text3);
-            cursor: pointer; font-size: 13px; padding: 2px; transition: color .2s;
-        }
-        .pass-toggle:hover { color: var(--text2); }
-        .auth-alert {
-            font-size: 13px; font-weight: 500;
-            padding: 10px 14px; border-radius: 8px;
-            margin-bottom: 16px; display: none;
-            border: 1px solid transparent; line-height: 1.5;
-        }
-        .auth-alert.info    { display:block; background:var(--accent-dim); color:var(--accent); border-color:rgba(79,142,247,.2); }
-        .auth-alert.success { display:block; background:var(--green-dim); color:var(--green); border-color:rgba(46,168,79,.2); }
-        .auth-alert.danger  { display:block; background:rgba(224,90,82,.08); color:var(--danger); border-color:rgba(224,90,82,.2); }
-        .auth-btn {
-            width: 100%; padding: 12px;
-            background: var(--accent); color: #fff;
-            border: none; border-radius: 8px;
-            font-size: 15px; font-weight: 700; font-family: 'Tajawal', sans-serif;
-            cursor: pointer; transition: opacity .2s, transform .1s;
-        }
-        .auth-btn:hover:not(:disabled) { opacity: .9; }
-        .auth-btn:active { transform: scale(.98); }
-        .auth-btn:disabled { opacity: .5; cursor: not-allowed; }
-        .spin {
-            display: inline-block; width: 13px; height: 13px;
-            border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
-            border-radius: 50%; animation: spin .7s linear infinite;
-            margin-left: 8px; vertical-align: middle;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .remember-row {
-            display: flex; align-items: center; gap: 9px;
-            margin-bottom: 16px; cursor: pointer;
-        }
-        .rem-box {
-            width: 16px; height: 16px; border-radius: 4px;
-            border: 1.5px solid var(--border2); background: var(--surface2);
-            display: flex; align-items: center; justify-content: center;
-            transition: .15s; flex-shrink: 0; font-size: 9px; color: #fff;
-        }
-        .rem-box.on { background: var(--accent); border-color: var(--accent); }
-        .remember-row span { font-size: 12.5px; color: var(--text2); }
-        .forgot-link {
-            display: block; text-align: center; margin-top: 14px;
-            font-size: 12px; color: var(--text3); text-decoration: none;
-            transition: color .2s;
-        }
-        .forgot-link:hover { color: var(--accent); }
-        .security-badge {
-            display: flex; align-items: center; gap: 7px; justify-content: center;
-            font-size: 11px; color: var(--text3); margin-top: 16px;
-        }
-        .security-badge i { color: var(--green); font-size: 12px; }
 
-        /* ══ Reset Modal ══ */
-        #resetModal {
-            display: none; position: fixed; inset: 0; z-index: 1000;
-            background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
-            align-items: center; justify-content: center; padding: 24px;
+        /* أزرار المواد - نمط مستطيلات كاملة الحواف */
+        .neon-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 25px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            background: var(--card-bg);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            border-left: none;
+            border-right: none;
+            border-radius: 0;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-drag: none;
         }
-        #resetModal.show { display: flex; }
-        .modal-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 12px; padding: 24px; width: 100%; max-width: 360px;
-            animation: authIn .25s ease;
+        .neon-btn i {
+            font-size: 20px;
+            color: var(--primary);
+            transition: 0.3s;
         }
-        .modal-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
-        .modal-sub   { font-size: 12px; color: var(--text3); margin-bottom: 18px; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-        .btn-cancel {
-            flex:1; padding: 10px; border-radius: 8px; border: 1px solid var(--border);
-            background: var(--surface2); color: var(--text2); font-family: 'Tajawal', sans-serif;
-            font-size: 14px; cursor: pointer;
+        .neon-btn:active {
+            background: rgba(255, 255, 255, 0.1);
         }
-        .btn-send {
-            flex:1; padding: 10px; border-radius: 8px; border: none;
-            background: var(--accent); color: #fff; font-family: 'Tajawal', sans-serif;
-            font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity .2s;
+
+        /* وضع التعديل */
+        .edit-mode-active [contenteditable="true"] {
+            outline: 2px dashed var(--secondary);
+            outline-offset: 4px;
+            animation: pulseBorder 1.5s infinite;
+            cursor: text;
         }
-        .btn-send:hover { opacity: .85; }
-        .btn-send:disabled { opacity: .5; cursor: not-allowed; }
-        .auth-footer { font-size: 11px; color: var(--text3); text-align: center; }
+        @keyframes pulseBorder {
+            0% { outline-color: var(--secondary); }
+            50% { outline-color: transparent; }
+            100% { outline-color: var(--secondary); }
+        }
+
+        /* البوب اب الخاص بالتعديل */
+        .edit-popup, .confirm-popup {
+            position: fixed;
+            display: flex;
+            gap: 10px;
+            border-radius: 50px;
+            padding: 8px 15px;
+            z-index: 2000;
+            transform: translate(-50%, -100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+        .edit-popup.show, .confirm-popup.show {
+            pointer-events: all;
+            opacity: 1;
+            transform: translate(-50%, -120%);
+        }
+        .edit-popup button, .confirm-popup button {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .edit-popup button:hover, .confirm-popup button:hover {
+            transform: scale(1.1);
+        }
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+        }
+        .edit-btn-popup {
+            background: var(--secondary);
+            color: #000;
+        }
+        .cancel-btn-popup {
+            background: #747d8c;
+            color: white;
+        }
+        .confirm-edit-btn {
+            background: #2ed573;
+            color: white;
+        }
+        .cancel-edit-btn {
+            background: #ff4757;
+            color: white;
+        }
+
+        /* مودال التأكيد */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-content {
+            width: 90%;
+            max-width: 450px;
+            border-radius: 25px;
+            padding: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+        .modal-content h3 {
+            font-size: 1.6rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .modal-buttons button:hover {
+            transform: translateY(-3px);
+        }
+
+        /* توست الإشعارات */
+        .edit-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--bg-dark);
+            backdrop-filter: blur(15px);
+            color: var(--text-dark);
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
+            border-right: 4px solid var(--primary);
+            box-shadow: var(--glass-shadow);
+            z-index: 4000;
+            opacity: 0;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .edit-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* تحسين سحب وترتيب المواد */
+        .sortable-ghost {
+            opacity: 0.3;
+            background: rgba(255, 80, 80, 0.2) !important;
+        }
+        .sortable-drag {
+            opacity: 1 !important;
+            background: #002200 !important;
+            border-top: 2px solid var(--primary) !important;
+            border-bottom: 2px solid var(--primary) !important;
+            transform: scale(1.02);
+        }
     </style>
 </head>
+
 <body oncontextmenu="return false;">
 
-<!-- ══ Splash ══ -->
-<div id="splash">
-    <div class="sp-logo">
-        <div class="sp-mark">S<span>2</span></div>
-        <div class="sp-name">منصة تعليمية</div>
+    <!-- زر القائمة (3 شرطات) في الجانب الأيسر -->
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    
+    
+
+    <!-- القائمة الجانبية المنزلقة (الإعدادات) - تم إزالة زر إضافة مادة جديدة -->
+    <div class="side-menu" id="sideMenu">
+        <button class="theme-btn" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i> الوضع المظلم / الفاتح
+        </button>
+        <button class="edit-mode-btn" onclick="toggleEditMode()">
+            <i class="fas fa-edit"></i> <span id="editModeText">تفعيل التعديل</span>
+        </button>
+        <button class="update-menu-btn" onclick="checkForUpdate()">
+            <i class="fas fa-cloud-download-alt"></i> التحقق من التحديث
+        </button>
     </div>
-    <div class="sp-track">
-        <div class="sp-rail"><div class="sp-fill" id="spBar"></div></div>
-        <div class="sp-hint" id="spHint">جاري التهيئة...</div>
+
+    <!-- الشعار -->
+    <div class="logo-box">
+        <div class="logo">S2</div>
     </div>
-</div>
 
-<!-- ══ Auth ══ -->
-<div id="auth">
-    <div class="auth-wrap">
-        <div class="auth-brand">
-            <div class="auth-mark">S<span>2</span></div>
-            <div class="auth-title">منصة S2 التعليمية</div>
-            <div class="auth-sub">تسجيل الدخول للمتابعة</div>
-        </div>
-        <div class="auth-card">
-            <div id="authAlert" class="auth-alert"></div>
-
-            <label class="field-label" for="loginEmail">البريد الإلكتروني</label>
-            <div class="field-wrap">
-                <i class="fi fas fa-envelope"></i>
-                <input class="auth-input" type="email" id="loginEmail"
-                    placeholder="example@mail.com" autocomplete="email">
-            </div>
-
-            <label class="field-label" for="loginPassword">كلمة المرور</label>
-            <div class="field-wrap">
-                <i class="fi fas fa-lock"></i>
-                <input class="auth-input" type="password" id="loginPassword"
-                    placeholder="••••••••" autocomplete="current-password">
-                <button class="pass-toggle" id="passToggle" type="button" tabindex="-1">
-                    <i class="fas fa-eye" id="passIcon"></i>
-                </button>
-            </div>
-
-            <div class="remember-row" id="remRow">
-                <div class="rem-box" id="remBox"></div>
-                <span>تذكرني في هذا الجهاز</span>
-            </div>
-
-            <button class="auth-btn" id="loginBtn">تسجيل الدخول</button>
-
-            <a href="#" class="forgot-link" id="forgotLink">نسيت كلمة المرور؟</a>
-
-            <div class="security-badge">
-                <i class="fas fa-shield-alt"></i>
-                محمي بـ Firebase Authentication — بيانات مشفرة
-            </div>
-        </div>
-        <div class="auth-footer">منصة S2 التعليمية — جميع الحقوق محفوظة</div>
+    <!-- الحاوية الرئيسية للمواد -->
+    <div class="container" id="mainContainer">
+        <a href="M1.html" class="neon-btn" data-id="m1" data-original-href="M1.html">
+            <i class="fas fa-globe-americas"></i> <span class="btn-text">مدخل للعلاقات الدولية</span>
+        </a>
+        <a href="M2.html" class="neon-btn" data-id="m2" data-original-href="M2.html">
+            <i class="fas fa-gavel"></i> <span class="btn-text">القانون التجاري الأساسي</span>
+        </a>
+        <a href="M3.html" class="neon-btn" data-id="m3" data-original-href="M3.html">
+            <i class="fas fa-balance-scale"></i> <span class="btn-text">القانون الجنائي العام</span>
+        </a>
+        <a href="M4.html" class="neon-btn" data-id="m4" data-original-href="M4.html">
+            <i class="fas fa-file-contract"></i> <span class="btn-text">النظرية العامة للإلتزامات</span>
+        </a>
+        <a href="M5.html" class="neon-btn" data-id="m5" data-original-href="M5.html">
+            <i class="fas fa-university"></i> <span class="btn-text">القانون الإداري والتنظيم الإداري</span>
+        </a>
+        <a href="M6.html" class="neon-btn" data-id="m6" data-original-href="M6.html">
+            <i class="fas fa-laptop-code"></i> <span class="btn-text">قانون معاملات الكترونية</span>
+        </a>
+        <a href="M7.html" class="neon-btn" data-id="m7" data-original-href="M7.html">
+            <i class="fas fa-robot"></i> <span class="btn-text">المهارات الرقمية والذكاء الاصطناعي</span>
+        </a>
     </div>
-</div>
 
-<!-- ══ Reset Modal ══ -->
-<div id="resetModal">
-    <div class="modal-card">
-        <div class="modal-title">استعادة كلمة المرور</div>
-        <div class="modal-sub">سنرسل رابط إعادة التعيين إلى بريدك الإلكتروني</div>
-        <div id="resetAlert" class="auth-alert"></div>
-        <label class="field-label" for="resetEmail">البريد الإلكتروني</label>
-        <div class="field-wrap">
-            <i class="fi fas fa-envelope"></i>
-            <input class="auth-input" type="email" id="resetEmail" placeholder="example@mail.com">
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" id="cancelReset">إلغاء</button>
-            <button class="btn-send" id="sendReset">إرسال الرابط</button>
+    <!-- مودال تأكيد الحذف -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <h3 style="color: #ff4757;"><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
+            <p style="margin-bottom: 20px; font-size: 1.1rem;">هل أنت متأكد من حذف هذه المادة؟</p>
+            <div class="modal-buttons">
+                <button onclick="confirmDeleteMaterial()" style="background: #ff4757; color: white;"><i class="fas fa-trash"></i> حذف</button>
+                <button onclick="closeDeleteModal()" style="background: var(--secondary); color: #000;"><i class="fas fa-times"></i> إلغاء</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
-    getAuth,
-    signInWithEmailAndPassword,
-    sendPasswordResetEmail,
-    setPersistence,
-    browserLocalPersistence,
-    browserSessionPersistence,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <!-- بوب اب التعديل (حذف/تعديل/إلغاء) -->
+    <div class="edit-popup" id="editPopup">
+        <button class="delete-btn" onclick="requestDeleteMaterial()"><i class="fas fa-trash"></i></button>
+        <button class="edit-btn-popup" onclick="startEditText()"><i class="fas fa-pen"></i></button>
+        <button class="cancel-btn-popup" onclick="hideEditPopup()"><i class="fas fa-times"></i></button>
+    </div>
 
-const FB_CONFIG = {
-    apiKey:            "AIzaSyAhRvNdTyX_S29wfjBdxQ1QR98XmNB_6WQ",
-    authDomain:        "wep-app-1771a.firebaseapp.com",
-    projectId:         "wep-app-1771a",
-    storageBucket:     "wep-app-1771a.firebasestorage.app",
-    messagingSenderId: "568445406110",
-    appId:             "1:568445406110:web:b2225d5747779e70a2248f"
-};
+    <!-- بوب اب تأكيد التعديل النصي -->
+    <div class="confirm-popup" id="confirmPopup">
+        <button class="confirm-edit-btn" onclick="confirmTextEdit()"><i class="fas fa-check"></i></button>
+        <button class="cancel-edit-btn" onclick="cancelTextEdit()"><i class="fas fa-times"></i></button>
+    </div>
 
-const app  = initializeApp(FB_CONFIG);
-const auth = getAuth(app);
-const $    = id => document.getElementById(id);
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+    <!-- توست الإشعارات -->
+    <div class="edit-toast" id="toastMsg">
+        <i class="fas fa-info-circle"></i> <span id="toastText"></span>
+    </div>
 
-function translateError(code) {
-    const map = {
-        'auth/user-not-found':        'لم يُعثر على حساب بهذا البريد الإلكتروني.',
-        'auth/wrong-password':        'كلمة المرور غير صحيحة.',
-        'auth/invalid-email':         'صيغة البريد الإلكتروني غير صحيحة.',
-        'auth/user-disabled':         'هذا الحساب موقوف. تواصل مع الدعم.',
-        'auth/too-many-requests':     'محاولات كثيرة. انتظر قليلاً ثم حاول مجدداً.',
-        'auth/network-request-failed':'خطأ في الاتصال بالإنترنت.',
-        'auth/invalid-credential':    'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
-    };
-    return map[code] || 'حدث خطأ. يرجى المحاولة لاحقاً.';
-}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // ======================== المتغيرات العامة ========================
+        let editMode = false;           // وضع التعديل
+        let currentEditElement = null;  // العنصر الجاري تعديله
+        let originalText = '';          // النص الأصلي قبل التعديل
+        let materialToDelete = null;    // المادة المراد حذفها
 
-function showAlert(msg, type, id = 'authAlert') {
-    const el = $(id);
-    el.className = 'auth-alert ' + type;
-    el.textContent = msg;
-}
-function clearAlert(id = 'authAlert') {
-    const el = $(id);
-    el.className = 'auth-alert';
-    el.textContent = '';
-}
+        // تهيئة الترتيب باستخدام SortableJS
+        const container = document.getElementById('mainContainer');
+        let sortableInstance = null;
 
-let rem = !!localStorage.getItem('s2_rem');
-const syncRem = () => $('remBox').classList.toggle('on', rem);
-$('remRow').addEventListener('click', () => { rem = !rem; syncRem(); });
-syncRem();
-
-$('passToggle').addEventListener('click', () => {
-    const inp = $('loginPassword');
-    const show = inp.type === 'password';
-    inp.type = show ? 'text' : 'password';
-    $('passIcon').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
-});
-
-async function hideSplash(fast) {
-    const bar  = $('spBar');
-    const hint = $('spHint');
-    if (fast) {
-        bar.style.width  = '100%';
-        hint.textContent = 'أهلاً بعودتك';
-        await sleep(480);
-    } else {
-        for (const s of [{w:'20%',t:'جاري التهيئة...'},{w:'60%',t:'تحميل البيانات...'},{w:'90%',t:'جاهز للانطلاق'}]) {
-            bar.style.width  = s.w;
-            hint.textContent = s.t;
-            await sleep(380);
+        function initSortable() {
+            if (sortableInstance) sortableInstance.destroy();
+            sortableInstance = new Sortable(container, {
+                animation: 300,
+                delay: 400,
+                delayOnTouchOnly: true,
+                touchStartThreshold: 10,
+                forceFallback: true,
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag',
+                onStart: function() {
+                    if (navigator.vibrate) navigator.vibrate(40);
+                },
+                onEnd: function() {
+                    saveOrderToLocal();
+                }
+            });
         }
-        bar.style.width = '100%';
-        await sleep(260);
-    }
-    $('splash').classList.add('out');
-    await sleep(420);
-    $('splash').style.display = 'none';
-}
 
-async function doLogin() {
-    const email = $('loginEmail').value.trim().toLowerCase();
-    const pass  = $('loginPassword').value;
-    const btn   = $('loginBtn');
-
-    clearAlert();
-
-    if (!email || !pass) {
-        showAlert('يرجى إدخال البريد الإلكتروني وكلمة المرور.', 'danger'); return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = 'جاري التحقق <span class="spin"></span>';
-    showAlert('جاري التحقق من بياناتك...', 'info');
-
-    try {
-        await setPersistence(auth, rem ? browserLocalPersistence : browserSessionPersistence);
-        await signInWithEmailAndPassword(auth, email, pass);
-
-        if (rem) localStorage.setItem('s2_rem', '1');
-        else     localStorage.removeItem('s2_rem');
-
-        showAlert('تم التحقق بنجاح — جاري التحويل...', 'success');
-        await sleep(800);
-        window.location.href = 'home.html';
-
-    } catch (err) {
-        showAlert(translateError(err.code), 'danger');
-        btn.disabled = false;
-        btn.textContent = 'تسجيل الدخول';
-    }
-}
-
-['loginEmail', 'loginPassword'].forEach(id =>
-    $(id).addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); })
-);
-$('loginBtn').addEventListener('click', doLogin);
-
-$('forgotLink').addEventListener('click', e => {
-    e.preventDefault();
-    clearAlert('resetAlert');
-    $('resetEmail').value = $('loginEmail').value;
-    $('resetModal').classList.add('show');
-});
-$('cancelReset').addEventListener('click', () => $('resetModal').classList.remove('show'));
-$('resetModal').addEventListener('click', e => {
-    if (e.target === $('resetModal')) $('resetModal').classList.remove('show');
-});
-
-$('sendReset').addEventListener('click', async () => {
-    const email = $('resetEmail').value.trim().toLowerCase();
-    const btn   = $('sendReset');
-    clearAlert('resetAlert');
-
-    if (!email) { showAlert('يرجى إدخال البريد الإلكتروني.', 'danger', 'resetAlert'); return; }
-
-    btn.disabled = true;
-    btn.textContent = 'جاري الإرسال...';
-
-    try {
-        await sendPasswordResetEmail(auth, email);
-        showAlert('تم! تحقق من بريدك الإلكتروني.', 'success', 'resetAlert');
-        btn.textContent = 'تم الإرسال ✓';
-        await sleep(2500);
-        $('resetModal').classList.remove('show');
-    } catch (err) {
-        showAlert(translateError(err.code), 'danger', 'resetAlert');
-        btn.disabled = false;
-        btn.textContent = 'إرسال الرابط';
-    }
-});
-
-window.addEventListener('load', () => {
-    onAuthStateChanged(auth, async user => {
-        if (user) {
-            await hideSplash(true);
-            window.location.href = 'home.html';
-        } else {
-            await hideSplash(false);
-            $('auth').classList.add('show');
+        function saveOrderToLocal() {
+            const order = Array.from(container.children).map(child => child.getAttribute('data-id'));
+            localStorage.setItem('s2-materials-order', JSON.stringify(order));
         }
-    });
-});
-</script>
+
+        function restoreOrderFromLocal() {
+            const savedOrder = localStorage.getItem('s2-materials-order');
+            if (savedOrder) {
+                const orderArray = JSON.parse(savedOrder);
+                orderArray.forEach(id => {
+                    const item = container.querySelector(`[data-id="${id}"]`);
+                    if (item) container.appendChild(item);
+                });
+            }
+        }
+
+        // ======================== إدارة القائمة الجانبية ========================
+        function toggleMenu() {
+            document.getElementById("sideMenu").classList.toggle("open");
+            document.querySelector(".menu-btn").classList.toggle("rotate-active");
+        }
+
+        // ======================== إدارة الثيم (فاتح/مظلم) ========================
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('s2-theme', isLight ? 'light' : 'dark');
+            const themeBtn = document.querySelector('.theme-btn');
+            if (isLight) themeBtn.innerHTML = '<i class="fas fa-sun"></i> الوضع المظلم';
+            else themeBtn.innerHTML = '<i class="fas fa-moon"></i> الوضع الفاتح';
+            showToast(isLight ? 'الوضع الفاتح' : 'الوضع المظلم');
+        }
+
+        function loadTheme() {
+            const saved = localStorage.getItem('s2-theme');
+            if (saved === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('.theme-btn').innerHTML = '<i class="fas fa-sun"></i> الوضع المظلم';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.querySelector('.theme-btn').innerHTML = '<i class="fas fa-moon"></i> الوضع الفاتح';
+            }
+        }
+
+        // ======================== وضع التعديل ========================
+        function toggleEditMode() {
+            editMode = !editMode;
+            const editBtnSpan = document.getElementById('editModeText');
+            if (editMode) {
+                document.body.classList.add('edit-mode-active');
+                editBtnSpan.innerText = 'إنهاء التعديل';
+                showToast('وضع التعديل نشط - اضغط مطولاً على أي مادة لتظهر الخيارات');
+            } else {
+                document.body.classList.remove('edit-mode-active');
+                editBtnSpan.innerText = 'تفعيل التعديل';
+                document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+                hideEditPopup();
+                hideConfirmPopup();
+                showToast('وضع التعديل غير نشط');
+            }
+            localStorage.setItem('s2-edit-mode', editMode ? 'enabled' : 'disabled');
+        }
+
+        function loadEditMode() {
+            const saved = localStorage.getItem('s2-edit-mode');
+            if (saved === 'enabled') {
+                editMode = true;
+                document.body.classList.add('edit-mode-active');
+                document.getElementById('editModeText').innerText = 'إنهاء التعديل';
+            } else {
+                editMode = false;
+                document.body.classList.remove('edit-mode-active');
+                document.getElementById('editModeText').innerText = 'تفعيل التعديل';
+            }
+        }
+
+        // ======================== معالجة الضغط الطويل ========================
+        function handleLongPress(element, e) {
+            if (!editMode) return;
+            if (element.hasAttribute('contenteditable')) return;
+
+            currentEditElement = element;
+            const textSpan = element.querySelector('.btn-text');
+            originalText = textSpan ? textSpan.innerText : element.innerText;
+
+            const touch = e.touches ? e.touches[0] : e;
+            const popup = document.getElementById('editPopup');
+            const rect = element.getBoundingClientRect();
+            let popY = rect.top - 10;
+            if (popY < 60) popY = rect.bottom + 60;
+            popup.style.left = touch.clientX + 'px';
+            popup.style.top = popY + 'px';
+            popup.classList.add('show');
+            hideConfirmPopup();
+        }
+
+        let pressTimer = null;
+        function onTouchStart(e) {
+            if (!editMode) return;
+            const element = e.target.closest('.neon-btn');
+            if (!element) return;
+            pressTimer = setTimeout(() => {
+                handleLongPress(element, e);
+                pressTimer = null;
+            }, 500);
+        }
+        function onTouchEnd() {
+            if (pressTimer) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+            }
+        }
+        function onTouchMove() {
+            if (pressTimer) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+            }
+        }
+
+        // ======================== وظائف الحذف والتعديل ========================
+        function requestDeleteMaterial() {
+            if (currentEditElement) {
+                materialToDelete = currentEditElement;
+                hideEditPopup();
+                document.getElementById('deleteModal').classList.add('show');
+            }
+        }
+
+        function confirmDeleteMaterial() {
+            if (materialToDelete) {
+                materialToDelete.remove();
+                closeDeleteModal();
+                saveOrderToLocal();
+                showToast('✓ تم حذف المادة');
+                materialToDelete = null;
+                currentEditElement = null;
+            }
+        }
+
+        function startEditText() {
+            if (currentEditElement) {
+                const textSpan = currentEditElement.querySelector('.btn-text');
+                if (textSpan) {
+                    textSpan.setAttribute('contenteditable', 'true');
+                    textSpan.focus();
+                } else {
+                    currentEditElement.setAttribute('contenteditable', 'true');
+                    currentEditElement.focus();
+                }
+                hideEditPopup();
+                const rect = currentEditElement.getBoundingClientRect();
+                const confirmPopup = document.getElementById('confirmPopup');
+                let popY = rect.top - 10;
+                if (popY < 60) popY = rect.bottom + 60;
+                confirmPopup.style.left = (rect.left + rect.width / 2) + 'px';
+                confirmPopup.style.top = popY + 'px';
+                confirmPopup.classList.add('show');
+            }
+        }
+
+        function confirmTextEdit() {
+            if (currentEditElement) {
+                const textSpan = currentEditElement.querySelector('.btn-text');
+                if (textSpan) {
+                    textSpan.removeAttribute('contenteditable');
+                } else {
+                    currentEditElement.removeAttribute('contenteditable');
+                }
+                hideConfirmPopup();
+                showToast('✓ تم تحديث الاسم');
+                currentEditElement = null;
+            }
+        }
+
+        function cancelTextEdit() {
+            if (currentEditElement) {
+                const textSpan = currentEditElement.querySelector('.btn-text');
+                if (textSpan) {
+                    textSpan.innerText = originalText;
+                    textSpan.removeAttribute('contenteditable');
+                } else {
+                    currentEditElement.innerText = originalText;
+                    currentEditElement.removeAttribute('contenteditable');
+                }
+                hideConfirmPopup();
+                currentEditElement = null;
+            }
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        // ======================== التحديث ========================
+        function checkForUpdate() {
+            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.checkForUpdate) {
+                AndroidBridge.checkForUpdate();
+            } else {
+                showToast("زر التحديث يعمل داخل التطبيق فقط 🚀");
+            }
+        }
+
+        // ======================== توست الإشعارات ========================
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function hideEditPopup() {
+            document.getElementById('editPopup').classList.remove('show');
+        }
+        function hideConfirmPopup() {
+            document.getElementById('confirmPopup').classList.remove('show');
+        }
+
+        // ======================== منع التنقل عند التعديل ========================
+        document.addEventListener('click', function(e) {
+            if (editMode) {
+                const link = e.target.closest('a');
+                if (link && !link.hasAttribute('contenteditable')) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // ======================== التهيئة ========================
+        window.addEventListener('load', () => {
+            initSortable();
+            restoreOrderFromLocal();
+            loadTheme();
+            loadEditMode();
+
+            const allBtns = document.querySelectorAll('.neon-btn');
+            allBtns.forEach(btn => {
+                btn.addEventListener('touchstart', onTouchStart, { passive: true });
+                btn.addEventListener('touchend', onTouchEnd);
+                btn.addEventListener('touchmove', onTouchMove);
+                btn.addEventListener('mousedown', onTouchStart);
+                btn.addEventListener('mouseup', onTouchEnd);
+                btn.addEventListener('mouseleave', onTouchEnd);
+            });
+        });
+    </script>
 </body>
 </html>
