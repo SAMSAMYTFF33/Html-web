@@ -3,757 +3,656 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>S2 | Ultimate Precision Edition</title>
+    <title>S2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-    
     <style>
-        @font-face {
-            font-family: 'Tajawal';
-            src: url('file:///storage/emulated/0/Android/data/com.S2/files/Tajawal-Regular.ttf') format('truetype');
-            font-weight: 400;
-        }
-        @font-face {
-            font-family: 'Tajawal';
-            src: url('file:///storage/emulated/0/Android/data/com.S2/files/Tajawal-Bold.ttf') format('truetype');
-            font-weight: 700;
-        }
-
         :root {
-            --primary: #00ff88;
-            --secondary: #00bdff;
-            --bg-dark: #050a0a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --neon-glow: 0 0 15px rgba(0, 255, 136, 0.3);
-            --text-dark: #fff;
+            --bg:      #0d1117;
+            --surface: #161b22;
+            --border:  #30363d;
+            --accent:  #238636;
+            --accent2: #1f6feb;
+            --text:    #e6edf3;
+            --muted:   #8b949e;
+            --danger:  #da3633;
+            --warn:    #d29922;
         }
-
-        /* الوضع الفاتح */
         body.light-mode {
-            --primary: #00a859;
-            --secondary: #008cb3;
-            --bg-dark: #f4f6f9;
-            --card-bg: rgba(0, 0, 0, 0.05);
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            --neon-glow: 0 0 15px rgba(0, 168, 89, 0.2);
-            --text-dark: #1a1a1a;
+            --bg:#fff; --surface:#f6f8fa; --border:#d0d7de;
+            --accent:#1a7f37; --accent2:#0969da; --text:#1f2328;
+            --muted:#656d76; --danger:#cf222e; --warn:#9a6700;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing:border-box; margin:0; padding:0; }
         body {
-            font-family: 'Tajawal', sans-serif;
-            margin: 0;
-            padding: 60px 0 80px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: var(--bg-dark);
-            color: var(--text-dark);
-            transition: background 0.4s ease, color 0.4s ease;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 255, 136, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 189, 255, 0.15) 0px, transparent 50%);
-            -webkit-user-select: none;
-            user-select: none;
+            font-family:'Tajawal',sans-serif;
+            background:var(--bg); color:var(--text);
+            min-height:100vh; font-size:15px;
+            -webkit-user-select:none; user-select:none;
         }
 
-        /* زر القائمة (3 شرطات) في الجانب الأيسر */
-        .menu-btn {
-            position: fixed; top: 20px; left: 20px;
-            font-size: 24px; width: 50px; height: 50px;
-            border-radius: 15px; background: var(--card-bg);
-            backdrop-filter: blur(10px); color: var(--primary);
-            border: 1px solid var(--glass-border); cursor: pointer;
-            z-index: 1000; display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--glass-shadow); transition: 0.3s;
+        /* ══ AUTH SCREEN ══ */
+        #authScreen {
+            min-height:100vh;
+            background:#1877f2;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            padding:20px;
         }
+        .fb-logo {
+            font-size:3rem; font-weight:900;
+            color:#fff; letter-spacing:-1px;
+            margin-bottom:8px;
+            text-shadow:0 2px 8px rgba(0,0,0,0.15);
+        }
+        .fb-tagline {
+            color:rgba(255,255,255,0.85);
+            font-size:14px; margin-bottom:24px;
+            text-align:center; max-width:280px;
+        }
+        .fb-card {
+            width:100%; max-width:396px;
+            background:#fff; border-radius:8px;
+            padding:16px;
+            box-shadow:0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .fb-alert {
+            font-size:13px; font-weight:600;
+            padding:10px 14px; border-radius:6px;
+            margin-bottom:12px; display:none;
+            border:1px solid transparent;
+        }
+        .fb-alert.info    { display:block; background:#e7f3ff; color:#1877f2; border-color:#b3d4fc; }
+        .fb-alert.success { display:block; background:#e6f4ea; color:#1a7f37; border-color:#a8d5b0; }
+        .fb-alert.danger  { display:block; background:#ffebe9; color:#cf222e; border-color:#ffc1bd; }
 
-        /* نحتفظ بالتوهج عند اللمس ولكن نزيل الدوران */
-        .menu-btn:hover { box-shadow: var(--neon-glow); }
+        .fb-input {
+            width:100%; padding:14px 16px; margin-bottom:12px;
+            border:1px solid #dddfe2; border-radius:6px;
+            font-size:17px; font-family:'Tajawal',sans-serif;
+            outline:none; color:#1c1e21;
+            transition:border-color 0.2s, box-shadow 0.2s;
+            display:block;
+        }
+        .fb-input:focus { border-color:#1877f2; box-shadow:0 0 0 2px #e7f3ff; }
+        .fb-input::placeholder { color:#90949c; }
 
-        /* نضيف كلاس جديد مسؤول عن الدوران فقط */
-        .menu-btn.rotate-active { transform: rotate(90deg); }
+        .fb-btn {
+            width:100%; padding:14px;
+            font-size:17px; font-weight:700;
+            font-family:'Tajawal',sans-serif;
+            border:none; border-radius:6px;
+            cursor:pointer; transition:filter 0.2s, transform 0.1s;
+            display:block;
+        }
+        .fb-btn:active { transform:scale(0.98); }
+        .fb-btn:disabled { opacity:0.7; cursor:not-allowed; }
+        .fb-btn.blue { background:#1877f2; color:#fff; }
+        .fb-btn.blue:hover:not(:disabled) { filter:brightness(1.08); }
 
-        /* القائمة الجانبية المنزلقة (الإعدادات) */
+        .spinner {
+            display:inline-block; width:14px; height:14px;
+            border:2px solid rgba(255,255,255,0.4); border-top-color:#fff;
+            border-radius:50%; animation:spin 0.7s linear infinite;
+            margin-left:6px; vertical-align:middle;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ══ APP SCREEN ══ */
+        #appScreen { display:none; }
+
+        .header {
+            position:fixed; top:0; left:0; right:0; height:48px;
+            background:var(--surface); border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 12px; z-index:100;
+        }
+        .header-left,.header-right { display:flex; align-items:center; gap:6px; }
+        .app-title { font-size:15px; font-weight:800; color:var(--text); letter-spacing:1px; }
+        .app-title span { color:var(--accent); }
+
+        .menu-btn,.icon-btn {
+            width:32px; height:32px; background:none;
+            border:1px solid var(--border); border-radius:6px;
+            color:var(--muted); cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            font-size:13px; transition:color 0.15s, border-color 0.15s, transform 0.2s;
+        }
+        .menu-btn { font-size:14px; }
+        .menu-btn:hover,.icon-btn:hover { color:var(--text); border-color:var(--muted); }
+        .menu-btn.rotate-active { transform:rotate(90deg); }
+        .icon-btn.active { color:var(--accent2); border-color:var(--accent2); }
+
+        .sync-dot {
+            width:8px; height:8px; border-radius:50%;
+            background:var(--border); transition:background 0.3s;
+        }
+        .sync-dot.syncing { background:var(--warn); animation:pulse 1s infinite; }
+        .sync-dot.synced  { background:var(--accent); }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        .backdrop { display:none; position:fixed; inset:0; z-index:98; }
+        .backdrop.show { display:block; }
+
         .side-menu {
-            position: fixed;
-            top: 0;
-            left: -320px;
-            width: 320px;
-            height: 100vh;
-            padding: 90px 25px 25px;
-            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border-radius: 0 30px 30px 0;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border-right: 1px solid var(--glass-border);
+            position:fixed; top:48px; left:-260px; width:260px;
+            height:calc(100vh - 48px); background:var(--surface);
+            border-right:1px solid var(--border); padding:8px 0;
+            z-index:99; transition:left 0.25s ease;
         }
-        .side-menu.open {
-            left: 0;
-        }
-        .side-menu button {
-            font-family: 'Tajawal', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: 0.3s;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-dark);
-        }
-        .side-menu button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .theme-btn {
-            border-left: 4px solid var(--primary) !important;
-        }
-        .edit-mode-btn {
-            border-left: 4px solid var(--secondary) !important;
-        }
-        .update-menu-btn {
-            border-left: 4px solid var(--secondary) !important;
-        }
+        .side-menu.open { left:0; }
 
-        /* زر update الأصلي في الجانب الأيمن العلوي */
-        .update-top-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--primary);
-            padding: 8px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(10px);
-            font-size: 14px;
-            font-weight: bold;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .user-badge {
+            padding:12px 16px; font-size:12px; color:var(--muted);
+            border-bottom:1px solid var(--border); margin-bottom:6px;
+            display:flex; align-items:center; gap:8px;
         }
-        .update-top-btn:hover {
-            transform: scale(1.05);
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-        }
+        .user-badge i { color:var(--accent); font-size:14px; }
+        .user-badge span { font-size:11px; }
 
-        /* الشعار المتحرك */
-        .logo-box {
-            position: relative;
-            margin: 20px 0 40px;
-            animation: float 4s ease-in-out infinite;
-            text-align: center;
+        .menu-item {
+            display:flex; align-items:center; gap:10px; padding:10px 16px;
+            font-size:14px; font-weight:600; color:var(--muted);
+            background:none; border:none; cursor:pointer; width:100%;
+            text-align:right; transition:color 0.15s, background 0.15s;
+            font-family:'Tajawal',sans-serif;
         }
-        .logo {
-            font-size: 50px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.3));
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        .menu-item:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+        .menu-item i { width:16px; text-align:center; font-size:13px; }
+        .menu-item.logout { color:var(--danger); }
+        .menu-item.logout:hover { background:rgba(218,54,51,0.08); }
+        .menu-sep { height:1px; background:var(--border); margin:6px 0; }
 
-        /* الحاوية الرئيسية - عرض كامل */
-        .container {
-            width: 100%;
-            max-width: none;
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-            z-index: 10;
-            padding-bottom: 50px;
+        .main { padding-top:48px; }
+        .status-bar {
+            display:flex; align-items:center; gap:6px; padding:6px 12px;
+            font-size:11px; color:var(--muted);
+            border-bottom:1px solid var(--border); background:var(--surface);
         }
+        .dot { width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; }
 
-        /* أزرار المواد - نمط مستطيلات كاملة الحواف */
-        .neon-btn {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px 25px;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            background: var(--card-bg);
-            border-top: 1px solid var(--glass-border);
-            border-bottom: 1px solid var(--glass-border);
-            border-left: none;
-            border-right: none;
-            border-radius: 0;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-sizing: border-box;
-            -webkit-touch-callout: none;
-            -webkit-user-drag: none;
+        .list { display:flex; flex-direction:column; }
+        .list-item {
+            display:flex; align-items:center; border-bottom:1px solid var(--border);
+            text-decoration:none; color:var(--text); background:var(--bg);
+            transition:background 0.1s; position:relative; cursor:pointer; min-height:52px;
         }
-        .neon-btn i {
-            font-size: 20px;
-            color: var(--primary);
-            transition: 0.3s;
+        .list-item:active { background:var(--surface); }
+        .item-icon {
+            width:48px; min-width:48px; height:52px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:16px; color:var(--accent2); border-left:1px solid var(--border);
         }
-        .neon-btn:active {
-            background: rgba(255, 255, 255, 0.1);
+        .item-body {
+            flex:1; padding:14px 14px 14px 10px;
+            display:flex; align-items:center; justify-content:space-between;
         }
+        .item-text { font-size:14px; font-weight:600; line-height:1.3; }
+        .item-arrow { color:var(--border); font-size:12px; }
 
-        /* وضع التعديل */
+        .edit-mode-active .list-item::before {
+            content:''; position:absolute; right:0; top:0; bottom:0; width:3px; background:var(--accent2);
+        }
         .edit-mode-active [contenteditable="true"] {
-            outline: 2px dashed var(--secondary);
-            outline-offset: 4px;
-            animation: pulseBorder 1.5s infinite;
-            cursor: text;
+            outline:1px dashed var(--accent2); outline-offset:2px; cursor:text; border-radius:2px;
         }
-        @keyframes pulseBorder {
-            0% { outline-color: var(--secondary); }
-            50% { outline-color: transparent; }
-            100% { outline-color: var(--secondary); }
-        }
+        .sortable-ghost { opacity:0.3; background:var(--surface) !important; }
+        .sortable-drag  { opacity:1 !important; background:var(--surface) !important; border-right:2px solid var(--accent2) !important; }
 
-        /* البوب اب الخاص بالتعديل */
-        .edit-popup, .confirm-popup {
-            position: fixed;
-            display: flex;
-            gap: 10px;
-            border-radius: 50px;
-            padding: 8px 15px;
-            z-index: 2000;
-            transform: translate(-50%, -100%);
-            pointer-events: none;
-            opacity: 0;
-            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+        .edit-popup,.confirm-popup {
+            position:fixed; display:flex; gap:6px; border-radius:8px; padding:6px 10px;
+            z-index:2000; transform:translate(-50%,-100%); pointer-events:none; opacity:0;
+            transition:opacity 0.15s; background:var(--surface); border:1px solid var(--border);
+            box-shadow:0 4px 16px rgba(0,0,0,0.4);
         }
-        .edit-popup.show, .confirm-popup.show {
-            pointer-events: all;
-            opacity: 1;
-            transform: translate(-50%, -120%);
+        .edit-popup.show,.confirm-popup.show { pointer-events:all; opacity:1; transform:translate(-50%,-115%); }
+        .edit-popup button,.confirm-popup button {
+            width:36px; height:36px; border-radius:6px; border:1px solid var(--border);
+            font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+            transition:0.15s; background:var(--bg);
         }
-        .edit-popup button, .confirm-popup button {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .edit-popup button:hover, .confirm-popup button:hover {
-            transform: scale(1.1);
-        }
-        .delete-btn {
-            background: #ff4757;
-            color: white;
-        }
-        .edit-btn-popup {
-            background: var(--secondary);
-            color: #000;
-        }
-        .cancel-btn-popup {
-            background: #747d8c;
-            color: white;
-        }
-        .confirm-edit-btn {
-            background: #2ed573;
-            color: white;
-        }
-        .cancel-edit-btn {
-            background: #ff4757;
-            color: white;
-        }
+        .delete-btn       { color:var(--danger) !important; }
+        .delete-btn:hover { background:rgba(218,54,51,0.12) !important; }
+        .edit-btn-popup   { color:var(--accent2) !important; }
+        .cancel-btn-popup { color:var(--muted) !important; }
+        .confirm-edit-btn { color:var(--accent) !important; }
+        .cancel-edit-btn  { color:var(--danger) !important; }
 
-        /* مودال التأكيد */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.3s;
+            position:fixed; inset:0; background:rgba(0,0,0,0.7);
+            display:flex; align-items:center; justify-content:center;
+            z-index:3000; opacity:0; pointer-events:none; transition:opacity 0.2s;
         }
-        .modal-overlay.show {
-            opacity: 1;
-            pointer-events: all;
-        }
+        .modal-overlay.show { opacity:1; pointer-events:all; }
         .modal-content {
-            width: 90%;
-            max-width: 450px;
-            border-radius: 25px;
-            padding: 30px;
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
-            text-align: center;
+            width:88%; max-width:360px; border-radius:10px; padding:20px;
+            background:var(--surface); border:1px solid var(--border);
+            box-shadow:0 16px 32px rgba(0,0,0,0.5);
         }
-        .modal-content h3 {
-            font-size: 1.6rem;
-            color: var(--secondary);
-            margin-bottom: 20px;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
+        .modal-content h3 { font-size:15px; color:var(--danger); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+        .modal-content p  { font-size:13px; color:var(--muted); margin-bottom:16px; }
+        .modal-buttons    { display:flex; gap:8px; }
         .modal-buttons button {
-            flex: 1;
-            padding: 15px;
-            border-radius: 15px;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: 700;
-            font-family: 'Tajawal', sans-serif;
-            cursor: pointer;
-            transition: 0.3s;
+            flex:1; padding:10px; border-radius:6px; border:1px solid var(--border);
+            font-size:13px; font-weight:700; font-family:'Tajawal',sans-serif;
+            cursor:pointer; transition:0.15s; background:var(--bg); color:var(--text);
         }
-        .modal-buttons button:hover {
-            transform: translateY(-3px);
-        }
+        .btn-danger { color:var(--danger) !important; border-color:var(--danger) !important; }
+        .btn-danger:hover { background:rgba(218,54,51,0.1) !important; }
 
-        /* توست الإشعارات */
-        .edit-toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-dark);
-            backdrop-filter: blur(15px);
-            color: var(--text-dark);
-            padding: 12px 28px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            border: 1px solid var(--glass-border);
-            border-right: 4px solid var(--primary);
-            box-shadow: var(--glass-shadow);
-            z-index: 4000;
-            opacity: 0;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .toast {
+            position:fixed; bottom:20px; left:50%;
+            transform:translateX(-50%) translateY(10px);
+            background:var(--surface); border:1px solid var(--border);
+            border-right:3px solid var(--accent); color:var(--text);
+            padding:9px 16px; border-radius:6px; font-size:13px; font-weight:600;
+            z-index:4000; opacity:0; transition:opacity 0.2s, transform 0.2s;
+            pointer-events:none; white-space:nowrap; box-shadow:0 4px 12px rgba(0,0,0,0.3);
         }
-        .edit-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* تحسين سحب وترتيب المواد */
-        .sortable-ghost {
-            opacity: 0.3;
-            background: rgba(255, 80, 80, 0.2) !important;
-        }
-        .sortable-drag {
-            opacity: 1 !important;
-            background: #002200 !important;
-            border-top: 2px solid var(--primary) !important;
-            border-bottom: 2px solid var(--primary) !important;
-            transform: scale(1.02);
-        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        .toast.err  { border-right-color:var(--danger) !important; }
     </style>
 </head>
-
 <body oncontextmenu="return false;">
 
-    <!-- زر القائمة (3 شرطات) في الجانب الأيسر -->
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+<!-- ══ شاشة الدخول ══ -->
+<div id="authScreen">
+    <div class="fb-logo">samsam</div>
+    <div class="fb-tagline">منصة S2 التعليمية — تواصل مع مواد دراستك في أي وقت</div>
 
-    
-    
+    <div class="fb-card">
+        <div id="authAlert" class="fb-alert"></div>
 
-    <!-- القائمة الجانبية المنزلقة (الإعدادات) - تم إزالة زر إضافة مادة جديدة -->
+        <!-- نموذج الدخول فقط -->
+        <form id="loginForm">
+            <input class="fb-input" type="email" id="loginEmail" placeholder="البريد الإلكتروني" required autocomplete="email">
+            <input class="fb-input" type="password" id="loginPassword" placeholder="كلمة السر" required autocomplete="current-password">
+            <button type="submit" class="fb-btn blue" id="loginBtn">تسجيل الدخول</button>
+        </form>
+    </div>
+</div>
+
+<!-- ══ شاشة التطبيق ══ -->
+<div id="appScreen">
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <span class="app-title">S<span>2</span></span>
+        </div>
+        <div class="header-right">
+            <div class="sync-dot" id="syncDot" title="حالة الحفظ"></div>
+            <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" id="editBtn" onclick="toggleEditMode()"><i class="fas fa-edit"></i></button>
+        </div>
+    </div>
+
+    <div class="backdrop" id="backdrop" onclick="closeMenu()"></div>
+
     <div class="side-menu" id="sideMenu">
-        <button class="theme-btn" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i> الوضع المظلم / الفاتح
+        <div class="user-badge"><i class="fas fa-user-circle"></i><span id="userLabel">...</span></div>
+        <button class="menu-item" onclick="toggleTheme()">
+            <i id="themeIcon" class="fas fa-moon"></i><span id="themeLabel">الوضع الفاتح</span>
         </button>
-        <button class="edit-mode-btn" onclick="toggleEditMode()">
-            <i class="fas fa-edit"></i> <span id="editModeText">تفعيل التعديل</span>
+        <button class="menu-item" onclick="toggleEditMode()">
+            <i class="fas fa-edit"></i><span id="editModeText">تفعيل التعديل</span>
         </button>
-        <button class="update-menu-btn" onclick="checkForUpdate()">
-            <i class="fas fa-cloud-download-alt"></i> التحقق من التحديث
+        <div class="menu-sep"></div>
+        <button class="menu-item" onclick="resetEdits(); closeMenu();">
+            <i class="fas fa-undo"></i> إعادة ضبط
+        </button>
+        <div class="menu-sep"></div>
+        <button class="menu-item logout" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
         </button>
     </div>
 
-    <!-- الشعار -->
-    <div class="logo-box">
-        <div class="logo">S2</div>
+    <div class="main">
+        <div class="status-bar">
+            <span class="dot"></span><span id="statusText">7 مواد</span>
+        </div>
+        <div class="list" id="mainContainer">
+            <a href="M1.html" class="list-item" data-id="m1"><div class="item-icon"><i class="fas fa-globe-americas"></i></div><div class="item-body"><span class="btn-text item-text">مدخل للعلاقات الدولية</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+            <a href="M2.html" class="list-item" data-id="m2"><div class="item-icon"><i class="fas fa-gavel"></i></div><div class="item-body"><span class="btn-text item-text">القانون التجاري الأساسي</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+            <a href="M3.html" class="list-item" data-id="m3"><div class="item-icon"><i class="fas fa-balance-scale"></i></div><div class="item-body"><span class="btn-text item-text">القانون الجنائي العام</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+            <a href="M4.html" class="list-item" data-id="m4"><div class="item-icon"><i class="fas fa-file-contract"></i></div><div class="item-body"><span class="btn-text item-text">النظرية العامة للإلتزامات</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+            <a href="M5.html" class="list-item" data-id="m5"><div class="item-icon"><i class="fas fa-university"></i></div><div class="item-body"><span class="btn-text item-text">القانون الإداري والتنظيم الإداري</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+            <a href="M6.html" class="list-item" data-id="m6"><div class="item-icon"><i class="fas fa-laptop-code"></i></div><div class="item-body"><span class="btn-text item-text">قانون معاملات الكترونية</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+            <a href="M7.html" class="list-item" data-id="m7"><div class="item-icon"><i class="fas fa-robot"></i></div><div class="item-body"><span class="btn-text item-text">المهارات الرقمية والذكاء الاصطناعي</span><i class="fas fa-chevron-left item-arrow"></i></div></a>
+        </div>
     </div>
 
-    <!-- الحاوية الرئيسية للمواد -->
-    <div class="container" id="mainContainer">
-        <a href="M1.html" class="neon-btn" data-id="m1" data-original-href="M1.html">
-            <i class="fas fa-globe-americas"></i> <span class="btn-text">مدخل للعلاقات الدولية</span>
-        </a>
-        <a href="M2.html" class="neon-btn" data-id="m2" data-original-href="M2.html">
-            <i class="fas fa-gavel"></i> <span class="btn-text">القانون التجاري الأساسي</span>
-        </a>
-        <a href="M3.html" class="neon-btn" data-id="m3" data-original-href="M3.html">
-            <i class="fas fa-balance-scale"></i> <span class="btn-text">القانون الجنائي العام</span>
-        </a>
-        <a href="M4.html" class="neon-btn" data-id="m4" data-original-href="M4.html">
-            <i class="fas fa-file-contract"></i> <span class="btn-text">النظرية العامة للإلتزامات</span>
-        </a>
-        <a href="M5.html" class="neon-btn" data-id="m5" data-original-href="M5.html">
-            <i class="fas fa-university"></i> <span class="btn-text">القانون الإداري والتنظيم الإداري</span>
-        </a>
-        <a href="M6.html" class="neon-btn" data-id="m6" data-original-href="M6.html">
-            <i class="fas fa-laptop-code"></i> <span class="btn-text">قانون معاملات الكترونية</span>
-        </a>
-        <a href="M7.html" class="neon-btn" data-id="m7" data-original-href="M7.html">
-            <i class="fas fa-robot"></i> <span class="btn-text">المهارات الرقمية والذكاء الاصطناعي</span>
-        </a>
-    </div>
-
-    <!-- مودال تأكيد الحذف -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-content">
-            <h3 style="color: #ff4757;"><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
-            <p style="margin-bottom: 20px; font-size: 1.1rem;">هل أنت متأكد من حذف هذه المادة؟</p>
+            <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
+            <p>هل أنت متأكد من حذف هذه المادة؟</p>
             <div class="modal-buttons">
-                <button onclick="confirmDeleteMaterial()" style="background: #ff4757; color: white;"><i class="fas fa-trash"></i> حذف</button>
-                <button onclick="closeDeleteModal()" style="background: var(--secondary); color: #000;"><i class="fas fa-times"></i> إلغاء</button>
+                <button class="btn-danger" onclick="confirmDeleteMaterial()"><i class="fas fa-trash"></i> حذف</button>
+                <button onclick="document.getElementById('deleteModal').classList.remove('show')"><i class="fas fa-times"></i> إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- بوب اب التعديل (حذف/تعديل/إلغاء) -->
     <div class="edit-popup" id="editPopup">
-        <button class="delete-btn" onclick="requestDeleteMaterial()"><i class="fas fa-trash"></i></button>
-        <button class="edit-btn-popup" onclick="startEditText()"><i class="fas fa-pen"></i></button>
-        <button class="cancel-btn-popup" onclick="hideEditPopup()"><i class="fas fa-times"></i></button>
+        <button class="delete-btn"       onclick="requestDeleteMaterial()"><i class="fas fa-trash"></i></button>
+        <button class="edit-btn-popup"   onclick="startEditText()"><i class="fas fa-pen"></i></button>
+        <button class="cancel-btn-popup" onclick="document.getElementById('editPopup').classList.remove('show')"><i class="fas fa-times"></i></button>
     </div>
-
-    <!-- بوب اب تأكيد التعديل النصي -->
     <div class="confirm-popup" id="confirmPopup">
         <button class="confirm-edit-btn" onclick="confirmTextEdit()"><i class="fas fa-check"></i></button>
-        <button class="cancel-edit-btn" onclick="cancelTextEdit()"><i class="fas fa-times"></i></button>
+        <button class="cancel-edit-btn"  onclick="cancelTextEdit()"><i class="fas fa-times"></i></button>
     </div>
+</div>
 
-    <!-- توست الإشعارات -->
-    <div class="edit-toast" id="toastMsg">
-        <i class="fas fa-info-circle"></i> <span id="toastText"></span>
-    </div>
+<div class="toast" id="toastMsg"><span id="toastText"></span></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script>
-        // ======================== المتغيرات العامة ========================
-        let editMode = false;           // وضع التعديل
-        let currentEditElement = null;  // العنصر الجاري تعديله
-        let originalText = '';          // النص الأصلي قبل التعديل
-        let materialToDelete = null;    // المادة المراد حذفها
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // تهيئة الترتيب باستخدام SortableJS
-        const container = document.getElementById('mainContainer');
-        let sortableInstance = null;
+const firebaseConfig = {
+    apiKey:"AIzaSyAhRvNdTyX_S29wfjBdxQ1QR98XmNB_6WQ",
+    authDomain:"wep-app-1771a.firebaseapp.com",
+    projectId:"wep-app-1771a",
+    storageBucket:"wep-app-1771a.firebasestorage.app",
+    messagingSenderId:"568445406110",
+    appId:"1:568445406110:web:b2225d5747779e70a2248f"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
 
-        function initSortable() {
-            if (sortableInstance) sortableInstance.destroy();
-            sortableInstance = new Sortable(container, {
-                animation: 300,
-                delay: 400,
-                delayOnTouchOnly: true,
-                touchStartThreshold: 10,
-                forceFallback: true,
-                ghostClass: 'sortable-ghost',
-                dragClass: 'sortable-drag',
-                onStart: function() {
-                    if (navigator.vibrate) navigator.vibrate(40);
-                },
-                onEnd: function() {
-                    saveOrderToLocal();
-                }
-            });
+const $ = id => document.getElementById(id);
+let currentUser = sessionStorage.getItem('s2_user');
+
+// ══ Toast ══
+let toastTimer = null;
+window.showToast = function(msg, type='') {
+    const t = $('toastMsg');
+    $('toastText').textContent = msg;
+    t.className = 'toast show' + (type ? ' '+type : '');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+};
+
+// ══ Auth Alert ══
+function showAuthAlert(msg, type) {
+    const el = $('authAlert');
+    el.className = 'fb-alert ' + type;
+    el.innerHTML = msg;
+}
+function setLoading(btn, on, label) {
+    btn.disabled = on;
+    btn.innerHTML = on ? label + ' <span class="spinner"></span>' : label;
+}
+
+// ══ تسجيل الدخول فقط ══
+$('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = $('loginEmail').value.trim().toLowerCase();
+    const pass  = $('loginPassword').value;
+    const btn   = $('loginBtn');
+    setLoading(btn, true, 'تسجيل الدخول');
+    showAuthAlert('جاري الفحص...', 'info');
+    try {
+        const snap = await getDocs(query(collection(db,"users"), where("username","==",email)));
+        if (snap.empty) { showAuthAlert('❌ لم نجد حساباً بهذا البريد', 'danger'); setLoading(btn,false,'تسجيل الدخول'); return; }
+        let ok = false;
+        snap.forEach(d => { if (d.data().password === pass) ok = true; });
+        if (ok) {
+            sessionStorage.setItem('s2_user', email);
+            currentUser = email;
+            showAuthAlert('🎉 مرحباً! جاري التحميل...', 'success');
+            setTimeout(launchApp, 900);
+        } else {
+            showAuthAlert('❌ كلمة السر غير صحيحة', 'danger');
+            setLoading(btn, false, 'تسجيل الدخول');
         }
+    } catch(err) { showAuthAlert('❌ '+err.message, 'danger'); setLoading(btn,false,'تسجيل الدخول'); }
+});
 
-        function saveOrderToLocal() {
-            const order = Array.from(container.children).map(child => child.getAttribute('data-id'));
-            localStorage.setItem('s2-materials-order', JSON.stringify(order));
-        }
+// ══ تشغيل التطبيق ══
+async function launchApp() {
+    $('authScreen').style.display = 'none';
+    $('appScreen').style.display  = 'block';
+    $('userLabel').textContent = currentUser;
+    loadTheme();
+    initSortable();
+    const cloudOk = await loadFromCloud();
+    if (!cloudOk) {
+        const local = localStorage.getItem('s2-state-'+currentUser);
+        if (local) { try { restoreState(JSON.parse(local)); } catch(e) {} }
+    }
+    updateStatus();
+    document.querySelectorAll('.list-item').forEach(btn => {
+        btn.addEventListener('touchstart', onTouchStart, {passive:true});
+        btn.addEventListener('touchend',   onTouchEnd);
+        btn.addEventListener('touchmove',  onTouchMove);
+        btn.addEventListener('mousedown',  onTouchStart);
+        btn.addEventListener('mouseup',    onTouchEnd);
+        btn.addEventListener('mouseleave', onTouchEnd);
+    });
+}
 
-        function restoreOrderFromLocal() {
-            const savedOrder = localStorage.getItem('s2-materials-order');
-            if (savedOrder) {
-                const orderArray = JSON.parse(savedOrder);
-                orderArray.forEach(id => {
-                    const item = container.querySelector(`[data-id="${id}"]`);
-                    if (item) container.appendChild(item);
-                });
-            }
-        }
+window.addEventListener('load', () => { if (currentUser) launchApp(); });
 
-        // ======================== إدارة القائمة الجانبية ========================
-        function toggleMenu() {
-            document.getElementById("sideMenu").classList.toggle("open");
-            document.querySelector(".menu-btn").classList.toggle("rotate-active");
-        }
+// ══ Sync ══
+let lastSavedState = null;
 
-        // ======================== إدارة الثيم (فاتح/مظلم) ========================
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            localStorage.setItem('s2-theme', isLight ? 'light' : 'dark');
-            const themeBtn = document.querySelector('.theme-btn');
-            if (isLight) themeBtn.innerHTML = '<i class="fas fa-sun"></i> الوضع المظلم';
-            else themeBtn.innerHTML = '<i class="fas fa-moon"></i> الوضع الفاتح';
-            showToast(isLight ? 'الوضع الفاتح' : 'الوضع المظلم');
-        }
+function setSyncDot(s) {
+    const d = $('syncDot');
+    d.className = 'sync-dot' + (s==='syncing' ? ' syncing' : s==='ok' ? ' synced' : '');
+}
 
-        function loadTheme() {
-            const saved = localStorage.getItem('s2-theme');
-            if (saved === 'light') {
-                document.body.classList.add('light-mode');
-                document.querySelector('.theme-btn').innerHTML = '<i class="fas fa-sun"></i> الوضع المظلم';
-            } else {
-                document.body.classList.remove('light-mode');
-                document.querySelector('.theme-btn').innerHTML = '<i class="fas fa-moon"></i> الوضع الفاتح';
-            }
-        }
-
-        // ======================== وضع التعديل ========================
-        function toggleEditMode() {
-            editMode = !editMode;
-            const editBtnSpan = document.getElementById('editModeText');
-            if (editMode) {
-                document.body.classList.add('edit-mode-active');
-                editBtnSpan.innerText = 'إنهاء التعديل';
-                showToast('وضع التعديل نشط - اضغط مطولاً على أي مادة لتظهر الخيارات');
-            } else {
-                document.body.classList.remove('edit-mode-active');
-                editBtnSpan.innerText = 'تفعيل التعديل';
-                document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
-                hideEditPopup();
-                hideConfirmPopup();
-                showToast('وضع التعديل غير نشط');
-            }
-            localStorage.setItem('s2-edit-mode', editMode ? 'enabled' : 'disabled');
-        }
-
-        function loadEditMode() {
-            const saved = localStorage.getItem('s2-edit-mode');
-            if (saved === 'enabled') {
-                editMode = true;
-                document.body.classList.add('edit-mode-active');
-                document.getElementById('editModeText').innerText = 'إنهاء التعديل';
-            } else {
-                editMode = false;
-                document.body.classList.remove('edit-mode-active');
-                document.getElementById('editModeText').innerText = 'تفعيل التعديل';
-            }
-        }
-
-        // ======================== معالجة الضغط الطويل ========================
-        function handleLongPress(element, e) {
-            if (!editMode) return;
-            if (element.hasAttribute('contenteditable')) return;
-
-            currentEditElement = element;
-            const textSpan = element.querySelector('.btn-text');
-            originalText = textSpan ? textSpan.innerText : element.innerText;
-
-            const touch = e.touches ? e.touches[0] : e;
-            const popup = document.getElementById('editPopup');
-            const rect = element.getBoundingClientRect();
-            let popY = rect.top - 10;
-            if (popY < 60) popY = rect.bottom + 60;
-            popup.style.left = touch.clientX + 'px';
-            popup.style.top = popY + 'px';
-            popup.classList.add('show');
-            hideConfirmPopup();
-        }
-
-        let pressTimer = null;
-        function onTouchStart(e) {
-            if (!editMode) return;
-            const element = e.target.closest('.neon-btn');
-            if (!element) return;
-            pressTimer = setTimeout(() => {
-                handleLongPress(element, e);
-                pressTimer = null;
-            }, 500);
-        }
-        function onTouchEnd() {
-            if (pressTimer) {
-                clearTimeout(pressTimer);
-                pressTimer = null;
-            }
-        }
-        function onTouchMove() {
-            if (pressTimer) {
-                clearTimeout(pressTimer);
-                pressTimer = null;
-            }
-        }
-
-        // ======================== وظائف الحذف والتعديل ========================
-        function requestDeleteMaterial() {
-            if (currentEditElement) {
-                materialToDelete = currentEditElement;
-                hideEditPopup();
-                document.getElementById('deleteModal').classList.add('show');
-            }
-        }
-
-        function confirmDeleteMaterial() {
-            if (materialToDelete) {
-                materialToDelete.remove();
-                closeDeleteModal();
-                saveOrderToLocal();
-                showToast('✓ تم حذف المادة');
-                materialToDelete = null;
-                currentEditElement = null;
-            }
-        }
-
-        function startEditText() {
-            if (currentEditElement) {
-                const textSpan = currentEditElement.querySelector('.btn-text');
-                if (textSpan) {
-                    textSpan.setAttribute('contenteditable', 'true');
-                    textSpan.focus();
-                } else {
-                    currentEditElement.setAttribute('contenteditable', 'true');
-                    currentEditElement.focus();
-                }
-                hideEditPopup();
-                const rect = currentEditElement.getBoundingClientRect();
-                const confirmPopup = document.getElementById('confirmPopup');
-                let popY = rect.top - 10;
-                if (popY < 60) popY = rect.bottom + 60;
-                confirmPopup.style.left = (rect.left + rect.width / 2) + 'px';
-                confirmPopup.style.top = popY + 'px';
-                confirmPopup.classList.add('show');
-            }
-        }
-
-        function confirmTextEdit() {
-            if (currentEditElement) {
-                const textSpan = currentEditElement.querySelector('.btn-text');
-                if (textSpan) {
-                    textSpan.removeAttribute('contenteditable');
-                } else {
-                    currentEditElement.removeAttribute('contenteditable');
-                }
-                hideConfirmPopup();
-                showToast('✓ تم تحديث الاسم');
-                currentEditElement = null;
-            }
-        }
-
-        function cancelTextEdit() {
-            if (currentEditElement) {
-                const textSpan = currentEditElement.querySelector('.btn-text');
-                if (textSpan) {
-                    textSpan.innerText = originalText;
-                    textSpan.removeAttribute('contenteditable');
-                } else {
-                    currentEditElement.innerText = originalText;
-                    currentEditElement.removeAttribute('contenteditable');
-                }
-                hideConfirmPopup();
-                currentEditElement = null;
-            }
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('show');
-        }
-
-        // ======================== التحديث ========================
-        function checkForUpdate() {
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.checkForUpdate) {
-                AndroidBridge.checkForUpdate();
-            } else {
-                showToast("زر التحديث يعمل داخل التطبيق فقط 🚀");
-            }
-        }
-
-        // ======================== توست الإشعارات ========================
-        function showToast(msg) {
-            const toast = document.getElementById('toastMsg');
-            document.getElementById('toastText').innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        function hideEditPopup() {
-            document.getElementById('editPopup').classList.remove('show');
-        }
-        function hideConfirmPopup() {
-            document.getElementById('confirmPopup').classList.remove('show');
-        }
-
-        // ======================== منع التنقل عند التعديل ========================
-        document.addEventListener('click', function(e) {
-            if (editMode) {
-                const link = e.target.closest('a');
-                if (link && !link.hasAttribute('contenteditable')) {
-                    e.preventDefault();
-                }
-            }
+async function saveIfChanged() {
+    const current = JSON.stringify(getState());
+    if (current === lastSavedState) return;
+    lastSavedState = current;
+    localStorage.setItem('s2-state-'+currentUser, current);
+    setSyncDot('syncing');
+    try {
+        const key = currentUser.replace(/[.@]/g,'_');
+        await setDoc(doc(db,"userData",key), {
+            state: current,
+            theme: localStorage.getItem('s2-theme') || 'dark',
+            updatedAt: new Date().toISOString()
         });
+        setSyncDot('ok');
+    } catch(e) { setSyncDot(''); }
+}
 
-        // ======================== التهيئة ========================
-        window.addEventListener('load', () => {
-            initSortable();
-            restoreOrderFromLocal();
-            loadTheme();
-            loadEditMode();
+async function loadFromCloud() {
+    if (!currentUser) return false;
+    try {
+        const key  = currentUser.replace(/[.@]/g,'_');
+        const snap = await getDoc(doc(db,"userData",key));
+        if (snap.exists()) {
+            const data = snap.data();
+            if (data.theme) localStorage.setItem('s2-theme', data.theme);
+            if (data.state) {
+                restoreState(JSON.parse(data.state));
+                lastSavedState = data.state;
+                setSyncDot('ok');
+                return true;
+            }
+        }
+    } catch(e) {}
+    return false;
+}
 
-            const allBtns = document.querySelectorAll('.neon-btn');
-            allBtns.forEach(btn => {
-                btn.addEventListener('touchstart', onTouchStart, { passive: true });
-                btn.addEventListener('touchend', onTouchEnd);
-                btn.addEventListener('touchmove', onTouchMove);
-                btn.addEventListener('mousedown', onTouchStart);
-                btn.addEventListener('mouseup', onTouchEnd);
-                btn.addEventListener('mouseleave', onTouchEnd);
-            });
-        });
-    </script>
+// ══ الحالة ══
+const container = $('mainContainer');
+function getState() {
+    return Array.from(container.querySelectorAll('.list-item')).map(el => ({
+        id:   el.getAttribute('data-id'),
+        href: el.getAttribute('href'),
+        text: el.querySelector('.btn-text').innerText,
+        icon: el.querySelector('.item-icon i').className
+    }));
+}
+function restoreState(items) {
+    items.forEach(d => {
+        const el = container.querySelector(`[data-id="${d.id}"]`);
+        if (el) {
+            el.setAttribute('href', d.href);
+            el.querySelector('.btn-text').innerText = d.text;
+            el.querySelector('.item-icon i').className = d.icon;
+            container.appendChild(el);
+        }
+    });
+    updateStatus();
+}
+window.updateStatus = function() {
+    $('statusText').textContent = container.querySelectorAll('.list-item').length + ' مواد';
+};
+window.resetEdits = function() {
+    if (!confirm('سيتم حذف كل التعديلات. متأكد؟')) return;
+    localStorage.removeItem('s2-state-'+currentUser);
+    lastSavedState = null;
+    location.reload();
+};
+
+// ══ SortableJS ══
+let sortableInstance = null;
+function initSortable() {
+    if (sortableInstance) sortableInstance.destroy();
+    sortableInstance = new Sortable(container, {
+        animation:200, delay:400, delayOnTouchOnly:true,
+        touchStartThreshold:10, forceFallback:true,
+        ghostClass:'sortable-ghost', dragClass:'sortable-drag',
+        onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
+        onEnd: saveIfChanged
+    });
+}
+
+// ══ Sidebar ══
+window.toggleMenu = function() {
+    const open = $('sideMenu').classList.toggle('open');
+    document.querySelector('.menu-btn').classList.toggle('rotate-active', open);
+    $('backdrop').classList.toggle('show', open);
+};
+window.closeMenu = function() {
+    $('sideMenu').classList.remove('open');
+    document.querySelector('.menu-btn').classList.remove('rotate-active');
+    $('backdrop').classList.remove('show');
+};
+
+// ══ Theme ══
+window.toggleTheme = function() {
+    const light = document.body.classList.toggle('light-mode');
+    localStorage.setItem('s2-theme', light ? 'light' : 'dark');
+    updateThemeUI(light);
+    saveIfChanged();
+};
+function updateThemeUI(light) {
+    $('themeBtn').innerHTML    = light ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    $('themeIcon').className   = light ? 'fas fa-sun' : 'fas fa-moon';
+    $('themeLabel').textContent = light ? 'الوضع المظلم' : 'الوضع الفاتح';
+}
+function loadTheme() {
+    const light = localStorage.getItem('s2-theme') === 'light';
+    if (light) document.body.classList.add('light-mode');
+    updateThemeUI(light);
+}
+
+// ══ Edit Mode ══
+let editMode = false;
+window.toggleEditMode = function() {
+    editMode = !editMode;
+    document.body.classList.toggle('edit-mode-active', editMode);
+    $('editBtn').classList.toggle('active', editMode);
+    $('editModeText').textContent = editMode ? 'إنهاء التعديل' : 'تفعيل التعديل';
+    if (!editMode) {
+        document.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+        $('editPopup').classList.remove('show');
+        $('confirmPopup').classList.remove('show');
+    }
+};
+
+// ══ Long Press ══
+let pressTimer=null, currentEditElement=null, originalText='', materialToDelete=null;
+function handleLongPress(el, e) {
+    if (!editMode || el.hasAttribute('contenteditable')) return;
+    currentEditElement = el;
+    originalText = el.querySelector('.btn-text').innerText;
+    const touch = e.touches ? e.touches[0] : e;
+    const popup = $('editPopup');
+    const rect  = el.getBoundingClientRect();
+    let popY = rect.top - 10; if (popY < 60) popY = rect.bottom + 60;
+    popup.style.left = touch.clientX + 'px';
+    popup.style.top  = popY + 'px';
+    popup.classList.add('show');
+    $('confirmPopup').classList.remove('show');
+    if (navigator.vibrate) navigator.vibrate(30);
+}
+function onTouchStart(e) {
+    if (!editMode) return;
+    const el = e.target.closest('.list-item'); if (!el) return;
+    pressTimer = setTimeout(() => { handleLongPress(el,e); pressTimer=null; }, 500);
+}
+function onTouchEnd()  { if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; } }
+function onTouchMove() { if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; } }
+
+// ══ Delete / Edit ══
+window.requestDeleteMaterial = function() {
+    if (!currentEditElement) return;
+    materialToDelete = currentEditElement;
+    $('editPopup').classList.remove('show');
+    $('deleteModal').classList.add('show');
+};
+window.confirmDeleteMaterial = function() {
+    if (materialToDelete) {
+        materialToDelete.remove();
+        saveIfChanged();
+        updateStatus();
+        showToast('🗑️ تم الحذف');
+        materialToDelete=null; currentEditElement=null;
+    }
+    $('deleteModal').classList.remove('show');
+};
+window.startEditText = function() {
+    if (!currentEditElement) return;
+    const span = currentEditElement.querySelector('.btn-text');
+    span.setAttribute('contenteditable','true'); span.focus();
+    const r = document.createRange(); r.selectNodeContents(span); r.collapse(false);
+    window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+    $('editPopup').classList.remove('show');
+    const rect = currentEditElement.getBoundingClientRect();
+    const cp = $('confirmPopup');
+    let popY = rect.top - 10; if (popY < 60) popY = rect.bottom + 60;
+    cp.style.left = (rect.left + rect.width/2) + 'px';
+    cp.style.top  = popY + 'px';
+    cp.classList.add('show');
+};
+window.confirmTextEdit = function() {
+    if (!currentEditElement) return;
+    currentEditElement.querySelector('.btn-text').removeAttribute('contenteditable');
+    $('confirmPopup').classList.remove('show');
+    saveIfChanged();
+    currentEditElement=null;
+};
+window.cancelTextEdit = function() {
+    if (!currentEditElement) return;
+    const span = currentEditElement.querySelector('.btn-text');
+    span.innerText = originalText; span.removeAttribute('contenteditable');
+    $('confirmPopup').classList.remove('show');
+    currentEditElement=null;
+};
+
+// ══ Logout ══
+window.logout = function() {
+    sessionStorage.removeItem('s2_user');
+    currentUser=null; lastSavedState=null;
+    $('appScreen').style.display  = 'none';
+    $('authScreen').style.display = 'flex';
+    $('loginForm').reset();
+    $('authAlert').className = 'fb-alert';
+};
+
+// ══ منع الانتقال في وضع التعديل ══
+document.addEventListener('click', e => {
+    if (editMode) { const l = e.target.closest('a'); if (l) e.preventDefault(); }
+});
+</script>
 </body>
 </html>
